@@ -1,0 +1,11 @@
+PLACEHOLDER: Oscar needs to provide a professional headshot image.
+
+Requirements per PRD Hero-006:
+- Format: WebP
+- Size: <50KB
+- Dimensions: 500x500px minimum (square, will be cropped to circle)
+- Quality: Professional, well-lit, neutral background
+- File name: headshot.webp
+
+Until provided, the Hero component will show a broken image.
+Temporary solution: Use a placeholder service or default avatar.
