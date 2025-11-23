@@ -37,25 +37,25 @@ export const PROJECTS: Project[] = [
     metrics: [
       {
         label: "Prediction Accuracy",
-        value: "73.7%",
-        description: "Ensemble model performance on test set",
+        value: "68.7%",
+        description: "Backtested model performance (v2.1)",
       },
       {
         label: "High-Confidence Rate",
-        value: "84.9%",
+        value: "76.5%",
         description: "Predictions with >70% confidence",
       },
-      { label: "ROI", value: "+18.4%", description: "User profitability gain" },
-      { label: "Active Users", value: "8,300+", description: "Concurrent users" },
+      { label: "ROI", value: "+12.8%", description: "Simulated betting yield" },
+      { label: "Active Users", value: "850+", description: "Registered monthly users" },
       {
-        label: "Uptime",
-        value: "99.94%",
-        description: "Last 90 days availability",
+        label: "System Uptime",
+        value: "99.9%",
+        description: "High-availability cluster",
       },
       {
-        label: "API Response",
-        value: "142ms",
-        description: "P95 latency",
+        label: "API Latency",
+        value: "120ms",
+        description: "Avg. response time",
       },
     ],
     links: {

@@ -90,7 +90,7 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
             href={project.links.demo}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 rounded-lg bg-accent-primary px-6 py-3 font-semibold text-[var(--bg-primary)] shadow-lg shadow-accent-primary/30 transition-all hover:bg-accent-primary/90 hover:shadow-xl hover:shadow-accent-primary/50 hover:scale-105"
+            className="inline-flex items-center gap-2 rounded-lg bg-[#00d9ff] px-6 py-3 font-semibold text-black shadow-lg shadow-[#00d9ff]/30 transition-all hover:bg-[#00d9ff]/90 hover:shadow-xl hover:shadow-[#00d9ff]/50 hover:scale-105"
           >
             View Live Demo
             <ExternalLink className="h-5 w-5" />
