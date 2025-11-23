@@ -40,11 +40,11 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-100px" }}
       transition={{ duration: 0.5, delay: index * 0.15 }}
-      className="group relative flex flex-col rounded-2xl border border-white/10 bg-gradient-to-br from-white/5 to-white/[0.02] p-6 backdrop-blur-sm transition-all duration-300 hover:border-accent-primary/50 hover:shadow-[0_0_30px_rgba(0,217,255,0.15)] lg:p-8"
+      className="group relative flex flex-col rounded-2xl border border-white/10 bg-gradient-to-br from-white/5 to-white/[0.02] p-6 backdrop-blur-sm transition-all duration-300 hover:border-accent-primary/40 hover:shadow-[0_0_40px_rgba(0,217,255,0.2)] hover:scale-[1.01] lg:p-8"
     >
       {/* PRD Card-001: Title + Brief */}
       <div className="mb-6">
-        <h3 className="mb-3 text-2xl font-bold text-white lg:text-3xl">
+        <h3 className="mb-3 text-2xl font-bold tracking-tight text-white transition-colors group-hover:text-accent-primary lg:text-3xl">
           {project.title}
         </h3>
         <p className="text-base leading-relaxed text-gray-300 lg:text-lg">
@@ -90,10 +90,10 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
             href={project.links.demo}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 rounded-lg bg-accent-primary px-5 py-2.5 font-semibold text-black transition-all hover:bg-accent-primary/90 hover:shadow-[0_0_20px_rgba(0,217,255,0.4)]"
+            className="inline-flex items-center gap-2 rounded-lg bg-accent-primary px-6 py-3 font-semibold text-[var(--bg-primary)] shadow-lg shadow-accent-primary/30 transition-all hover:bg-accent-primary/90 hover:shadow-xl hover:shadow-accent-primary/50 hover:scale-105"
           >
             View Live Demo
-            <ExternalLink className="h-4 w-4" />
+            <ExternalLink className="h-5 w-5" />
           </a>
         )}
         {project.links.github && (
@@ -101,16 +101,16 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
             href={project.links.github}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 rounded-lg border border-white/20 bg-white/5 px-5 py-2.5 font-semibold text-white transition-all hover:border-white/40 hover:bg-white/10"
+            className="inline-flex items-center gap-2 rounded-lg border-2 border-white/20 bg-white/5 px-6 py-3 font-semibold text-white transition-all hover:border-accent-primary/50 hover:bg-white/10 hover:text-accent-primary hover:shadow-lg hover:shadow-accent-primary/20"
           >
             See Code
-            <Github className="h-4 w-4" />
+            <Github className="h-5 w-5" />
           </a>
         )}
         {project.links.caseStudy && (
           <button
             onClick={() => setIsExpanded(!isExpanded)}
-            className="inline-flex items-center gap-2 rounded-lg border border-white/20 bg-white/5 px-5 py-2.5 font-semibold text-white transition-all hover:border-white/40 hover:bg-white/10"
+            className="inline-flex items-center gap-2 rounded-lg border-2 border-white/20 bg-white/5 px-6 py-3 font-semibold text-white transition-all hover:border-accent-primary/50 hover:bg-white/10 hover:text-accent-primary"
           >
             {isExpanded ? "Hide" : "Read"} Case Study
             {isExpanded ? (
@@ -130,7 +130,7 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
         <div className="mb-4">
           <button
             onClick={() => setShowDemo(!showDemo)}
-            className="w-full rounded-lg border border-accent-primary/30 bg-accent-primary/5 px-4 py-3 font-semibold text-accent-primary transition-all hover:border-accent-primary/50 hover:bg-accent-primary/10"
+            className="w-full rounded-lg border-2 border-accent-primary/30 bg-accent-primary/5 px-4 py-3 font-semibold text-accent-primary transition-all hover:border-accent-primary/60 hover:bg-accent-primary/15 hover:shadow-lg hover:shadow-accent-primary/20"
           >
             {showDemo ? "Hide" : "View"} Interactive Demo
           </button>

@@ -64,19 +64,19 @@ export function ContactForm() {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="mx-auto flex max-w-2xl flex-col gap-4 rounded-2xl border border-white/10 bg-white/[0.02] p-6"
+      className="mx-auto flex max-w-2xl flex-col gap-6 rounded-2xl border border-white/10 bg-gradient-to-br from-white/5 to-white/[0.02] p-8 shadow-xl backdrop-blur-sm lg:p-10"
       aria-label="Contact form"
     >
       <div className="grid gap-4 md:grid-cols-2">
         <div>
-          <label htmlFor="name" className="mb-1 block text-sm font-medium text-gray-200">
-            Name
+          <label htmlFor="name" className="mb-2 block text-sm font-semibold text-gray-200">
+            Name *
           </label>
           <input
             id="name"
             type="text"
             autoComplete="name"
-            className="w-full rounded-lg border border-white/10 bg-black/40 px-3 py-2 text-sm text-white outline-none focus:border-accent-primary focus:ring-1 focus:ring-accent-primary"
+            className="w-full rounded-lg border border-white/20 bg-black/40 px-4 py-3 text-base text-white transition-all outline-none focus:border-accent-primary focus:bg-black/60 focus:ring-2 focus:ring-accent-primary/50"
             {...register("name")}
           />
           {errors.name && (

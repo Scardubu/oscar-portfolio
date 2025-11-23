@@ -54,12 +54,12 @@ export function SkillsSection() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-100px" }}
         transition={{ duration: 0.6 }}
-        className="mx-auto mb-12 max-w-7xl text-center"
+        className="mx-auto mb-16 max-w-7xl text-center"
       >
-        <h2 className="mb-4 text-4xl font-bold text-white lg:text-5xl">
+        <h2 className="mb-6 text-4xl font-extrabold tracking-tight text-white lg:text-5xl xl:text-6xl">
           Technical <span className="text-gradient-accent">Expertise</span>
         </h2>
-        <p className="mx-auto max-w-2xl text-lg text-gray-300 lg:text-xl">
+        <p className="mx-auto max-w-3xl text-lg leading-relaxed text-gray-300 lg:text-xl xl:text-2xl">
           37+ technologies across ML, backend, frontend, DevOps, and blockchain.
           Interactive graph shows skill relationships and proficiency levels.
         </p>
