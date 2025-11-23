@@ -68,11 +68,11 @@ function CountUpMetric({ metric, inView }: { metric: Metric; inView: boolean }) 
       transition={{ duration: 0.5 }}
       className="flex flex-col items-center gap-2 text-center"
     >
-      <div className="font-mono text-3xl font-semibold text-[var(--accent-primary)] md:text-4xl">
+      <div className="font-mono text-3xl font-bold text-[var(--accent-primary)] drop-shadow-[0_0_10px_rgba(0,217,255,0.3)] md:text-4xl lg:text-5xl">
         {displayValue}
         {metric.suffix}
       </div>
-      <div className="text-sm text-[var(--text-secondary)] md:text-base">
+      <div className="text-sm font-medium text-gray-400 md:text-base">
         {metric.label}
       </div>
     </motion.div>
@@ -98,7 +98,7 @@ function RotatingTech() {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -10 }}
       transition={{ duration: 0.5 }}
-      className="text-gradient-accent"
+      className="text-gradient-accent font-bold"
     >
       {ROTATING_TECH[index]}
     </motion.span>
@@ -131,12 +131,12 @@ export function Hero() {
           className="flex flex-col justify-center space-y-8"
         >
           {/* PRD Hero-001: Full name, title, tagline */}
-          <div className="space-y-4">
+          <div className="space-y-3">
             <motion.h1
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2, duration: 0.6 }}
-              className="text-4xl font-bold leading-tight tracking-tight text-[var(--text-primary)] md:text-5xl lg:text-6xl"
+              className="text-5xl font-extrabold leading-[1.1] tracking-wide text-gradient-accent md:text-6xl lg:text-7xl xl:text-8xl"
             >
               Oscar Ndugbu
             </motion.h1>
@@ -145,7 +145,7 @@ export function Hero() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4, duration: 0.6 }}
-              className="text-xl font-medium text-[var(--text-secondary)] md:text-2xl lg:text-3xl"
+              className="text-xl font-semibold tracking-wide text-white/90 md:text-2xl lg:text-3xl xl:text-4xl"
             >
               Full-Stack Machine Learning Engineer
             </motion.h2>
@@ -155,7 +155,7 @@ export function Hero() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6, duration: 0.6 }}
-              className="text-lg text-[var(--text-secondary)] md:text-xl"
+              className="max-w-2xl text-lg leading-relaxed text-gray-300 md:text-xl lg:text-2xl"
             >
               Building AI products that ship—from model to production at scale
               with <RotatingTech />
@@ -185,18 +185,18 @@ export function Hero() {
             <Button
               size="lg"
               onClick={() => scrollToSection("projects")}
-              className="group bg-[var(--accent-primary)] text-[var(--bg-primary)] hover:bg-[var(--accent-primary)]/90"
+              className="group bg-[var(--accent-primary)] px-8 py-6 text-base font-semibold text-[var(--bg-primary)] shadow-lg shadow-accent-primary/25 transition-all hover:bg-[var(--accent-primary)]/90 hover:shadow-xl hover:shadow-accent-primary/40"
             >
               View My Work
-              <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+              <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
             </Button>
             <Button
               size="lg"
               variant="outline"
               onClick={() => scrollToSection("contact")}
-              className="border-[var(--accent-primary)] text-[var(--accent-primary)] hover:bg-[var(--accent-primary)]/10"
+              className="border-2 border-[var(--accent-primary)] px-8 py-6 text-base font-semibold text-[var(--accent-primary)] transition-all hover:bg-[var(--accent-primary)]/10 hover:shadow-lg hover:shadow-accent-primary/20"
             >
-              <Mail className="mr-2 h-4 w-4" />
+              <Mail className="mr-2 h-5 w-5" />
               Let&apos;s Talk
             </Button>
           </motion.div>
