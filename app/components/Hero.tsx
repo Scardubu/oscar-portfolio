@@ -200,6 +200,18 @@ export function Hero() {
               Let&apos;s Talk
             </Button>
           </motion.div>
+
+          {/* Subtle link to Skills section */}
+          <motion.button
+            type="button"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.2, duration: 0.5 }}
+            onClick={() => scrollToSection("skills")}
+            className="self-start text-sm text-[var(--text-secondary)] underline-offset-4 hover:text-[var(--accent-primary)] hover:underline"
+          >
+            Explore full skills map
+          </motion.button>
         </motion.div>
 
         {/* Right: Professional headshot */}
@@ -212,7 +224,7 @@ export function Hero() {
         >
           <div className="relative h-[300px] w-[300px] overflow-hidden rounded-full border-4 border-[var(--accent-primary)] shadow-2xl shadow-[var(--accent-primary)]/20 transition-transform duration-300 hover:scale-105 md:h-[400px] md:w-[400px] lg:h-[500px] lg:w-[500px]">
             <Image
-              src="/headshot.svg"
+              src="/headshot.webp"
               alt="Oscar Ndugbu - Full-Stack ML Engineer"
               fill
               priority

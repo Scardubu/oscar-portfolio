@@ -1,6 +1,95 @@
 // Contact API route placeholder (Phase 5)
-import { NextResponse } from 'next/server';
+import { NextResponse } from "next/server";
+import { Resend } from "resend";
+import { contactSchema } from "@/app/lib/validations";
 
-export async function POST() {
-  return NextResponse.json({ message: 'Contact API placeholder' }, { status: 501 });
+const resend = new Resend(process.env.RESEND_API_KEY || "");
+
+const rateLimitMap = new Map<string, { count: number; timestamp: number }>();
+const RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000;
+const RATE_LIMIT_MAX_REQUESTS = 5;
+
+function isRateLimited(key: string): boolean {
+  const now = Date.now();
+  const entry = rateLimitMap.get(key);
+
+  if (!entry) {
+    rateLimitMap.set(key, { count: 1, timestamp: now });
+    return false;
+  }
+
+  if (now - entry.timestamp > RATE_LIMIT_WINDOW_MS) {
+    rateLimitMap.set(key, { count: 1, timestamp: now });
+    return false;
+  }
+
+  if (entry.count >= RATE_LIMIT_MAX_REQUESTS) {
+    return true;
+  }
+
+  entry.count += 1;
+  return false;
 }
+
+export async function POST(request: Request) {
+  try {
+    const body = await request.json();
+    const parseResult = contactSchema.safeParse(body);
+
+    if (!parseResult.success) {
+      return NextResponse.json(
+        { message: "Validation failed", errors: parseResult.error.flatten() },
+        { status: 400 },
+      );
+    }
+
+    const data = parseResult.data;
+
+    const ip =
+      request.headers.get("x-forwarded-for") ||
+      request.headers.get("x-real-ip") ||
+      "unknown";
+
+    const rateKey = `${ip}:${data.email}`;
+    if (isRateLimited(rateKey)) {
+      return NextResponse.json(
+        { message: "Too many requests. Please try again later." },
+        { status: 429 },
+      );
+    }
+
+    if (data.honeypot && data.honeypot.length > 0) {
+      return NextResponse.json({ message: "OK" }, { status: 200 });
+    }
+
+    if (!process.env.RESEND_API_KEY) {
+      return NextResponse.json(
+        { message: "Email service not configured" },
+        { status: 503 },
+      );
+    }
+
+    const subject = `[Portfolio] ${data.inquiryType.toUpperCase()} inquiry from ${data.name}`;
+
+    await resend.emails.send({
+      from: "Oscar Portfolio <noreply@scardubu.dev>",
+      to: "scardubu@gmail.com",
+      subject,
+      text: `Name: ${data.name}
+Email: ${data.email}
+Company: ${data.company ?? "-"}
+Type: ${data.inquiryType}
+
+Message:
+${data.message}`,
+    });
+
+    return NextResponse.json({ message: "Message sent" }, { status: 200 });
+  } catch (_) {
+    return NextResponse.json(
+      { message: "Unexpected server error" },
+      { status: 500 },
+    );
+  }
+}
+

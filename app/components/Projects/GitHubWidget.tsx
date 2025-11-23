@@ -92,7 +92,7 @@ export function GitHubWidget({ repo }: GitHubWidgetProps) {
       };
 
   return (
-    <div className="mb-6 rounded-lg border border-white/10 bg-white/[0.02] p-4">
+    <div className="mb-6 rounded-lg border border-white/10 bg-white/2 p-4">
       <div className="mb-3 flex items-center justify-between">
         <h5 className="text-sm font-semibold text-gray-400">
           GitHub Repository Stats

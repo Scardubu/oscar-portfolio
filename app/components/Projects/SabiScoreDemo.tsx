@@ -12,6 +12,7 @@ import {
   Tooltip,
   Legend,
   Filler,
+  type TooltipItem,
 } from "chart.js";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -122,8 +123,9 @@ export function SabiScoreDemo() {
         padding: 12,
         displayColors: false,
         callbacks: {
-          label: function (context: { parsed: { y: number } }) {
-            return `Accuracy: ${context.parsed.y}%`;
+          label: function (tooltipItem: TooltipItem<"line">) {
+            const value = tooltipItem.parsed.y;
+            return value !== null ? `Accuracy: ${value}%` : "N/A";
           },
         },
       },

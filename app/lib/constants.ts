@@ -107,12 +107,11 @@ export const PROJECTS: Project[] = [
       },
     ],
     links: {
-      github: "https://github.com/scardubu/hashablanca",
       caseStudy: "#hashablanca-case-study",
     },
     featured: true,
     demoType: "privacy",
-    githubRepo: "scardubu/hashablanca",
+    // githubRepo removed - repository is private/unavailable
   },
   {
     id: "ai-consulting",
