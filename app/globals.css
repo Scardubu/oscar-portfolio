@@ -168,11 +168,21 @@
     background: var(--gradient-accent);
   }
   .text-gradient-accent {
-    background: var(--gradient-accent);
+    background: linear-gradient(135deg, #00d9ff 0%, #7b61ff 50%, #00d9ff 100%);
+    background-size: 200% auto;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    text-shadow: 0 0 40px rgba(0, 217, 255, 0.3);
+    animation: gradient-shift 8s ease infinite;
+  }
+  
+  @keyframes gradient-shift {
+    0%, 100% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
   }
   
   /* Enhanced text rendering for hero name */

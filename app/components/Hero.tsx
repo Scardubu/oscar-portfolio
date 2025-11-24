@@ -16,10 +16,10 @@ interface Metric {
 }
 
 const HERO_METRICS: Metric[] = [
-  { value: 8300, suffix: "+", label: "Concurrent Users", decimals: 0 },
-  { value: 73.7, suffix: "%", label: "ML Accuracy", decimals: 1 },
-  { value: 99.94, suffix: "%", label: "System Uptime", decimals: 2 },
-  { value: 150, suffix: "ms", label: "Page Load Time", decimals: 0 },
+  { value: 850, suffix: "+", label: "Active Users", decimals: 0 },
+  { value: 71.2, suffix: "%", label: "Avg ML Accuracy", decimals: 1 },
+  { value: 99.9, suffix: "%", label: "System Uptime", decimals: 1 },
+  { value: 120, suffix: "ms", label: "API Response", decimals: 0 },
 ];
 
 const ROTATING_TECH = [
@@ -136,7 +136,11 @@ export function Hero() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2, duration: 0.6 }}
-              className="text-5xl font-extrabold leading-[1.1] tracking-wide text-gradient-accent md:text-6xl lg:text-7xl xl:text-8xl"
+              className="text-6xl font-black leading-[1.05] tracking-wider text-gradient-accent drop-shadow-[0_0_50px_rgba(0,217,255,0.35)] md:text-7xl lg:text-8xl xl:text-9xl"
+              style={{
+                letterSpacing: '0.02em',
+                textShadow: '0 0 60px rgba(0, 217, 255, 0.4), 0 0 30px rgba(123, 97, 255, 0.3)'
+              }}
             >
               Oscar Ndugbu
             </motion.h1>

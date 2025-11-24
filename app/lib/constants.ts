@@ -25,7 +25,7 @@ export const PROJECTS: Project[] = [
     id: "sabiscore",
     title: "SabiScore - AI Sports Prediction Platform",
     brief:
-      "Production ML platform serving 8,300+ users with 73.7% prediction accuracy using ensemble models",
+      "Production ML platform serving 850+ active users with ensemble models achieving 71% average prediction accuracy",
     techStack: [
       "Next.js",
       "FastAPI",
