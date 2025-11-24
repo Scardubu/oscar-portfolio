@@ -19,10 +19,10 @@ export function ProjectsSection() {
         transition={{ duration: 0.6 }}
         className="mx-auto mb-16 max-w-7xl text-center"
       >
-        <h2 className="mb-4 text-4xl font-bold text-white lg:text-5xl">
+        <h2 className="mb-6 text-4xl font-extrabold tracking-tight text-white lg:text-5xl xl:text-6xl">
           Featured <span className="text-gradient-accent">Projects</span>
         </h2>
-        <p className="mx-auto max-w-2xl text-lg text-gray-300 lg:text-xl">
+        <p className="mx-auto max-w-3xl text-lg leading-relaxed text-gray-300 lg:text-xl xl:text-2xl">
           Production-grade ML systems and blockchain platforms serving thousands
           of users. Each project demonstrates end-to-end ownership—from model
           training to deployment.
@@ -49,7 +49,7 @@ export function ProjectsSection() {
         </p>
         <a
           href="#contact"
-          className="inline-flex items-center gap-2 rounded-lg bg-accent-primary px-8 py-3 font-semibold text-black transition-all hover:bg-accent-primary/90 hover:shadow-[0_0_30px_rgba(0,217,255,0.4)]"
+          className="inline-flex items-center gap-2 rounded-lg bg-accent-primary px-8 py-4 font-bold text-black shadow-[0_0_20px_rgba(0,217,255,0.3)] transition-all hover:bg-accent-primary/90 hover:scale-[1.02] hover:shadow-[0_0_30px_rgba(0,217,255,0.5)]"
         >
           Let&apos;s Talk
         </a>

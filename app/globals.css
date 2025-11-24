@@ -200,6 +200,20 @@
     text-wrap: balance;
   }
 
+  /* Performance: GPU acceleration hints */
+  .gpu-accelerate {
+    will-change: transform;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+  }
+
+  /* Optimize animations */
+  @media (hover: hover) {
+    .hover-lift:hover {
+      will-change: transform;
+    }
+  }
+
   /* PRD: Accessibility - Respect prefers-reduced-motion (Hero-003) */
   @media (prefers-reduced-motion: reduce) {
     *,
