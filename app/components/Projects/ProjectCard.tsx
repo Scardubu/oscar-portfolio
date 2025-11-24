@@ -40,11 +40,11 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-100px" }}
       transition={{ duration: 0.5, delay: index * 0.15 }}
-      className="group relative flex flex-col rounded-2xl border border-white/10 bg-gradient-to-br from-white/5 to-white/[0.02] p-6 backdrop-blur-sm transition-all duration-300 hover:border-accent-primary/40 hover:shadow-[0_0_40px_rgba(0,217,255,0.2)] hover:scale-[1.01] lg:p-8"
+      className="group relative flex flex-col rounded-2xl glass-panel p-6 transition-all duration-300 hover:border-accent-primary/40 hover:premium-glow hover:scale-[1.01] lg:p-8"
     >
       {/* PRD Card-001: Title + Brief */}
       <div className="mb-6">
-        <h3 className="mb-3 text-2xl font-bold tracking-tight text-white transition-colors group-hover:text-accent-primary lg:text-3xl">
+        <h3 className="mb-3 text-2xl font-bold tracking-tight text-white transition-colors group-hover:text-accent-primary lg:text-3xl lg:tracking-wide">
           {project.title}
         </h3>
         <p className="text-base leading-relaxed text-gray-300 lg:text-lg">
@@ -57,7 +57,7 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
         {project.techStack.map((tech) => (
           <span
             key={tech}
-            className="rounded-full border border-accent-primary/30 bg-accent-primary/10 px-3 py-1 text-sm font-medium text-accent-primary transition-colors hover:border-accent-primary/50 hover:bg-accent-primary/20"
+            className="rounded-full border border-accent-primary/30 bg-accent-primary/10 px-4 py-1.5 text-sm font-medium text-accent-primary transition-colors hover:border-accent-primary/50 hover:bg-accent-primary/20"
           >
             {tech}
           </span>
@@ -65,17 +65,17 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
       </div>
 
       {/* PRD Card-001: Key Metrics Grid */}
-      <div className="mb-6 grid grid-cols-2 gap-4 rounded-xl border border-white/5 bg-white/[0.02] p-4 lg:grid-cols-3">
+      <div className="mb-8 grid grid-cols-2 gap-4 rounded-xl border border-white/5 bg-white/[0.02] p-5 lg:grid-cols-3">
         {project.metrics.map((metric) => (
           <div key={metric.label} className="group/metric">
-            <div className="mb-1 font-mono text-2xl font-bold text-accent-primary lg:text-3xl">
+            <div className="mb-1 font-mono text-2xl font-bold text-accent-primary drop-shadow-[0_0_8px_rgba(0,217,255,0.3)] lg:text-3xl">
               {metric.value}
             </div>
-            <div className="text-xs text-gray-400 lg:text-sm">
+            <div className="text-xs font-medium uppercase tracking-wider text-gray-400 lg:text-sm">
               {metric.label}
             </div>
             {metric.description && (
-              <div className="mt-1 hidden text-xs text-gray-500 group-hover/metric:block">
+              <div className="mt-2 hidden text-xs text-gray-500 group-hover/metric:block">
                 {metric.description}
               </div>
             )}
@@ -84,13 +84,13 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
       </div>
 
       {/* PRD Card-001: Dual CTAs + PRD Card-007: GitHub Widget */}
-      <div className="mb-6 flex flex-wrap items-center gap-3">
+      <div className="mb-8 flex flex-wrap items-center gap-4">
         {project.links.demo && (
           <a
             href={project.links.demo}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 rounded-lg bg-[#00d9ff] px-6 py-3 font-semibold text-black shadow-lg shadow-[#00d9ff]/30 transition-all hover:bg-[#00d9ff]/90 hover:shadow-xl hover:shadow-[#00d9ff]/50 hover:scale-105"
+            className="inline-flex items-center gap-2 rounded-lg bg-[#00d9ff] px-8 py-4 font-bold text-black shadow-[0_0_20px_rgba(0,217,255,0.3)] transition-all hover:bg-[#00d9ff]/90 hover:shadow-[0_0_30px_rgba(0,217,255,0.5)] hover:scale-105"
           >
             View Live Demo
             <ExternalLink className="h-5 w-5" />
@@ -101,7 +101,7 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
             href={project.links.github}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 rounded-lg border-2 border-white/20 bg-white/5 px-6 py-3 font-semibold text-white transition-all hover:border-accent-primary/50 hover:bg-white/10 hover:text-accent-primary hover:shadow-lg hover:shadow-accent-primary/20"
+            className="inline-flex items-center gap-2 rounded-lg border-2 border-white/20 bg-white/5 px-8 py-4 font-bold text-white transition-all hover:border-accent-primary/50 hover:bg-white/10 hover:text-accent-primary hover:shadow-[0_0_20px_rgba(0,217,255,0.15)]"
           >
             See Code
             <Github className="h-5 w-5" />
@@ -110,7 +110,7 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
         {project.links.caseStudy && (
           <button
             onClick={() => setIsExpanded(!isExpanded)}
-            className="inline-flex items-center gap-2 rounded-lg border-2 border-white/20 bg-white/5 px-6 py-3 font-semibold text-white transition-all hover:border-accent-primary/50 hover:bg-white/10 hover:text-accent-primary"
+            className="inline-flex items-center gap-2 rounded-lg border-2 border-white/20 bg-white/5 px-8 py-4 font-bold text-white transition-all hover:border-accent-primary/50 hover:bg-white/10 hover:text-accent-primary"
           >
             {isExpanded ? "Hide" : "Read"} Case Study
             {isExpanded ? (

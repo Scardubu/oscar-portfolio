@@ -183,6 +183,23 @@
     text-rendering: optimizeLegibility;
   }
 
+  /* PRD: Premium UI Utilities */
+  .premium-glow {
+    box-shadow: 0 0 40px rgba(0, 217, 255, 0.15);
+    transition: box-shadow 0.3s ease;
+  }
+  .premium-glow:hover {
+    box-shadow: 0 0 60px rgba(0, 217, 255, 0.25);
+  }
+
+  .glass-panel {
+    @apply border border-white/10 bg-gradient-to-br from-white/5 to-white/[0.02] backdrop-blur-sm;
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+
   /* PRD: Accessibility - Respect prefers-reduced-motion (Hero-003) */
   @media (prefers-reduced-motion: reduce) {
     *,

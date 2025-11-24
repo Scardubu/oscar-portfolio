@@ -241,7 +241,7 @@ export function TechGraph({ skills, onSkillClick }: TechGraphProps) {
     <div className="relative w-full">
       <svg
         ref={svgRef}
-        className="w-full rounded-xl border border-white/10 bg-white/[0.02]"
+        className="w-full rounded-xl glass-panel shadow-inner"
       />
       {/* Controls hint */}
       <div className="mt-4 text-center text-sm text-gray-400">

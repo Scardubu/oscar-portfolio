@@ -64,19 +64,19 @@ export function ContactForm() {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="mx-auto flex max-w-2xl flex-col gap-6 rounded-2xl border border-white/10 bg-gradient-to-br from-white/5 to-white/[0.02] p-8 shadow-xl backdrop-blur-sm lg:p-10"
+      className="mx-auto flex max-w-2xl flex-col gap-8 rounded-2xl glass-panel p-8 shadow-2xl lg:p-12"
       aria-label="Contact form"
     >
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid gap-6 md:grid-cols-2">
         <div>
-          <label htmlFor="name" className="mb-2 block text-sm font-semibold text-gray-200">
+          <label htmlFor="name" className="mb-2 block text-sm font-semibold uppercase tracking-wide text-gray-300">
             Name *
           </label>
           <input
             id="name"
             type="text"
             autoComplete="name"
-            className="w-full rounded-lg border border-white/20 bg-black/40 px-4 py-3 text-base text-white transition-all outline-none focus:border-accent-primary focus:bg-black/60 focus:ring-2 focus:ring-accent-primary/50"
+            className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-4 text-base text-white transition-all outline-none focus:border-accent-primary focus:bg-white/10 focus:ring-2 focus:ring-accent-primary/20"
             {...register("name")}
           />
           {errors.name && (
@@ -85,14 +85,14 @@ export function ContactForm() {
         </div>
 
         <div>
-          <label htmlFor="email" className="mb-1 block text-sm font-medium text-gray-200">
+          <label htmlFor="email" className="mb-2 block text-sm font-semibold uppercase tracking-wide text-gray-300">
             Email
           </label>
           <input
             id="email"
             type="email"
             autoComplete="email"
-            className="w-full rounded-lg border border-white/10 bg-black/40 px-3 py-2 text-sm text-white outline-none focus:border-accent-primary focus:ring-1 focus:ring-accent-primary"
+            className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-4 text-base text-white outline-none transition-all focus:border-accent-primary focus:bg-white/10 focus:ring-2 focus:ring-accent-primary/20"
             {...register("email")}
           />
           {errors.email && (
@@ -101,11 +101,11 @@ export function ContactForm() {
         </div>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid gap-6 md:grid-cols-2">
         <div>
           <label
             htmlFor="company"
-            className="mb-1 block text-sm font-medium text-gray-200"
+            className="mb-2 block text-sm font-semibold uppercase tracking-wide text-gray-300"
           >
             Company (optional)
           </label>
@@ -113,7 +113,7 @@ export function ContactForm() {
             id="company"
             type="text"
             autoComplete="organization"
-            className="w-full rounded-lg border border-white/10 bg-black/40 px-3 py-2 text-sm text-white outline-none focus:border-accent-primary focus:ring-1 focus:ring-accent-primary"
+            className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-4 text-base text-white outline-none transition-all focus:border-accent-primary focus:bg-white/10 focus:ring-2 focus:ring-accent-primary/20"
             {...register("company")}
           />
         </div>
@@ -121,20 +121,22 @@ export function ContactForm() {
         <div>
           <label
             htmlFor="inquiryType"
-            className="mb-1 block text-sm font-medium text-gray-200"
+            className="mb-2 block text-sm font-semibold uppercase tracking-wide text-gray-300"
           >
             Inquiry type
           </label>
-          <select
-            id="inquiryType"
-            className="w-full rounded-lg border border-white/10 bg-black/40 px-3 py-2 text-sm text-white outline-none focus:border-accent-primary focus:ring-1 focus:ring-accent-primary"
-            {...register("inquiryType")}
-          >
-            <option value="job">Job opportunity</option>
-            <option value="consulting">Consulting / ML project</option>
-            <option value="collaboration">Collaboration</option>
-            <option value="other">Other</option>
-          </select>
+          <div className="relative">
+            <select
+              id="inquiryType"
+              className="w-full appearance-none rounded-lg border border-white/10 bg-white/5 px-4 py-4 text-base text-white outline-none transition-all focus:border-accent-primary focus:bg-white/10 focus:ring-2 focus:ring-accent-primary/20"
+              {...register("inquiryType")}
+            >
+              <option value="job" className="bg-gray-900">Job opportunity</option>
+              <option value="consulting" className="bg-gray-900">Consulting / ML project</option>
+              <option value="collaboration" className="bg-gray-900">Collaboration</option>
+              <option value="other" className="bg-gray-900">Other</option>
+            </select>
+          </div>
           {errors.inquiryType && (
             <p className="mt-1 text-xs text-error">{errors.inquiryType.message}</p>
           )}
@@ -144,14 +146,14 @@ export function ContactForm() {
       <div>
         <label
           htmlFor="message"
-          className="mb-1 block text-sm font-medium text-gray-200"
+          className="mb-2 block text-sm font-semibold uppercase tracking-wide text-gray-300"
         >
           How can Oscar help?
         </label>
         <textarea
           id="message"
           rows={5}
-          className="w-full rounded-lg border border-white/10 bg-black/40 px-3 py-2 text-sm text-white outline-none focus:border-accent-primary focus:ring-1 focus:ring-accent-primary"
+          className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-4 text-base text-white outline-none transition-all focus:border-accent-primary focus:bg-white/10 focus:ring-2 focus:ring-accent-primary/20"
           {...register("message")}
         />
         {errors.message && (
@@ -172,9 +174,9 @@ export function ContactForm() {
       <button
         type="submit"
         disabled={status === "submitting"}
-        className="mt-2 inline-flex items-center justify-center rounded-lg bg-accent-primary px-6 py-2.5 text-sm font-semibold text-black transition-colors hover:bg-accent-primary/90 disabled:cursor-not-allowed disabled:opacity-70"
+        className="mt-4 inline-flex items-center justify-center rounded-lg bg-accent-primary px-8 py-4 text-base font-bold text-black shadow-[0_0_20px_rgba(0,217,255,0.3)] transition-all hover:bg-accent-primary/90 hover:scale-[1.02] hover:shadow-[0_0_30px_rgba(0,217,255,0.5)] disabled:cursor-not-allowed disabled:opacity-70"
       >
-        {status === "submitting" ? "Sending..." : "Send message"}
+        {status === "submitting" ? "Sending..." : "Send Message"}
       </button>
 
       {status === "success" && (
