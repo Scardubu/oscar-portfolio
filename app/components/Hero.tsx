@@ -156,7 +156,7 @@ export function Hero({ onOpenContact }: HeroProps = {}) {
           >
             <MapPin className="h-4 w-4 text-green-400" />
             <span className="text-sm font-medium text-gray-300">
-              Lagos, Nigeria 🇳🇬 • Remote-First
+              Nigeria 🇳🇬 • Remote-First
             </span>
           </motion.div>
 
@@ -205,8 +205,7 @@ export function Hero({ onOpenContact }: HeroProps = {}) {
               transition={{ delay: 0.8, duration: 0.6 }}
               className="max-w-xl text-base italic text-gray-500"
             >
-              From tinkering with models in Lagos to shipping AI products used
-              across 5 continents
+              From humble beginnings to launching AI solutions that transform industries worldwide.
             </motion.p>
           </div>
 
