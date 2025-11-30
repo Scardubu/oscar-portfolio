@@ -1,51 +1,61 @@
+import { Github, Linkedin, Mail, MapPin, Heart } from "lucide-react";
+import { trackEvent } from "@/app/lib/analytics";
+
 // PRD Phase 6: Footer with social links and performance metrics
 export function Footer() {
+  const currentYear = new Date().getFullYear();
+
   return (
     <footer className="border-t border-white/5 bg-gradient-to-b from-bg-secondary to-bg-primary px-6 py-12 lg:px-12 lg:py-20">
       <div className="mx-auto max-w-7xl">
-        {/* Main content */}
-        <div className="flex flex-col gap-8 md:flex-row md:items-center md:justify-between">
-          <div>
-            <p className="mb-2 text-xl font-bold text-white lg:text-2xl">Oscar Ndugbu</p>
-            <p className="text-base text-gray-400 lg:text-lg">
-              Full-Stack Machine Learning Engineer
-            </p>
-            <p className="mt-1 text-sm font-medium text-accent-primary/80">
-              Showing, not just telling.
-            </p>
+        <div className="flex flex-col gap-8 md:flex-row md:items-start md:justify-between">
+          <div className="space-y-3">
+            <p className="text-xl font-bold text-white lg:text-2xl">Oscar Ndugbu</p>
+            <p className="text-base text-gray-400">Full-Stack ML Engineer</p>
+            <div className="flex items-center gap-2 text-sm text-gray-500">
+              <MapPin className="h-4 w-4 text-green-500" />
+              <span>Nigeria 🇳🇬 • Remote-First</span>
+            </div>
+            <p className="text-sm italic text-cyan-400/80">&quot;Ship it, then iterate.&quot;</p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-6">
+          <div className="flex items-center gap-4">
             <a
               href="https://github.com/scardubu"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-base font-semibold text-gray-300 transition-all hover:text-accent-primary hover:scale-105"
+              onClick={() => trackEvent("Footer", "Click", "GitHub")}
+              className="flex items-center gap-2 rounded-lg border border-slate-700 bg-slate-800/50 px-4 py-2 text-sm text-gray-300 transition-all hover:border-cyan-400/50 hover:text-cyan-400"
             >
+              <Github className="h-4 w-4" />
               GitHub
             </a>
             <a
               href="https://linkedin.com/in/oscardubu"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-base font-semibold text-gray-300 transition-all hover:text-accent-primary hover:scale-105"
+              onClick={() => trackEvent("Footer", "Click", "LinkedIn")}
+              className="flex items-center gap-2 rounded-lg border border-slate-700 bg-slate-800/50 px-4 py-2 text-sm text-gray-300 transition-all hover:border-blue-400/50 hover:text-blue-400"
             >
+              <Linkedin className="h-4 w-4" />
               LinkedIn
             </a>
             <a
               href="mailto:scardubu@gmail.com"
-              className="text-base font-semibold text-gray-300 transition-all hover:text-accent-primary hover:scale-105"
+              onClick={() => trackEvent("Footer", "Click", "Email")}
+              className="flex items-center gap-2 rounded-lg border border-slate-700 bg-slate-800/50 px-4 py-2 text-sm text-gray-300 transition-all hover:border-green-400/50 hover:text-green-400"
             >
+              <Mail className="h-4 w-4" />
               Email
             </a>
           </div>
         </div>
 
-        {/* Performance targets */}
-        <div className="mt-8 border-t border-white/5 pt-8">
-          <p className="text-center text-sm text-gray-500 lg:text-base">
-            Built with Next.js 16 • Targeting &lt;150ms FCP, &lt;500ms LCP, 99.9%+ uptime
+        <div className="mt-10 flex flex-col items-center gap-4 border-t border-white/5 pt-8 md:flex-row md:justify-between">
+          <p className="flex items-center gap-1 text-sm text-gray-500">
+            © {currentYear} Oscar Ndugbu. Built with <Heart className="h-4 w-4 text-red-500" /> in Naija.
           </p>
+          <p className="text-xs text-gray-600">Next.js 16 • React 19 • Tailwind CSS 4</p>
         </div>
       </div>
     </footer>

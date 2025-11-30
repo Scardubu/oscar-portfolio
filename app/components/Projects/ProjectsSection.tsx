@@ -1,10 +1,14 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { PROJECTS } from "@/app/lib/constants";
+import type { Project } from "@/app/lib/constants";
 import { ProjectCard } from "./ProjectCard";
+import { ProjectModal } from "./ProjectModal";
 
 export function ProjectsSection() {
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   return (
     <section
       id="projects"
@@ -20,19 +24,24 @@ export function ProjectsSection() {
         className="mx-auto mb-16 max-w-7xl text-center"
       >
         <h2 className="mb-6 text-4xl font-extrabold tracking-tight text-white lg:text-5xl xl:text-6xl">
-          Featured <span className="text-gradient-accent">Projects</span>
+          Featured <span className="text-gradient-accent">Builds</span>
         </h2>
         <p className="mx-auto max-w-3xl text-lg leading-relaxed text-gray-300 lg:text-xl xl:text-2xl">
-          Production-grade ML systems and blockchain platforms serving thousands
-          of users. Each project demonstrates end-to-end ownership—from model
-          training to deployment.
+          Real products where I owned the full stack&mdash;from data pipelines
+          and ML models to APIs and frontends. Everything here shipped to real
+          users, not just ran in a notebook.
         </p>
       </motion.div>
 
       {/* Projects grid - PRD: 3 columns desktop, stacked mobile */}
       <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-1 lg:gap-12">
         {PROJECTS.filter((p) => p.featured).map((project, index) => (
-          <ProjectCard key={project.id} project={project} index={index} />
+          <ProjectCard
+            key={project.id}
+            project={project}
+            index={index}
+            onOpenModal={setSelectedProject}
+          />
         ))}
       </div>
 
@@ -45,15 +54,23 @@ export function ProjectsSection() {
         className="mx-auto mt-16 max-w-7xl text-center"
       >
         <p className="mb-6 text-gray-300">
-          Want to see more projects or discuss collaboration?
+          Have a production ML or AI product in mind and want a builder who can
+          own it end-to-end?
         </p>
         <a
           href="#contact"
           className="inline-flex items-center gap-2 rounded-lg bg-accent-primary px-8 py-4 font-bold text-black shadow-[0_0_20px_rgba(0,217,255,0.3)] transition-all hover:bg-accent-primary/90 hover:scale-[1.02] hover:shadow-[0_0_30px_rgba(0,217,255,0.5)]"
         >
-          Let&apos;s Talk
+          Let&apos;s talk about your use case
         </a>
       </motion.div>
+
+      {/* Project Modal */}
+      <ProjectModal
+        project={selectedProject}
+        isOpen={selectedProject !== null}
+        onClose={() => setSelectedProject(null)}
+      />
     </section>
   );
 }

@@ -2,9 +2,20 @@
 
 import { useEffect, useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
-import { ArrowRight, Mail } from "lucide-react";
+import { ArrowRight, Mail, Download, MapPin } from "lucide-react";
 import Image from "next/image";
+import dynamic from "next/dynamic";
 import { Button } from "@/components/ui/button";
+import { trackEvent } from "@/app/lib/analytics";
+
+// Dynamic import for ParticleBackground to improve initial load
+const ParticleBackground = dynamic(
+  () => import("./ParticleBackground").then((mod) => mod.ParticleBackground),
+  {
+    ssr: false,
+    loading: () => null,
+  }
+);
 
 // PRD Feature 1: Hero Section - "First Impression Credibility Builder"
 
@@ -16,10 +27,10 @@ interface Metric {
 }
 
 const HERO_METRICS: Metric[] = [
-  { value: 850, suffix: "+", label: "Active Users", decimals: 0 },
-  { value: 71.2, suffix: "%", label: "Avg ML Accuracy", decimals: 1 },
+  { value: 350, suffix: "+", label: "Production Users", decimals: 0 },
+  { value: 71, suffix: "%", label: "ML Accuracy", decimals: 0 },
   { value: 99.9, suffix: "%", label: "System Uptime", decimals: 1 },
-  { value: 120, suffix: "ms", label: "API Response", decimals: 0 },
+  { value: 4, suffix: "+", label: "Years Experience", decimals: 0 },
 ];
 
 const ROTATING_TECH = [
@@ -106,7 +117,11 @@ function RotatingTech() {
 }
 
 // PRD Hero-001 to Hero-006: Main Hero component
-export function Hero() {
+interface HeroProps {
+  onOpenContact?: () => void;
+}
+
+export function Hero({ onOpenContact }: HeroProps = {}) {
   const metricsRef = useRef<HTMLDivElement>(null);
   const metricsInView = useInView(metricsRef, { once: true, margin: "-100px" });
 
@@ -121,6 +136,8 @@ export function Hero() {
       className="bg-gradient-hero relative flex min-h-screen items-center overflow-hidden px-4 py-20 md:px-8 lg:px-16"
       aria-label="Hero section"
     >
+      {/* Particle Background Animation */}
+      <ParticleBackground />
       {/* PRD: Split screen layout - text left 60%, visual right 40% on desktop */}
       <div className="mx-auto grid w-full max-w-7xl gap-12 lg:grid-cols-[60%_40%] lg:gap-16">
         {/* Left: Text content */}
@@ -130,39 +147,66 @@ export function Hero() {
           transition={{ duration: 0.8, ease: "easeOut" }}
           className="flex flex-col justify-center space-y-8"
         >
-          {/* PRD Hero-001: Full name, title, tagline */}
-          <div className="space-y-3">
+          {/* Location Badge */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1, duration: 0.5 }}
+            className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-4 py-2 backdrop-blur-sm"
+          >
+            <MapPin className="h-4 w-4 text-green-400" />
+            <span className="text-sm font-medium text-gray-300">
+              Lagos, Nigeria 🇳🇬 • Remote-First
+            </span>
+          </motion.div>
+
+          {/* Conversational Headline */}
+          <div className="space-y-4">
             <motion.h1
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2, duration: 0.6 }}
-              className="text-6xl font-black leading-[1.05] tracking-wider text-gradient-accent drop-shadow-[0_0_50px_rgba(0,217,255,0.35)] md:text-7xl lg:text-8xl xl:text-9xl"
-              style={{
-                letterSpacing: '0.02em',
-                textShadow: '0 0 60px rgba(0, 217, 255, 0.4), 0 0 30px rgba(123, 97, 255, 0.3)'
-              }}
+              className="text-5xl font-bold leading-tight tracking-tight text-gradient-accent md:text-6xl lg:text-7xl"
             >
-              Oscar Ndugbu
+              Hey, I&apos;m Oscar 👋
             </motion.h1>
 
-            <motion.h2
+            <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4, duration: 0.6 }}
-              className="text-xl font-semibold tracking-wide text-white/90 md:text-2xl lg:text-3xl xl:text-4xl"
+              className="max-w-2xl text-xl leading-relaxed text-gray-200 md:text-2xl lg:text-3xl"
             >
-              Full-Stack Machine Learning Engineer
-            </motion.h2>
+              I turn{" "}
+              <span className="font-semibold text-cyan-400">
+                ML models into production systems
+              </span>{" "}
+              that actually ship and drive real ROI.
+            </motion.p>
 
-            {/* PRD Hero-001: Tagline with rotating tech */}
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6, duration: 0.6 }}
-              className="max-w-2xl text-lg leading-relaxed text-gray-300 md:text-xl lg:text-2xl"
+              className="max-w-2xl text-lg leading-relaxed text-gray-300 md:text-xl"
             >
-              Building AI products that ship—from model to production at scale
-              with <RotatingTech />
+              Built <strong className="text-white">SabiScore</strong> from
+              scratch:{" "}
+              <span className="text-green-400">350+ users</span> trusting my AI
+              predictions, with{" "}
+              <span className="text-green-400">~71% accuracy</span> and{" "}
+              <span className="text-green-400">99.9% uptime</span>.
+            </motion.p>
+
+            {/* Origin Story Teaser */}
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.8, duration: 0.6 }}
+              className="max-w-xl text-base italic text-gray-500"
+            >
+              From tinkering with models in Lagos to shipping AI products used
+              across 5 continents
             </motion.p>
           </div>
 
@@ -179,29 +223,57 @@ export function Hero() {
             ))}
           </motion.div>
 
-          {/* PRD Hero-004: Primary + Secondary CTAs */}
+          {/* Enhanced CTAs with CV Download */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1.0, duration: 0.6 }}
-            className="flex flex-col gap-4 sm:flex-row"
+            className="flex flex-col gap-4 sm:flex-row sm:flex-wrap"
           >
             <Button
               size="lg"
-              onClick={() => scrollToSection("projects")}
-              className="group bg-[var(--accent-primary)] px-8 py-6 text-base font-semibold text-[var(--bg-primary)] shadow-lg shadow-accent-primary/25 transition-all hover:bg-[var(--accent-primary)]/90 hover:shadow-xl hover:shadow-accent-primary/40"
+              onClick={() => {
+                trackEvent("CTA", "Click", "Hero Contact");
+                if (onOpenContact) {
+                  onOpenContact();
+                } else {
+                  scrollToSection("contact");
+                }
+              }}
+              className="group bg-gradient-to-r from-blue-500 to-cyan-500 px-8 py-6 text-base font-semibold text-white shadow-lg shadow-blue-500/25 transition-all hover:scale-105 hover:shadow-xl hover:shadow-blue-500/40"
             >
-              View My Work
-              <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+              <Mail className="mr-2 h-5 w-5" />
+              Let&apos;s Talk 💬
             </Button>
             <Button
               size="lg"
               variant="outline"
-              onClick={() => scrollToSection("contact")}
-              className="border-2 border-[var(--accent-primary)] px-8 py-6 text-base font-semibold text-[var(--accent-primary)] transition-all hover:bg-[var(--accent-primary)]/10 hover:shadow-lg hover:shadow-accent-primary/20"
+              asChild
+              className="border-2 border-gray-700 bg-gray-800 px-8 py-6 text-base font-semibold text-gray-200 transition-all hover:border-gray-600 hover:bg-gray-700"
             >
-              <Mail className="mr-2 h-5 w-5" />
-              Let&apos;s Talk
+              <a
+                href="/cv/oscar-ndugbu-cv.pdf"
+                download="Oscar-Ndugbu-CV.pdf"
+                onClick={() => {
+                  trackEvent("CTA", "Download", "CV");
+                  // Track CV download with Vercel Analytics
+                  if (typeof window !== "undefined" && (window as any).va) {
+                    (window as any).va("track", "CV Downloaded");
+                  }
+                }}
+              >
+                <Download className="mr-2 h-5 w-5" />
+                Download CV
+              </a>
+            </Button>
+            <Button
+              size="lg"
+              variant="ghost"
+              onClick={() => scrollToSection("projects")}
+              className="px-8 py-6 text-base font-semibold text-gray-400 underline-offset-4 hover:text-cyan-400 hover:underline"
+            >
+              View My Work
+              <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
           </motion.div>
 

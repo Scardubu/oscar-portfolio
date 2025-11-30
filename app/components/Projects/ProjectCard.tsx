@@ -1,22 +1,31 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ExternalLink, Github, ChevronDown, ChevronUp } from "lucide-react";
-import { useState } from "react";
+import { ExternalLink, Github, ChevronDown, ChevronUp, ArrowRight } from "lucide-react";
+import { useMemo, useState } from "react";
 import type { Project } from "@/app/lib/constants";
 import { SabiScoreDemo } from "./SabiScoreDemo";
 import { HashablancaDemo } from "./HashablancaDemo";
 import { AIConsultingDemo } from "./AIConsultingDemo";
 import { GitHubWidget } from "./GitHubWidget";
+import { trackEvent } from "@/app/lib/analytics";
 
 interface ProjectCardProps {
   project: Project;
   index: number;
+  onOpenModal?: (project: Project) => void;
 }
 
-export function ProjectCard({ project, index }: ProjectCardProps) {
+export function ProjectCard({ project, index, onOpenModal }: ProjectCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [showDemo, setShowDemo] = useState(false);
+  const impactSection = useMemo(
+    () =>
+      project.caseStudy?.sections.find((section) =>
+        section.title.toLowerCase().includes("impact")
+      ),
+    [project.caseStudy]
+  );
 
   // PRD Card-002: Render appropriate demo component based on demoType
   const renderDemo = () => {
@@ -85,11 +94,22 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
 
       {/* PRD Card-001: Dual CTAs + PRD Card-007: GitHub Widget */}
       <div className="mb-8 flex flex-wrap items-center gap-4">
+        <button
+          onClick={() => {
+            trackEvent("Projects", "Open Modal", project.id);
+            onOpenModal?.(project);
+          }}
+          className="inline-flex items-center gap-2 rounded-lg border-2 border-cyan-400/50 bg-cyan-400/10 px-8 py-4 font-bold text-cyan-400 transition-all hover:border-cyan-400 hover:bg-cyan-400/20 hover:shadow-lg hover:shadow-cyan-400/20"
+        >
+          View Full Case Study
+          <ArrowRight className="h-5 w-5" />
+        </button>
         {project.links.demo && (
           <a
             href={project.links.demo}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => trackEvent("Projects", "View Demo", project.id)}
             className="inline-flex items-center gap-2 rounded-lg bg-[#00d9ff] px-8 py-4 font-bold text-black shadow-[0_0_20px_rgba(0,217,255,0.3)] transition-all hover:bg-[#00d9ff]/90 hover:shadow-[0_0_30px_rgba(0,217,255,0.5)] hover:scale-105"
           >
             View Live Demo
@@ -101,6 +121,7 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
             href={project.links.github}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => trackEvent("Projects", "View Repo", project.id)}
             className="inline-flex items-center gap-2 rounded-lg border-2 border-white/20 bg-white/5 px-8 py-4 font-bold text-white transition-all hover:border-accent-primary/50 hover:bg-white/10 hover:text-accent-primary hover:shadow-[0_0_20px_rgba(0,217,255,0.15)]"
           >
             See Code
@@ -109,7 +130,10 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
         )}
         {project.links.caseStudy && (
           <button
-            onClick={() => setIsExpanded(!isExpanded)}
+            onClick={() => {
+              trackEvent("Projects", "Toggle Case Study", project.id);
+              setIsExpanded(!isExpanded);
+            }}
             className="inline-flex items-center gap-2 rounded-lg border-2 border-white/20 bg-white/5 px-8 py-4 font-bold text-white transition-all hover:border-accent-primary/50 hover:bg-white/10 hover:text-accent-primary"
           >
             {isExpanded ? "Hide" : "Read"} Case Study
@@ -141,98 +165,49 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
       {renderDemo()}
 
       {/* PRD Card-008: Expandable Technical Implementation */}
-      {isExpanded && (
+      {isExpanded && project.caseStudy && (
         <motion.div
           initial={{ opacity: 0, height: 0 }}
           animate={{ opacity: 1, height: "auto" }}
           exit={{ opacity: 0, height: 0 }}
           transition={{ duration: 0.3 }}
-          className="mt-6 space-y-4 rounded-xl border border-white/10 bg-white/[0.02] p-6"
+          className="mt-6 space-y-6 rounded-xl border border-white/10 bg-white/[0.02] p-6"
         >
-          <h4 className="text-xl font-bold text-white">
-            Technical Implementation
-          </h4>
-          <div className="space-y-3 text-sm text-gray-300 lg:text-base">
-            {project.id === "sabiscore" && (
-              <>
-                <div>
-                  <strong className="text-accent-primary">
-                    Model Architecture:
-                  </strong>{" "}
-                  Ensemble combining XGBoost (40%), LightGBM (35%), and Random
-                  Forest (25%) with weighted voting based on confidence scores.
-                </div>
-                <div>
-                  <strong className="text-accent-primary">
-                    Feature Engineering:
-                  </strong>{" "}
-                  220+ features including rolling statistics (form, goals,
-                  xG), head-to-head history, team strength ratings, and
-                  contextual factors (home advantage, rest days).
-                </div>
-                <div>
-                  <strong className="text-accent-primary">
-                    Infrastructure:
-                  </strong>{" "}
-                  FastAPI backend with Redis caching (5min TTL), PostgreSQL for
-                  historical data, deployed on Vercel with automatic scaling.
-                </div>
-              </>
-            )}
-            {project.id === "hashablanca" && (
-              <>
-                <div>
-                  <strong className="text-accent-primary">
-                    Multi-Chain Architecture:
-                  </strong>{" "}
-                  Unified API layer abstracting chain-specific implementations
-                  (Web3.py for EVM chains, custom StarkNet integration).
-                </div>
-                <div>
-                  <strong className="text-accent-primary">
-                    Privacy Layer:
-                  </strong>{" "}
-                  Circom-based ZK proofs for transaction privacy, PII detection
-                  using regex + NLP for GDPR compliance.
-                </div>
-                <div>
-                  <strong className="text-accent-primary">
-                    File Processing:
-                  </strong>{" "}
-                  CBOR streaming parser for 4GB+ files, chunked processing with
-                  progress tracking, error recovery mechanisms.
-                </div>
-              </>
-            )}
-            {project.id === "ai-consulting" && (
-              <>
-                <div>
-                  <strong className="text-accent-primary">
-                    LLM Integration:
-                  </strong>{" "}
-                  LangChain orchestration with GPT-4 for explanations, Ollama
-                  for local model debugging, custom prompt templates for
-                  technical → business translation.
-                </div>
-                <div>
-                  <strong className="text-accent-primary">
-                    Debugging Workflow:
-                  </strong>{" "}
-                  Automated feature importance analysis, model interpretation
-                  (SHAP values), performance profiling, and stakeholder-friendly
-                  reporting.
-                </div>
-                <div>
-                  <strong className="text-accent-primary">
-                    Client Impact:
-                  </strong>{" "}
-                  Reduced ML debugging cycles from 10hr to 4hr average,
-                  improved stakeholder understanding via plain-language
-                  explanations, 5+ successful engagements.
-                </div>
-              </>
-            )}
-          </div>
+          {project.caseStudy.summary && (
+            <p className="text-base text-gray-200">
+              {project.caseStudy.summary}
+            </p>
+          )}
+          {project.caseStudy.sections.map((section) => (
+            <div key={`${project.id}-${section.title}`} className="space-y-3">
+              <h4 className="text-lg font-semibold text-white">
+                {section.title}
+              </h4>
+              <ul className="space-y-2 text-sm text-gray-300 lg:text-base">
+                {section.bullets.map((bullet) => (
+                  <li key={bullet} className="flex gap-2">
+                    <span className="text-accent-primary">•</span>
+                    <span>{bullet}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+          {impactSection && (
+            <div className="rounded-lg border border-accent-primary/30 bg-accent-primary/5 p-4">
+              <p className="text-xs font-semibold uppercase tracking-wide text-accent-primary">
+                Impact Snapshot
+              </p>
+              <ul className="mt-2 space-y-2 text-sm text-white/90">
+                {impactSection.bullets.map((bullet) => (
+                  <li key={`impact-${bullet}`} className="flex gap-2">
+                    <span className="text-green-400">✓</span>
+                    <span>{bullet}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </motion.div>
       )}
     </motion.article>

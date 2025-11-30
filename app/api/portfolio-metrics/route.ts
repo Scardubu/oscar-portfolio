@@ -31,7 +31,7 @@ export async function GET() {
       bundleKb: 280,
     },
     traffic: {
-      monthlyVisitors: 8300,
+      monthlyVisitors: 350,
       avgSessionSeconds: 180,
     },
   };

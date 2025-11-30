@@ -57,11 +57,11 @@ export function SkillsSection() {
         className="mx-auto mb-16 max-w-7xl text-center"
       >
         <h2 className="mb-6 text-4xl font-extrabold tracking-tight text-white lg:text-5xl xl:text-6xl">
-          Technical <span className="text-gradient-accent">Expertise</span>
+          Technical <span className="text-gradient-accent">Stack</span>
         </h2>
         <p className="mx-auto max-w-3xl text-lg leading-relaxed text-gray-300 lg:text-xl xl:text-2xl">
-          37+ technologies across ML, backend, frontend, DevOps, and blockchain.
-          Interactive graph shows skill relationships and proficiency levels.
+          The tools I use to ship ML products&mdash;from model training to
+          production APIs. Click any node to explore how I&apos;ve applied it.
         </p>
       </motion.div>
 
