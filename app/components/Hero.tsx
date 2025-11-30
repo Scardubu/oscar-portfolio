@@ -251,8 +251,8 @@ export function Hero({ onOpenContact }: HeroProps = {}) {
               className="border-2 border-gray-700 bg-gray-800 px-8 py-6 text-base font-semibold text-gray-200 transition-all hover:border-gray-600 hover:bg-gray-700"
             >
               <a
-                href="/cv/oscar-ndugbu-cv.pdf"
-                download="Oscar-Ndugbu-CV.pdf"
+                href="/cv/oscar-ndugbu-cv-2025.pdf"
+                download="Oscar-Ndugbu-CV-2025.pdf"
                 onClick={() => {
                   trackEvent("CTA", "Download", "CV");
                   // Track CV download with Vercel Analytics
