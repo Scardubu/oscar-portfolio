@@ -121,15 +121,7 @@ export const PROFILE = {
       "Full-Stack ML Engineer specializing in production AI systems, ensemble models, and MLOps for real-world products.",
     medium:
       "Transforming complex AI concepts into scalable, production-ready systems that drive real business value. From model development and deployment automation to end-to-end system architecture, I build ML solutions that ship and stay shipped.",
-    long: `Transforming complex AI concepts into scalable, production-ready systems that drive real business value.
-
-I design and deploy production ML systems end-to-end  from feature engineering and model training to APIs, DevOps, and monitoring. My work spans ensemble models, real-time inference, and full-stack applications that people actually use.
-
-What this looks like in practice:
-- Production ML systems serving 350+ users with ~71% prediction accuracy
-- Inference pipelines tuned for sub-200ms latency and 280KB bundles
-- Full-stack buildouts from FastAPI backends to responsive React/Next.js frontends
-- MLOps foundations: CI/CD for models, observability, and retraining workflows
+    long: `I design and deploy production ML systems end-to-end—from feature engineering and model training to APIs, DevOps, and monitoring. My work spans ensemble models, real-time inference, and full-stack applications that people actually use.
 
 Based in Nigeria and working with teams globally, I focus on sports analytics, fintech, and predictive systems where model performance directly impacts business outcomes. Open to consulting, technical partnerships, and high-impact ML roles.`,
   },

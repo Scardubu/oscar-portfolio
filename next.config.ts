@@ -19,6 +19,16 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       {
+        // Disable caching for CV downloads to ensure fresh file
+        source: "/cv/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "no-cache, no-store, must-revalidate",
+          },
+        ],
+      },
+      {
         source: "/:path*",
         headers: [
           {
