@@ -55,7 +55,7 @@ export function ContactForm() {
 
       setStatus("success");
       reset();
-    } catch (_) {
+    } catch {
       setStatus("error");
       setErrorMessage("Network error. Please try again.");
     }

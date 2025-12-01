@@ -12,37 +12,30 @@ interface ProjectModalProps {
   onClose: () => void;
 }
 
-const iconMap = {
-  Users,
-  TrendingUp,
-  Activity,
-  Zap,
+// Map metrics to appropriate icons
+const getMetricIcon = (label: string) => {
+  if (label.includes("User")) return Users;
+  if (label.includes("Accuracy") || label.includes("ROI") || label.includes("Confidence")) return TrendingUp;
+  if (label.includes("Uptime") || label.includes("Network") || label.includes("Chain")) return Activity;
+  return Zap;
 };
 
 export function ProjectModal({ project, isOpen, onClose }: ProjectModalProps) {
-  if (!project) return null;
-
-  // Map metrics to appropriate icons
-  const getMetricIcon = (label: string) => {
-    if (label.includes("User")) return Users;
-    if (label.includes("Accuracy") || label.includes("ROI") || label.includes("Confidence")) return TrendingUp;
-    if (label.includes("Uptime") || label.includes("Network") || label.includes("Chain")) return Activity;
-    return Zap;
-  };
-
   const impactSection = useMemo(
     () =>
-      project.caseStudy?.sections.find((section) =>
+      project?.caseStudy?.sections.find((section) =>
         section.title.toLowerCase().includes("impact")
       ),
-    [project.caseStudy]
+    [project?.caseStudy]
   );
 
   const otherSections = useMemo(
     () =>
-      project.caseStudy?.sections.filter((section) => section !== impactSection) ?? [],
-    [project.caseStudy, impactSection]
+      project?.caseStudy?.sections.filter((section) => section !== impactSection) ?? [],
+    [project?.caseStudy, impactSection]
   );
+
+  if (!project) return null;
 
   return (
     <AnimatePresence>

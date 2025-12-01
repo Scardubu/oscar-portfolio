@@ -1,4 +1,5 @@
-import { Github, Linkedin, Mail, MapPin, Heart } from "lucide-react";
+import Link from "next/link";
+import { Github, Linkedin, Mail, MapPin, Heart, BookOpen } from "lucide-react";
 import { trackEvent } from "@/app/lib/analytics";
 
 // PRD Phase 6: Footer with social links and performance metrics
@@ -19,7 +20,15 @@ export function Footer() {
             <p className="text-sm italic text-cyan-400/80">&quot;Ship it, then iterate.&quot;</p>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex flex-wrap items-center gap-4">
+            <Link
+              href="/blog"
+              onClick={() => trackEvent("Footer", "Click", "Blog")}
+              className="flex items-center gap-2 rounded-lg border border-slate-700 bg-slate-800/50 px-4 py-2 text-sm text-gray-300 transition-all hover:border-accent-primary/50 hover:text-accent-primary"
+            >
+              <BookOpen className="h-4 w-4" />
+              Blog
+            </Link>
             <a
               href="https://github.com/scardubu"
               target="_blank"
@@ -61,4 +70,3 @@ export function Footer() {
     </footer>
   );
 }
-

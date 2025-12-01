@@ -58,7 +58,7 @@ export function ContactModal({ isOpen, onClose }: ContactModalProps) {
       } else {
         throw new Error("Failed to send message");
       }
-    } catch (error) {
+    } catch {
       toast.error(
         "Oops! Something went wrong. Try emailing scardubu@gmail.com directly.",
         {

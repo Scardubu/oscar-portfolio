@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import useSWR from "swr";
 import { motion } from "framer-motion";
 
@@ -19,11 +19,10 @@ const fetcher = async (url: string) => {
 };
 
 export function GitHubStats() {
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const [mounted] = useState(() => {
+    // Initialize as true only on client side
+    return typeof window !== "undefined";
+  });
 
   const { data, error, isLoading } = useSWR<GitHubStatsData>(
     mounted ? "/api/github-stats" : null,

@@ -33,14 +33,6 @@ const HERO_METRICS: Metric[] = [
   { value: 4, suffix: "+", label: "Years Experience", decimals: 0 },
 ];
 
-const ROTATING_TECH = [
-  "XGBoost",
-  "FastAPI",
-  "Next.js",
-  "Docker",
-  "Blockchain",
-];
-
 // PRD Hero-002: Animated counter component with Intersection Observer
 function CountUpMetric({ metric, inView }: { metric: Metric; inView: boolean }) {
   const [count, setCount] = useState(0);
@@ -87,32 +79,6 @@ function CountUpMetric({ metric, inView }: { metric: Metric; inView: boolean }) 
         {metric.label}
       </div>
     </motion.div>
-  );
-}
-
-// PRD Hero-003: Rotating text effect cycling through technologies
-function RotatingTech() {
-  const [index, setIndex] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setIndex((prev) => (prev + 1) % ROTATING_TECH.length);
-    }, 2000); // Rotate every 2 seconds
-
-    return () => clearInterval(interval);
-  }, []);
-
-  return (
-    <motion.span
-      key={index}
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -10 }}
-      transition={{ duration: 0.5 }}
-      className="text-gradient-accent font-bold"
-    >
-      {ROTATING_TECH[index]}
-    </motion.span>
   );
 }
 
@@ -256,8 +222,9 @@ export function Hero({ onOpenContact }: HeroProps = {}) {
                 onClick={() => {
                   trackEvent("CTA", "Download", "CV");
                   // Track CV download with Vercel Analytics
-                  if (typeof window !== "undefined" && (window as any).va) {
-                    (window as any).va("track", "CV Downloaded");
+                  if (typeof window !== "undefined") {
+                    const win = window as Window & { va?: (cmd: string, event: string) => void };
+                    if (win.va) win.va("track", "CV Downloaded");
                   }
                 }}
               >

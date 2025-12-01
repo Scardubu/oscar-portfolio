@@ -1,9 +1,16 @@
 import type { NextConfig } from "next";
 import { withSentryConfig } from "@sentry/nextjs";
+import createMDX from "@next/mdx";
+
+const withMDX = createMDX({
+  extension: /\.mdx?$/,
+});
 
 const nextConfig: NextConfig = {
   // PRD Phase 7: Performance optimizations
   reactStrictMode: true,
+  // Allow MDX pages for the blog system
+  pageExtensions: ["ts", "tsx", "mdx"],
   
   // Image optimization
   images: {
@@ -114,5 +121,5 @@ const sentryOptions = {
   automaticVercelMonitors: true,
 };
 
-// Export the Sentry-wrapped config
-export default withSentryConfig(nextConfig, sentryOptions);
+// Export the Sentry + MDX wrapped config
+export default withSentryConfig(withMDX(nextConfig), sentryOptions);

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight, Star, Quote } from "lucide-react";
 import { TESTIMONIALS } from "@/app/lib/constants";
@@ -124,9 +125,11 @@ export function Testimonials() {
                 <div className="flex items-center gap-4">
                   {/* Avatar */}
                   <div className="relative h-14 w-14 overflow-hidden rounded-full border-2 border-accent-primary/30">
-                    <img
+                    <Image
                       src={getAvatarUrl(TESTIMONIALS[currentIndex].author)}
                       alt={TESTIMONIALS[currentIndex].author}
+                      width={56}
+                      height={56}
                       className="h-full w-full object-cover"
                     />
                   </div>

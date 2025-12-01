@@ -85,7 +85,7 @@ ${data.message}`,
     });
 
     return NextResponse.json({ message: "Message sent" }, { status: 200 });
-  } catch (_) {
+  } catch {
     return NextResponse.json(
       { message: "Unexpected server error" },
       { status: 500 },
