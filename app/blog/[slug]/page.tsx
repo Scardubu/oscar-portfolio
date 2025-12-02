@@ -146,6 +146,14 @@ export default async function BlogPostPage({
       />
 
       <main className="min-h-screen bg-bg-primary">
+        {/* Floating Share Bar (visible on xl screens) */}
+        <ShareButtons
+          url={url}
+          title={post.title}
+          description={post.description}
+          variant="floating"
+        />
+
         {/* Header */}
         <header className="border-b border-white/10 bg-gradient-to-b from-bg-secondary to-bg-primary px-6 py-12 lg:px-12 lg:py-16">
           <div className="mx-auto max-w-3xl">
@@ -230,7 +238,7 @@ export default async function BlogPostPage({
 
           {/* Share & CTA */}
           <div className="mt-12 border-t border-white/10 pt-8">
-            <ShareButtons url={url} title={post.title} />
+            <ShareButtons url={url} title={post.title} description={post.description} />
 
             {/* Author CTA */}
             <div className="mt-8 rounded-xl border border-white/10 bg-white/5 p-6">
