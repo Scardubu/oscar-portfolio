@@ -54,9 +54,9 @@ export function ThemeToggle({ variant = "floating", className }: ThemeToggleProp
       aria-label="Toggle theme"
     >
       {isDark ? (
-        <Sun className="h-5 w-5 text-yellow-400" />
+        <Sun className={variant === "inline" ? "h-4 w-4 text-yellow-400" : "h-5 w-5 text-yellow-400"} />
       ) : (
-        <Moon className="h-5 w-5 text-slate-300" />
+        <Moon className={variant === "inline" ? "h-4 w-4 text-slate-300" : "h-5 w-5 text-slate-300"} />
       )}
     </motion.button>
   );

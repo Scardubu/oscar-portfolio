@@ -82,7 +82,7 @@ export function Navigation() {
           </ul>
 
           <div className="flex items-center gap-2">
-            <ThemeToggle variant="inline" className="hidden sm:flex" />
+            <ThemeToggle variant="inline" className="hidden md:flex lg:flex" />
             <button
               type="button"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -107,7 +107,7 @@ export function Navigation() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm md:hidden"
+            className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm lg:hidden"
             onClick={() => setIsMobileMenuOpen(false)}
           />
         )}
@@ -121,7 +121,7 @@ export function Navigation() {
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ type: "spring", damping: 25, stiffness: 200 }}
-            className="fixed bottom-0 right-0 top-0 z-50 w-72 border-l border-white/10 bg-bg-primary p-6 md:hidden"
+            className="fixed bottom-0 right-0 top-0 z-50 w-72 border-l border-white/10 bg-bg-primary p-6 lg:hidden"
           >
             <div className="mb-8 flex items-center justify-between">
               <span className="text-lg font-bold text-white">Menu</span>
