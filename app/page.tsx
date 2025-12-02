@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Navigation } from "./components/Navigation";
 import { Hero } from "./components/Hero";
 import { AboutSection } from "./components/AboutSection";
 import { ProjectsSection } from "./components/Projects";
@@ -23,6 +24,8 @@ export default function Home() {
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
   return (
     <>
+      {/* Navigation Header */}
+      <Navigation />
       {/* Theme Toggle */}
       <ThemeToggle />
       {/* Accessibility: Skip to main content */}
