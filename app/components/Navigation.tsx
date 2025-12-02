@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, BookOpen, Briefcase, Code2, Mail, Home } from "lucide-react";
+import { ThemeToggle } from "./ThemeToggle";
 import { trackEvent } from "@/app/lib/analytics";
 
 const NAV_ITEMS = [
@@ -38,20 +39,25 @@ export function Navigation() {
             : "bg-transparent"
         }`}
       >
-        <nav className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 md:px-8">
+        <nav className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 md:px-8">
           {/* Logo / Name */}
-          <Link
-            href="/"
-            className="group flex items-center gap-2"
-            onClick={() => trackEvent("Navigation", "Click", "Logo")}
-          >
-            <span className="text-xl font-bold text-white transition-colors group-hover:text-accent-primary">
-              Oscar<span className="text-accent-primary">.</span>
+          <div className="flex items-center gap-3">
+            <Link
+              href="/"
+              className="group flex items-center gap-2"
+              onClick={() => trackEvent("Navigation", "Click", "Logo")}
+            >
+              <span className="text-xl font-bold text-white transition-colors group-hover:text-accent-primary">
+                Oscar<span className="text-accent-primary">.</span>
+              </span>
+            </Link>
+            <span className="hidden text-xs font-semibold uppercase tracking-widest text-accent-primary sm:inline">
+              Production ML Engineer
             </span>
-          </Link>
+          </div>
 
           {/* Desktop Navigation */}
-          <ul className="hidden items-center gap-1 md:flex">
+          <ul className="hidden items-center gap-1 lg:flex">
             {NAV_ITEMS.map((item) => (
               <li key={item.label}>
                 <Link
@@ -75,19 +81,21 @@ export function Navigation() {
             ))}
           </ul>
 
-          {/* Mobile Menu Button */}
-          <button
-            type="button"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="rounded-lg p-2 text-gray-300 transition-colors hover:bg-white/10 hover:text-white md:hidden"
-            aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
-          >
-            {isMobileMenuOpen ? (
-              <X className="h-6 w-6" />
-            ) : (
-              <Menu className="h-6 w-6" />
-            )}
-          </button>
+          <div className="flex items-center gap-2">
+            <ThemeToggle variant="inline" className="hidden sm:flex" />
+            <button
+              type="button"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="rounded-lg p-2 text-gray-300 transition-colors hover:bg-white/10 hover:text-white lg:hidden"
+              aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
+            >
+              {isMobileMenuOpen ? (
+                <X className="h-6 w-6" />
+              ) : (
+                <Menu className="h-6 w-6" />
+              )}
+            </button>
+          </div>
         </nav>
       </motion.header>
 
@@ -117,14 +125,17 @@ export function Navigation() {
           >
             <div className="mb-8 flex items-center justify-between">
               <span className="text-lg font-bold text-white">Menu</span>
-              <button
-                type="button"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="rounded-lg p-2 text-gray-400 hover:bg-white/10 hover:text-white"
-                aria-label="Close menu"
-              >
-                <X className="h-5 w-5" />
-              </button>
+              <div className="flex items-center gap-3">
+                <ThemeToggle variant="inline" />
+                <button
+                  type="button"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="rounded-lg p-2 text-gray-400 hover:bg-white/10 hover:text-white"
+                  aria-label="Close menu"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
             </div>
 
             <ul className="space-y-2">

@@ -11,7 +11,6 @@ import { Testimonials } from "./components/Testimonials";
 import { PerformanceDashboard } from "./components/PerformanceDashboard";
 import { ContactForm } from "./components/ContactForm";
 import { ContactModal } from "./components/ContactModal";
-import { ThemeToggle } from "./components/ThemeToggle";
 import { Footer } from "./components/Footer";
 import { AvailabilityBadge } from "./components/AvailabilityBadge";
 import { CONTACT_OPTIONS } from "./lib/constants";
@@ -24,10 +23,8 @@ export default function Home() {
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
   return (
     <>
-      {/* Navigation Header */}
+      {/* Navigation Header (includes Theme Toggle) */}
       <Navigation />
-      {/* Theme Toggle */}
-      <ThemeToggle />
       {/* Accessibility: Skip to main content */}
       <a
         href="#hero"
