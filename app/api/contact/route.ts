@@ -3,7 +3,15 @@ import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import { contactSchema } from "@/app/lib/validations";
 
-const resend = new Resend(process.env.RESEND_API_KEY || "");
+// Lazy-initialize Resend client to avoid build-time errors when env var is missing
+let resend: Resend | null = null;
+function getResendClient(): Resend | null {
+  if (!process.env.RESEND_API_KEY) return null;
+  if (!resend) {
+    resend = new Resend(process.env.RESEND_API_KEY);
+  }
+  return resend;
+}
 
 const rateLimitMap = new Map<string, { count: number; timestamp: number }>();
 const RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000;
@@ -62,7 +70,8 @@ export async function POST(request: Request) {
       return NextResponse.json({ message: "OK" }, { status: 200 });
     }
 
-    if (!process.env.RESEND_API_KEY) {
+    const client = getResendClient();
+    if (!client) {
       return NextResponse.json(
         { message: "Email service not configured" },
         { status: 503 },
@@ -71,7 +80,7 @@ export async function POST(request: Request) {
 
     const subject = `[Portfolio] ${data.inquiryType.toUpperCase()} inquiry from ${data.name}`;
 
-    await resend.emails.send({
+    await client.emails.send({
       from: "Oscar Portfolio <noreply@scardubu.dev>",
       to: "scardubu@gmail.com",
       subject,
