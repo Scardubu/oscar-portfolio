@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Share2,
@@ -85,11 +85,14 @@ export function ShareButtons({
   variant = "inline",
 }: ShareButtonsProps) {
   const [copied, setCopied] = useState(false);
-  const [showNativeShare, setShowNativeShare] = useState(false);
+  const [canNativeShare, setCanNativeShare] = useState(false);
 
-  // Check if native share is available (mainly mobile)
-  const canNativeShare =
-    typeof navigator !== "undefined" && !!navigator.share;
+  // Check if native share is available (mainly mobile) — run only on client to keep SSR/CSR markup in sync
+  useEffect(() => {
+    if (typeof navigator !== "undefined" && typeof navigator.share === "function") {
+      setCanNativeShare(true);
+    }
+  }, []);
 
   const handleCopyLink = useCallback(async () => {
     try {

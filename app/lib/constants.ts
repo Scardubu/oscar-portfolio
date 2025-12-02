@@ -80,7 +80,7 @@ export const PORTFOLIO_METRICS: PortfolioMetric[] = [
   {
     id: "experience",
     label: "Years Experience",
-    value: "3+",
+    value: "4+",
     icon: "🚀",
     description: "Production ML/AI",
   },
