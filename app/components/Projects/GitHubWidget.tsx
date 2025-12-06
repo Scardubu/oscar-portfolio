@@ -64,31 +64,29 @@ export function GitHubWidget({ repo }: GitHubWidgetProps) {
     }
   );
 
-  if (!mounted) {
-    return null;
-  }
+  // Use fallback data if API fails, not mounted yet, or data not loaded
+  const fallback = FALLBACK_DATA[repo] || {
+    stars: 0,
+    forks: 0,
+    language: "N/A",
+    lastCommit: "N/A",
+    description: "",
+  };
 
-  // Use fallback data if API fails
-  const githubData: GitHubData = error
-    ? FALLBACK_DATA[repo] || {
-        stars: 0,
-        forks: 0,
-        language: "N/A",
-        lastCommit: "N/A",
-        description: "",
-      }
+  const githubData: GitHubData = error || !data
+    ? fallback
     : {
-        stars: data?.stargazers_count || 0,
-        forks: data?.forks_count || 0,
-        language: data?.language || "N/A",
-        lastCommit: data?.pushed_at
+        stars: data.stargazers_count || fallback.stars,
+        forks: data.forks_count || fallback.forks,
+        language: data.language || fallback.language,
+        lastCommit: data.pushed_at
           ? new Date(data.pushed_at).toLocaleDateString("en-US", {
               year: "numeric",
               month: "short",
               day: "numeric",
             })
-          : "N/A",
-        description: data?.description || "",
+          : fallback.lastCommit,
+        description: data.description || fallback.description,
       };
 
   return (

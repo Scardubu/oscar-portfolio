@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import useSWR from "swr";
 import { motion } from "framer-motion";
 
@@ -19,10 +19,12 @@ const fetcher = async (url: string) => {
 };
 
 export function GitHubStats() {
-  const [mounted] = useState(() => {
-    // Initialize as true only on client side
-    return typeof window !== "undefined";
-  });
+  const [mounted, setMounted] = useState(false);
+
+  // Prevent hydration mismatch - always render placeholder on server
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const { data, error, isLoading } = useSWR<GitHubStatsData>(
     mounted ? "/api/github-stats" : null,
@@ -33,8 +35,6 @@ export function GitHubStats() {
       refreshInterval: 3600000,
     }
   );
-
-  if (!mounted) return null;
 
   const stats: GitHubStatsData = data || {
     publicRepos: 12,

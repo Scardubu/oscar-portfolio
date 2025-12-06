@@ -11,22 +11,26 @@ interface ThemeToggleProps {
 }
 
 export function ThemeToggle({ variant = "floating", className }: ThemeToggleProps = {}) {
-  const [isDark, setIsDark] = useState(() => {
-    if (typeof window === "undefined") {
-      return true;
-    }
+  // Initialize with default to prevent hydration mismatch
+  const [isDark, setIsDark] = useState(true);
+  const [mounted, setMounted] = useState(false);
 
-    const stored = window.localStorage.getItem("theme");
+  // Load theme preference after mount to prevent hydration mismatch
+  useEffect(() => {
+    setMounted(true);
+    
+    const stored = localStorage.getItem("theme");
     if (stored) {
-      return stored === "dark";
+      setIsDark(stored === "dark");
+    } else {
+      setIsDark(window.matchMedia("(prefers-color-scheme: dark)").matches);
     }
-
-    return window.matchMedia("(prefers-color-scheme: dark)").matches;
-  });
+  }, []);
 
   useEffect(() => {
+    if (!mounted) return;
     document.documentElement.classList.toggle("dark", isDark);
-  }, [isDark]);
+  }, [isDark, mounted]);
 
   const toggleTheme = () => {
     const newTheme = !isDark;
