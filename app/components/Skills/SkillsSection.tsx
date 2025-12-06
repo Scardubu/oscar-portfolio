@@ -19,11 +19,17 @@ export function SkillsSection() {
   >("all");
   const [selectedSkill, setSelectedSkill] = useState<Skill | null>(null);
   const [isMobile, setIsMobile] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const [exploredSkills, setExploredSkills] = useState<Set<string>>(new Set());
+
+  // Prevent hydration mismatch by waiting for mount
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Load explored skills from localStorage on mount
   useEffect(() => {
-    if (typeof window === "undefined") return;
+    if (!mounted) return;
     try {
       const stored = localStorage.getItem(EXPLORED_SKILLS_KEY);
       if (stored) {
@@ -33,7 +39,7 @@ export function SkillsSection() {
     } catch {
       // Ignore localStorage errors
     }
-  }, []);
+  }, [mounted]);
 
   // Save explored skills to localStorage
   const saveExploredSkills = useCallback((skills: Set<string>) => {
@@ -47,6 +53,8 @@ export function SkillsSection() {
 
   // PRD: Mobile detection for graph/grid toggle (<768px)
   useEffect(() => {
+    if (!mounted) return;
+    
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768);
     };
@@ -54,7 +62,7 @@ export function SkillsSection() {
     checkMobile();
     window.addEventListener("resize", checkMobile);
     return () => window.removeEventListener("resize", checkMobile);
-  }, []);
+  }, [mounted]);
 
   // Filter skills by category
   const filteredSkills =

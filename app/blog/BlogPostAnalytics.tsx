@@ -13,6 +13,12 @@ export function BlogPostAnalytics({ slug, title, readingTime }: BlogPostAnalytic
   const [progress, setProgress] = useState(0);
   const [isComplete, setIsComplete] = useState(false);
   const [timeLeft, setTimeLeft] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  // Prevent hydration mismatch
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Parse reading time to minutes
   const totalMinutes = readingTime
@@ -49,6 +55,8 @@ export function BlogPostAnalytics({ slug, title, readingTime }: BlogPostAnalytic
   }, [totalMinutes]);
 
   useEffect(() => {
+    if (!mounted) return;
+    
     trackEvent("Blog", "ViewPost", slug);
 
     let hasFired75 = false;
@@ -78,10 +86,10 @@ export function BlogPostAnalytics({ slug, title, readingTime }: BlogPostAnalytic
     }
 
     window.addEventListener("scroll", combinedScroll, { passive: true });
-    combinedScroll(); // Initial call
+    combinedScroll(); // Initial call after mount
 
     return () => window.removeEventListener("scroll", combinedScroll);
-  }, [slug, title, onScroll]);
+  }, [mounted, slug, title, onScroll]);
 
   return (
     <div className="sticky top-16 z-30 -mx-6 mb-8 lg:-mx-12">

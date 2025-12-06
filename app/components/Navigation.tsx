@@ -19,6 +19,12 @@ export function Navigation() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
+  const [mounted, setMounted] = useState(false);
+
+  // Prevent hydration mismatch
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleScroll = useCallback(() => {
     setIsScrolled(window.scrollY > 50);
@@ -31,10 +37,12 @@ export function Navigation() {
   }, []);
 
   useEffect(() => {
+    if (!mounted) return;
+    
     window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll(); // Initial call
+    handleScroll(); // Initial call after mount
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [handleScroll]);
+  }, [mounted, handleScroll]);
 
   return (
     <>
