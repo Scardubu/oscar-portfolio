@@ -49,7 +49,7 @@ export const metadata: Metadata = {
     "AI Product Builder",
     "SabiScore",
     "Sports Prediction AI",
-    "Lagos Nigeria",
+    "Nigeria",
   ],
   authors: [{ name: "Oscar Ndugbu", url: "https://scardubu.dev" }],
   creator: "Oscar Ndugbu",
@@ -136,7 +136,7 @@ export default function RootLayout({
     },
     address: {
       "@type": "PostalAddress",
-      addressLocality: "Lagos",
+      addressLocality: "Abuja",
       addressCountry: "NG",
     },
     alumniOf: {

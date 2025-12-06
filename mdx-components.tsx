@@ -1,8 +1,29 @@
 import type { MDXComponents } from "mdx/types";
 import Link from "next/link";
 import Image from "next/image";
-import { ReactNode } from "react";
+import { ReactNode, isValidElement, Children } from "react";
 import { CodeBlockClient } from "@/app/components/CodeBlockClient";
+
+// Helper to extract language from className (e.g., "language-python" -> "python")
+function extractLanguage(className?: string): string | undefined {
+  if (!className) return undefined;
+  const match = className.match(/language-(\w+)/);
+  return match ? match[1] : undefined;
+}
+
+// Helper to extract text content from React children
+function extractTextContent(children: ReactNode): string {
+  if (typeof children === "string") return children;
+  if (typeof children === "number") return String(children);
+  if (Array.isArray(children)) return children.map(extractTextContent).join("");
+  if (isValidElement(children)) {
+    const props = children.props as { children?: ReactNode };
+    if (props.children) {
+      return extractTextContent(props.children);
+    }
+  }
+  return "";
+}
 
 // Custom components for MDX content
 export function useMDXComponents(components: MDXComponents): MDXComponents {
@@ -71,16 +92,49 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
         {children}
       </blockquote>
     ),
-    code: ({ children }: { children?: ReactNode }) => (
-      <code className="font-mono text-sm bg-white/10 text-accent-primary px-1.5 py-0.5 rounded">
-        {children}
-      </code>
-    ),
-    pre: ({ children }: { children?: ReactNode }) => (
-      <pre className="bg-bg-secondary border border-white/10 rounded-lg p-4 overflow-x-auto my-6 font-mono text-sm">
-        {children}
-      </pre>
-    ),
+    // Inline code (single backticks)
+    code: ({ children, className }: { children?: ReactNode; className?: string }) => {
+      // If this code element has a language class, it's likely inside a pre block
+      // and will be handled by the pre component below
+      if (className?.includes("language-")) {
+        return <code className={className}>{children}</code>;
+      }
+      // Inline code styling
+      return (
+        <code className="font-mono text-sm bg-white/10 text-accent-primary px-1.5 py-0.5 rounded">
+          {children}
+        </code>
+      );
+    },
+    // Fenced code blocks (triple backticks) - automatically use CodeBlockClient
+    pre: ({ children }: { children?: ReactNode }) => {
+      // Extract the code element and its props
+      const codeElement = Children.toArray(children).find(
+        (child) => isValidElement(child) && child.type === "code"
+      );
+
+      if (isValidElement(codeElement)) {
+        const { className, children: codeChildren } = codeElement.props as {
+          className?: string;
+          children?: ReactNode;
+        };
+        const language = extractLanguage(className);
+        const codeText = extractTextContent(codeChildren);
+
+        return (
+          <CodeBlockClient language={language}>
+            {codeText}
+          </CodeBlockClient>
+        );
+      }
+
+      // Fallback for non-standard pre blocks
+      return (
+        <pre className="bg-bg-secondary border border-white/10 rounded-lg p-4 overflow-x-auto my-6 font-mono text-sm">
+          {children}
+        </pre>
+      );
+    },
     img: ({ src, alt }: { src?: string; alt?: string }) => (
       <Image
         src={src || ""}

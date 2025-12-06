@@ -14,9 +14,10 @@ import { PROJECTS } from "@/app/lib/constants";
 interface SkillCloudProps {
   skills: Skill[];
   onSkillClick?: (skill: Skill) => void;
+  exploredSkills?: Set<string>;
 }
 
-export function SkillCloud({ skills, onSkillClick }: SkillCloudProps) {
+export function SkillCloud({ skills, onSkillClick, exploredSkills = new Set() }: SkillCloudProps) {
   const [expandedSkill, setExpandedSkill] = useState<string | null>(null);
 
   const toggleSkill = (skillId: string) => {
@@ -27,6 +28,7 @@ export function SkillCloud({ skills, onSkillClick }: SkillCloudProps) {
     <div className="grid gap-4 sm:grid-cols-2">
       {skills.map((skill, index) => {
         const isExpanded = expandedSkill === skill.id;
+        const isExplored = exploredSkills.has(skill.id);
         const categoryColor = CATEGORY_COLORS[skill.category];
         const projectNames = skill.projects
           .map((projId) => PROJECTS.find((p) => p.id === projId)?.title)
@@ -38,7 +40,11 @@ export function SkillCloud({ skills, onSkillClick }: SkillCloudProps) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3, delay: index * 0.03 }}
-            className="rounded-xl border border-white/10 bg-white/5 p-4 transition-all hover:border-white/20 hover:bg-white/10"
+            className={`rounded-xl border p-4 transition-all hover:border-white/20 hover:bg-white/10 ${
+              isExplored
+                ? "border-cyan-500/30 bg-cyan-500/5"
+                : "border-white/10 bg-white/5"
+            }`}
           >
             {/* Skill header */}
             <button

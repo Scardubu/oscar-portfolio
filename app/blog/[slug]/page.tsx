@@ -225,7 +225,7 @@ export default async function BlogPostPage({
 
         {/* Article Content */}
         <article className="mx-auto max-w-3xl px-6 py-12 lg:px-12">
-          <BlogPostAnalytics slug={slug} title={post.title} />
+          <BlogPostAnalytics slug={slug} title={post.title} readingTime={post.readingTime} />
           <div className="prose prose-invert prose-lg max-w-none prose-headings:text-white prose-p:text-gray-300 prose-a:text-accent-primary prose-strong:text-white prose-code:text-accent-primary prose-pre:bg-bg-secondary prose-pre:border prose-pre:border-white/10">
             {MDXContent ? (
               <MDXContent />

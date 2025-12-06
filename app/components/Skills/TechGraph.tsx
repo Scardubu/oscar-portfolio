@@ -15,9 +15,10 @@ import {
 interface TechGraphProps {
   skills: Skill[];
   onSkillClick?: (skill: Skill) => void;
+  exploredSkills?: Set<string>;
 }
 
-export function TechGraph({ skills, onSkillClick }: TechGraphProps) {
+export function TechGraph({ skills, onSkillClick, exploredSkills = new Set() }: TechGraphProps) {
   const svgRef = useRef<SVGSVGElement>(null);
   const [mounted, setMounted] = useState(false);
 
@@ -118,14 +119,15 @@ export function TechGraph({ skills, onSkillClick }: TechGraphProps) {
 
     node.call(dragBehavior);
 
-    // Add circles to nodes
+    // Add circles to nodes with explored state indication
     node
       .append("circle")
       .attr("r", (d) => getNodeRadius(d.proficiency))
       .attr("fill", (d) => CATEGORY_COLORS[d.category])
-      .attr("stroke", "#FFFFFF")
-      .attr("stroke-width", 2)
-      .attr("opacity", 0.9);
+      .attr("stroke", (d) => exploredSkills.has(d.id) ? "#00d9ff" : "#FFFFFF")
+      .attr("stroke-width", (d) => exploredSkills.has(d.id) ? 3 : 2)
+      .attr("opacity", 0.9)
+      .attr("filter", (d) => exploredSkills.has(d.id) ? "drop-shadow(0 0 6px #00d9ff)" : "none");
 
     // Add labels to nodes
     node
@@ -227,7 +229,7 @@ export function TechGraph({ skills, onSkillClick }: TechGraphProps) {
     return () => {
       simulation.stop();
     };
-  }, [mounted, skills, onSkillClick]);
+  }, [mounted, skills, onSkillClick, exploredSkills]);
 
   if (!mounted) {
     return (
