@@ -53,20 +53,20 @@ Let's dive into each one.
 
 ```
                     [Cloudflare CDN]
-                          ↓
+                          v
                 [Load Balancer (NGINX)]
                      /         \
         [API Instance 1]   [API Instance 2]
-              ↓                   ↓
+              v                   v
         [Redis Primary]    [Redis Replica]
-              ↓                   ↓
-     [PostgreSQL Primary] → [PostgreSQL Standby]
+              v                   v
+     [PostgreSQL Primary] -> [PostgreSQL Standby]
 ```
+
 
 **Key Design Decisions:**
 
 ### 1. Redundant API Instances (No Single Point of Failure)
-
 **Why it matters:** If one API instance crashes, the other handles traffic seamlessly.
 
 **My setup:**
@@ -146,7 +146,7 @@ trigger_file = '/tmp/postgresql.trigger.5432'
 
 ```conf
 # redis.conf
-# RDB snapshots (backup every 5 minutes if ≥1 key changed)
+# RDB snapshots (backup every 5 minutes if >=1 key changed)
 save 300 1
 
 # AOF (append-only file for durability)
@@ -313,310 +313,6 @@ import pandas as pd
 from datetime import datetime, timedelta
 
 class ModelPerformanceMonitor:
-    def __init__(self, db_connection):
-        self.db = db_connection
-        self.alert_threshold = 0.68  # Alert if accuracy drops below 68%
-    
-    def log_prediction(self, game_id, prediction, confidence, features):
-        """Log every prediction for later analysis"""
-        self.db.execute("""
-            INSERT INTO predictions_log 
-            (game_id, prediction, confidence, features, timestamp)
-            VALUES (%s, %s, %s, %s, %s)
-        """, (game_id, prediction, confidence, json.dumps(features), datetime.now()))
-    
-    def log_actual_outcome(self, game_id, actual_result):
-        """Log actual game outcome after game completes"""
-        self.db.execute("""
-            UPDATE predictions_log
-            SET actual_result = %s, outcome_logged_at = %s
-            WHERE game_id = %s
-        """, (actual_result, datetime.now(), game_id))
-    
-    def check_accuracy_drift(self):
-        """Check if model accuracy has degraded"""
-        # Get last 100 predictions with actual outcomes
-        query = """
-            SELECT prediction, actual_result
-            FROM predictions_log
-            WHERE actual_result IS NOT NULL
-            ORDER BY timestamp DESC
-            LIMIT 100
-        """
-        results = pd.read_sql(query, self.db)
-        
-        if len(results) < 50:
-            return  # Not enough data yet
-        
-        accuracy = (results['prediction'] == results['actual_result']).mean()
-        
-        if accuracy < self.alert_threshold:
-            self.trigger_alert(
-                "Model Accuracy Degradation",
-                f"Accuracy dropped to {accuracy:.1%} (last 100 predictions)"
-            )
-    
-    def check_feature_drift(self):
-        """Detect if feature distributions have shifted"""
-        # Get feature stats from last 7 days vs. previous 30 days
-        recent_features = self.get_feature_stats(days=7)
-        baseline_features = self.get_feature_stats(days=30, offset=7)
-        
-        for feature in recent_features.columns:
-            recent_mean = recent_features[feature].mean()
-            baseline_mean = baseline_features[feature].mean()
-            
-            # Alert if mean shifted by >20%
-            percent_change = abs((recent_mean - baseline_mean) / baseline_mean)
-            if percent_change > 0.2:
-                self.trigger_alert(
-                    "Feature Drift Detected",
-                    f"{feature} shifted {percent_change:.1%}"
-                )
-```
-
-**Automated daily checks:**
-- Accuracy monitoring (runs every 6 hours)
-- Feature drift detection (runs daily at 3 AM)
-- Prediction volume anomalies (alert if below 50% of expected volume)
-
-#### 3. API Latency Monitoring
-
-```python
-# middleware.py
-from fastapi import Request
-import time
-from prometheus_client import Histogram
-
-# Prometheus histogram for latency tracking
-REQUEST_LATENCY = Histogram(
-    'api_request_latency_seconds',
-    'API request latency',
-    ['method', 'endpoint', 'status']
-)
-
-@app.middleware("http")
-async def add_latency_tracking(request: Request, call_next):
-    start_time = time.time()
-    
-    response = await call_next(request)
-    
-    latency = time.time() - start_time
-    
-    # Log to Prometheus
-    REQUEST_LATENCY.labels(
-        method=request.method,
-        endpoint=request.url.path,
-        status=response.status_code
-    ).observe(latency)
-    
-    # Alert if p95 latency > 200ms
-    if latency > 0.2:
-        logger.warning(f"Slow request: {request.url.path} took {latency:.3f}s")
-    
-    # Add latency header for debugging
-    response.headers["X-Response-Time"] = f"{latency:.3f}s"
-    
-    return response
-```
-
-**Grafana dashboard shows:**
-- p50, p95, p99 latency by endpoint
-- Request volume by endpoint
-- Error rate by status code
-- Slowest endpoints (for optimization)
-
-### Alert Escalation Ladder
-
-**Level 1: Warning (Email)**
-- CPU > 80% for 5 minutes
-- Memory > 80% for 5 minutes
-- Latency p95 > 200ms for 10 minutes
-
-**Level 2: Critical (Email + Discord)**
-- Health check failing
-- Accuracy < 68% for 6 hours
-- Error rate > 5% for 10 minutes
-
-**Level 3: Emergency (SMS + Phone Call)**
-- Complete service outage
-- Database unreachable
-- Multiple critical alerts simultaneously
-
-**Tool I use for SMS alerts:** Twilio ($0.0075 per SMS)
-
----
-
-## Pillar 3: Zero-Downtime Deployments
-
-**Rule #3: Never deploy on Friday. And always have a rollback plan.**
-
-### Blue-Green Deployment for ML Models
-
-**Problem:** Updating a model requires loading new weights into memory. During this time, the API is unresponsive.
-
-**Solution:** Blue-green deployment
-
-```python
-# model_registry.py
-import joblib
-from pathlib import Path
-
-class ModelRegistry:
-    def __init__(self, model_dir: Path):
-        self.model_dir = model_dir
-        self.blue_model = self.load_latest_model()  # Currently serving
-        self.green_model = None  # Standby for updates
-        self.active = "blue"
-    
-    def load_latest_model(self):
-        """Load most recent model from disk"""
-        model_files = sorted(self.model_dir.glob("model_v*.pkl"))
-        if not model_files:
-            raise FileNotFoundError("No model files found")
-        return joblib.load(model_files[-1])
-    
-    def update_model(self, new_model_path: Path):
-        """Hot-swap model with zero downtime"""
-        # Load new model into green slot
-        self.green_model = joblib.load(new_model_path)
-        
-        # Validate model (smoke tests)
-        if not self.validate_model(self.green_model):
-            raise ValueError("Model failed validation")
-        
-        # Atomic swap
-        if self.active == "blue":
-            self.blue_model = self.green_model
-            self.active = "green"
-        else:
-            self.green_model = self.blue_model
-            self.active = "blue"
-        
-        logger.info(f"Model updated successfully. Active: {self.active}")
-    
-    def validate_model(self, model) -> bool:
-        """Run smoke tests on new model"""
-        try:
-            # Test 1: Can it make predictions?
-            test_features = self.get_test_features()
-            predictions = model.predict(test_features)
-            
-            # Test 2: Predictions are in valid range?
-            if not all(0 <= p <= 1 for p in predictions):
-                return False
-            
-            # Test 3: Performance on validation set?
-            val_accuracy = self.compute_validation_accuracy(model)
-            if val_accuracy < 0.65:  # Minimum acceptable accuracy
-                return False
-            
-            return True
-        except Exception as e:
-            logger.error(f"Model validation failed: {e}")
-            return False
-    
-    def predict(self, features):
-        """Always use active model for predictions"""
-        active_model = self.blue_model if self.active == "blue" else self.green_model
-        return active_model.predict(features)
-```
-
-**Deployment process:**
-1. Train new model offline
-2. Upload to server (doesn't affect live traffic)
-3. Load into green slot + validate
-4. Atomic swap (takes under 1 second)
-5. Monitor for 10 minutes
-6. If errors spike, rollback to previous model
-
-**Downtime during deployment:** 0 seconds
-
-### Database Migrations Without Downtime
-
-**Problem:** Schema changes can lock tables, causing downtime.
-
-**Solution:** Backward-compatible migrations
-
-```python
-# Example: Adding a new column without downtime
-
-# Step 1: Add column as nullable (no data backfill yet)
-# migration_001.py
-def upgrade():
-    op.add_column('predictions', sa.Column('confidence_score', sa.Float(), nullable=True))
-
-# Deploy this migration (no downtime)
-
-# Step 2: Backfill data in background (chunked)
-# backfill_confidence.py
-def backfill_confidence_scores():
-    batch_size = 1000
-    offset = 0
-    
-    while True:
-        rows = db.execute("""
-            SELECT id FROM predictions 
-            WHERE confidence_score IS NULL
-            LIMIT %s OFFSET %s
-        """, (batch_size, offset)).fetchall()
-        
-        if not rows:
-            break
-        
-        for row in rows:
-            # Compute confidence score
-            score = compute_confidence(row.id)
-            db.execute("""
-                UPDATE predictions
-                SET confidence_score = %s
-                WHERE id = %s
-            """, (score, row.id))
-        
-        offset += batch_size
-        time.sleep(1)  # Throttle to avoid overwhelming DB
-
-# Step 3: Make column non-nullable (after backfill complete)
-# migration_002.py
-def upgrade():
-    op.alter_column('predictions', 'confidence_score', nullable=False)
-```
-
-**Key principles:**
-- Add columns as nullable first
-- Backfill data in background
-- Never drop columns in same release (gives time to rollback)
-
----
-
-## Pillar 4: Incident Response (Fix Fast, Learn Faster)
-
-**Rule #4: Incidents are inevitable. How you respond defines uptime.**
-
-### My Incident Response Runbook
-
-**Phase 1: Detection (Automated)**
-- Monitoring systems detect anomaly
-- Alert sent to on-call engineer (me)
-- Incident automatically created in tracking system
-
-**Phase 2: Triage (Within 5 minutes)**
-```
-1. Check status page: scardubu.dev/status
-2. Verify monitoring alerts (not false positive)
-3. Assess severity:
-   - P0: Complete outage (all users affected)
-   - P1: Partial outage (>50% users affected)
-   - P2: Degraded performance (under 50% affected)
-   - P3: Minor issue (no user impact)
-4. Post incident update to status page
-```
-
-**Phase 3: Investigation (Parallel tracks)**
-
-```python
-# incident_investigation.py
-class IncidentInvestigation:
     def run_diagnosis(self):
         """Run automated diagnostic checks"""
         
