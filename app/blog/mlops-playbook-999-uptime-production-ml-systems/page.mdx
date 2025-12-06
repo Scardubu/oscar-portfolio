@@ -109,7 +109,7 @@ server {
 
 ### 2. Database Replication (Read Replicas + Standby)
 
-**Why it matters:** Primary database crashes? Standby takes over in <30 seconds.
+**Why it matters:** Primary database crashes? Standby takes over in under 30 seconds.
 
 **PostgreSQL Streaming Replication Setup:**
 
@@ -134,7 +134,7 @@ trigger_file = '/tmp/postgresql.trigger.5432'
 1. Health check detects primary DB is down
 2. Script promotes standby to primary (creates trigger file)
 3. Update connection strings in application
-4. Total downtime: <30 seconds
+4. Total downtime: under 30 seconds
 
 **I use:** DigitalOcean Managed PostgreSQL (handles this automatically for $15/month)
 
@@ -220,7 +220,7 @@ def cache_prediction(game_id, prediction, expiry_minutes=60):
 | Tool | Purpose | Cost |
 |------|---------|------|
 | **UptimeRobot** | HTTP endpoint monitoring | Free (50 monitors) |
-| **Sentry** | Error tracking & alerts | Free (<10K errors/month) |
+| **Sentry** | Error tracking & alerts | Free (under 10K errors/month) |
 | **Prometheus + Grafana** | Custom metrics | Self-hosted (free) |
 | **PostgreSQL Stats** | Database performance | Built-in (free) |
 | **CloudWatch** | Infrastructure metrics | AWS free tier |
@@ -378,7 +378,7 @@ class ModelPerformanceMonitor:
 **Automated daily checks:**
 - Accuracy monitoring (runs every 6 hours)
 - Feature drift detection (runs daily at 3 AM)
-- Prediction volume anomalies (alert if <50% of expected volume)
+- Prediction volume anomalies (alert if below 50% of expected volume)
 
 #### 3. API Latency Monitoring
 
@@ -526,7 +526,7 @@ class ModelRegistry:
 1. Train new model offline
 2. Upload to server (doesn't affect live traffic)
 3. Load into green slot + validate
-4. Atomic swap (takes <1 second)
+4. Atomic swap (takes under 1 second)
 5. Monitor for 10 minutes
 6. If errors spike, rollback to previous model
 
@@ -607,7 +607,7 @@ def upgrade():
 3. Assess severity:
    - P0: Complete outage (all users affected)
    - P1: Partial outage (>50% users affected)
-   - P2: Degraded performance (<50% affected)
+   - P2: Degraded performance (under 50% affected)
    - P3: Minor issue (no user impact)
 4. Post incident update to status page
 ```
@@ -842,7 +842,7 @@ Use this as your starting point:
 Can't afford enterprise tools? Neither could I. Here's my free/cheap stack:
 
 1. **[UptimeRobot](https://uptimerobot.com/)** - Free uptime monitoring (50 monitors)
-2. **[Sentry](https://sentry.io/)** - Free error tracking (<10K events/month)
+2. **[Sentry](https://sentry.io/)** - Free error tracking (under 10K events/month)
 3. **[Prometheus](https://prometheus.io/)** - Free metrics collection (self-hosted)
 4. **[Grafana](https://grafana.com/)** - Free visualization dashboards
 5. **[Cloudflare](https://www.cloudflare.com/)** - Free CDN + DDoS protection
