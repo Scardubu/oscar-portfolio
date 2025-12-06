@@ -31,6 +31,19 @@ const POST_COMPONENTS: Record<string, () => Promise<{ default: React.ComponentTy
     import("../fastapi-deploy-production-5-min/page.mdx"),
   "redis-caching-patterns-ml-apis": () =>
     import("../redis-caching-patterns-ml-apis/page.mdx"),
+  // New long-form posts
+  "how-i-built-ai-sports-prediction-platform-sabiscore": () =>
+    import("../sabiscore-ai-sports-prediction-platform/page.mdx"),
+  "mlops-playbook-999-uptime-production-ml-systems": () =>
+    import("../mlops-playbook-999-uptime-production-ml-systems/page.mdx"),
+  "building-in-nigeria-shipping-globally-remote-ml-engineer": () =>
+    import("../building-in-nigeria-shipping-globally-remote-ml-engineer/page.mdx"),
+  "mlops-999-uptime-transformation-case-study": () =>
+    import("../mlops-999-uptime-transformation-case-study/page.mdx"),
+  "nigeria-ml-engineer-3k-mrr-playbook": () =>
+    import("../nigeria-ml-engineer-3k-mrr-playbook/page.mdx"),
+  "africa-ai-infra-stack-for-founders": () =>
+    import("../africa-ai-infra-stack-for-founders/page.mdx"),
 };
 
 // Category colors
