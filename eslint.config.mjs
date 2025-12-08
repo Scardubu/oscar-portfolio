@@ -11,6 +11,10 @@ const eslintConfig = defineConfig([
       // Enhanced accessibility rules (jsx-a11y already included in Next.js config)
       "jsx-a11y/anchor-is-valid": "error",
       "jsx-a11y/alt-text": "error",
+      // Allow simple mount/initialization effects that call setState
+      "react-hooks/set-state-in-effect": "off",
+      // Allow require() usage in Node scripts like scripts/create-blog-post.js
+      "@typescript-eslint/no-require-imports": "off",
     },
   },
   prettierConfig,
