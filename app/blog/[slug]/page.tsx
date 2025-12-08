@@ -5,6 +5,8 @@ import { notFound } from "next/navigation";
 import { Calendar, User, ChevronRight, BookOpen } from "lucide-react";
 import { ShareButtons } from "../ShareButtons";
 import { BlogPostAnalytics } from "../BlogPostAnalytics";
+import { BlogProgressWidget } from "@/components/BlogProgressWidget";
+import { BlogReadingProgressTracker } from "@/components/BlogReadingProgressTracker";
 import {
   getPostBySlug,
   getRelatedPosts,
@@ -44,6 +46,13 @@ const POST_COMPONENTS: Record<string, () => Promise<{ default: React.ComponentTy
     import("../nigeria-ml-engineer-3k-mrr-playbook/page.mdx"),
   "africa-ai-infra-stack-for-founders": () =>
     import("../africa-ai-infra-stack-for-founders/page.mdx"),
+  // New beginner-friendly posts
+  "ai-demystified-what-machine-learning-actually-does": () =>
+    import("../ai-demystified-what-machine-learning-actually-does/page.mdx"),
+  "side-project-to-3k-mrr-12-month-playbook": () =>
+    import("../side-project-to-3k-mrr-12-month-playbook/page.mdx"),
+  "your-life-in-2030-ai-realistic-forecast": () =>
+    import("../your-life-in-2030-ai-realistic-forecast/page.mdx"),
 };
 
 // Category colors
@@ -148,8 +157,20 @@ export default async function BlogPostPage({
   const loadMdx = POST_COMPONENTS[slug];
   const MDXContent = loadMdx ? (await loadMdx()).default : null;
 
+  // Prepare related posts for widget (simplified shape)
+  const widgetRelatedPosts = relatedPosts.map((p) => ({
+    title: p.title,
+    slug: p.slug,
+    category: CONTENT_PILLARS[p.category].name,
+    readTime: p.readingTime,
+  }));
+
   return (
     <>
+      {/* Reading progress bar + related posts widget */}
+      <BlogProgressWidget relatedPosts={widgetRelatedPosts} currentSlug={slug} />
+      <BlogReadingProgressTracker slug={slug} title={post.title} />
+
       {/* JSON-LD for SEO */}
       <Script
         id="json-ld-article"

@@ -1,7 +1,5 @@
-// Blog utilities for loading and processing MDX posts
-// Aligned with SEO content strategy pillars
+// Blog utilities for loading and processing MDX posts (static seed data for client components)
 
-// Content pillars from SEO strategy
 export const CONTENT_PILLARS = {
   "production-ml": {
     name: "Production ML Systems",
@@ -257,6 +255,66 @@ export const BLOG_POSTS: PostMeta[] = [
     readingTime: "11 min",
     difficulty: "Intermediate",
   },
+  {
+    slug: "ai-demystified-what-machine-learning-actually-does",
+    title: "AI is Not Magic: A Real Talk About What Machine Learning Actually Does",
+    description:
+      "AI isn't mysterious wizardry—it's pattern recognition at scale. This guide breaks down how AI actually works using everyday examples anyone can understand.",
+    date: "2025-01-08",
+    author: "Oscar Ndugbu",
+    category: "ai-nigeria",
+    tags: [
+      "ai",
+      "machine-learning",
+      "beginners",
+      "explained",
+      "non-technical",
+    ],
+    featured: true,
+    featuredImage: "/blog/ai-demystified.png",
+    readingTime: "9 min",
+    difficulty: "Beginner",
+  },
+  {
+    slug: "side-project-to-3k-mrr-12-month-playbook",
+    title: "From 'Just an Idea' to $3,000/Month: How I Built a Profitable AI Business While Working Full-Time",
+    description:
+      "The complete 12-month playbook from side project to $3k MRR: what worked, what failed spectacularly, and the exact steps you can copy.",
+    date: "2025-01-09",
+    author: "Oscar Ndugbu",
+    category: "ai-nigeria",
+    tags: [
+      "side-project",
+      "build-in-public",
+      "entrepreneurship",
+      "saas",
+      "indie-hacker",
+    ],
+    featured: true,
+    featuredImage: "/blog/side-project-3k-mrr.png",
+    readingTime: "12 min",
+    difficulty: "Beginner",
+  },
+  {
+    slug: "your-life-in-2030-ai-realistic-forecast",
+    title: "Your Life in 2030: What AI Will (And Won't) Change",
+    description:
+      "A realistic forecast of AI's impact by 2030 from someone building it—based on current trends, not sci-fi fantasies.",
+    date: "2025-01-10",
+    author: "Oscar Ndugbu",
+    category: "ai-nigeria",
+    tags: [
+      "ai",
+      "future",
+      "2030",
+      "predictions",
+      "technology",
+    ],
+    featured: false,
+    featuredImage: "/blog/ai-2030-forecast.png",
+    readingTime: "11 min",
+    difficulty: "Beginner",
+  },
 ];
 
 // Get all posts sorted by date (newest first)
@@ -265,6 +323,9 @@ export function getAllPosts(): PostMeta[] {
     (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
   );
 }
+
+// Alias used by API routes and utilities
+export const getAllBlogPosts = getAllPosts;
 
 // Get featured posts
 export function getFeaturedPosts(): PostMeta[] {

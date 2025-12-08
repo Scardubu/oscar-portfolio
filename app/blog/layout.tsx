@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import { ContinueReadingBanner } from "@/components/ContinueReadingBanner";
 
 export const metadata: Metadata = {
   title: {
@@ -34,5 +35,10 @@ export default function BlogLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <>{children}</>;
+  return (
+    <>
+      <ContinueReadingBanner />
+      {children}
+    </>
+  );
 }

@@ -17,6 +17,8 @@ import { CONTACT_OPTIONS } from "./lib/constants";
 import { Button } from "@/components/ui/button";
 import { Mail, Clock, MapPin } from "lucide-react";
 import { trackEvent } from "./lib/analytics";
+import { ProductionPatternsVisualization } from "@/components/ProductionPatternsVisualization";
+import { LiveBuildFeed } from "@/components/LiveBuildFeed";
 
 // PRD Phase 1-3: Single-page portfolio with Hero + Projects + Skills sections
 export default function Home() {
@@ -39,6 +41,21 @@ export default function Home() {
       <AboutSection />
       <ProjectsSection />
       <SkillsSection />
+
+      {/* Production ML Patterns + Live Activity */}
+      <section className="w-full bg-bg-primary px-6 py-16 lg:px-12">
+        <div className="mx-auto max-w-7xl">
+          <div className="grid gap-8 lg:grid-cols-3">
+            <div className="lg:col-span-2">
+              <ProductionPatternsVisualization />
+            </div>
+            <div className="lg:col-span-1">
+              <LiveBuildFeed />
+            </div>
+          </div>
+        </div>
+      </section>
+
       <GitHubStats />
       <Testimonials />
       <PerformanceDashboard />
