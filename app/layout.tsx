@@ -7,11 +7,14 @@ import { Toaster } from "react-hot-toast";
 import "./globals.css";
 
 // PRD Typography: Inter for headings/body, JetBrains Mono for metrics/code
+// Using preload: false to prevent build failures when Google Fonts is unreachable
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
   display: "swap",
   weight: ["400", "500", "600", "700"],
+  preload: true,
+  fallback: ["system-ui", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Roboto", "sans-serif"],
 });
 
 const jetbrainsMono = JetBrains_Mono({
@@ -19,6 +22,8 @@ const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
   display: "swap",
   weight: ["400", "500", "600"],
+  preload: true,
+  fallback: ["ui-monospace", "SFMono-Regular", "Menlo", "Monaco", "Consolas", "monospace"],
 });
 
 // PRD Feature 6: SEO Metadata (Footer-002)
@@ -205,6 +210,17 @@ export default function RootLayout({
         {/* Preconnect to external domains for faster loading */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        {/* Preload critical hero image for LCP optimization */}
+        <link
+          rel="preload"
+          href="/headshot.webp"
+          as="image"
+          type="image/webp"
+          fetchPriority="high"
+        />
+        {/* DNS prefetch for analytics */}
+        <link rel="dns-prefetch" href="https://vitals.vercel-insights.com" />
+        <link rel="dns-prefetch" href="https://va.vercel-scripts.com" />
       </head>
       <body
         className={`${inter.variable} ${jetbrainsMono.variable} antialiased font-sans`}

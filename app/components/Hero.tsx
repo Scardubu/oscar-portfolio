@@ -272,8 +272,13 @@ export function Hero({ onOpenContact }: HeroProps = {}) {
               alt="Oscar Ndugbu - Full-Stack ML Engineer"
               fill
               priority
+              fetchPriority="high"
+              loading="eager"
+              quality={85}
               className="object-cover"
               sizes="(max-width: 768px) 300px, (max-width: 1024px) 400px, 500px"
+              placeholder="blur"
+              blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTAwIiBoZWlnaHQ9IjUwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMWExYTJlIi8+PGNpcmNsZSBjeD0iMjUwIiBjeT0iMjUwIiByPSIyMDAiIGZpbGw9IiMyMDIwMzAiLz48L3N2Zz4="
             />
           </div>
 
