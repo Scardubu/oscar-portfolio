@@ -89,7 +89,6 @@ const nextConfig: NextConfig = {
   webpack: (config, { isServer }) => {
     // Bundle analyzer (run with ANALYZE=true pnpm build --webpack)
     if (process.env.ANALYZE === "true") {
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
       const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
       config.plugins.push(
         new BundleAnalyzerPlugin({

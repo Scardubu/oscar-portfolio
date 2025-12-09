@@ -94,7 +94,6 @@ export function SabiScoreDemo() {
 
   // Prevent SSR hydration issues with Chart.js
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
   }, []);
 

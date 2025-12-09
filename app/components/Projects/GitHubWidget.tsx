@@ -48,7 +48,6 @@ export function GitHubWidget({ repo }: GitHubWidgetProps) {
 
   // Prevent SSR hydration issues
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
   }, []);
 

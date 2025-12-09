@@ -143,11 +143,11 @@ export function Hero({ onOpenContact }: HeroProps = {}) {
               transition={{ delay: 0.4, duration: 0.6 }}
               className="max-w-2xl text-xl leading-relaxed text-gray-200 md:text-2xl lg:text-3xl"
             >
-              I turn{" "}
+              I build{" "}
               <span className="font-semibold text-cyan-400">
-                ML models into production systems
+                AI that solves real problems
               </span>{" "}
-              that actually ship and drive real ROI.
+              for real people—not just in theory, but in daily use.
             </motion.p>
 
             <motion.p
@@ -156,12 +156,12 @@ export function Hero({ onOpenContact }: HeroProps = {}) {
               transition={{ delay: 0.6, duration: 0.6 }}
               className="max-w-2xl text-lg leading-relaxed text-gray-300 md:text-xl"
             >
-              Built <strong className="text-white">SabiScore</strong> from
-              scratch:{" "}
-              <span className="text-green-400">350+ users</span> trusting my AI
-              predictions, with{" "}
-              <span className="text-green-400">~71% accuracy</span> and{" "}
-              <span className="text-green-400">99.9% uptime</span>.
+              My sports prediction platform,{" "}
+              <strong className="text-white">SabiScore</strong>, helps{" "}
+              <span className="text-green-400">350+ users</span> make smarter
+              decisions with AI-powered insights that prove accurate{" "}
+              <span className="text-green-400">7 out of 10 times</span>, running
+              reliably <span className="text-green-400">24/7</span>.
             </motion.p>
 
             {/* Origin Story Teaser */}
@@ -171,7 +171,9 @@ export function Hero({ onOpenContact }: HeroProps = {}) {
               transition={{ delay: 0.8, duration: 0.6 }}
               className="max-w-xl text-base italic text-gray-500"
             >
-              From humble beginnings to launching AI solutions that transform industries worldwide.
+              Self-taught from Nigeria, I now create AI solutions that transform
+              how businesses and individuals make decisions worldwide. I turn
+              complex technology into tools that simply work.
             </motion.p>
           </div>
 
