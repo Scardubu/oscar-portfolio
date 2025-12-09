@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { fetchWithCache } from "@/lib/fetch-utils";
 
 interface GitHubUserResponse {
   public_repos: number;
@@ -17,26 +18,22 @@ interface ContributionsResponse {
 
 export async function GET() {
   try {
-    const [userRes, contribRes] = await Promise.all([
-      fetch("https://api.github.com/users/Scardubu", {
-        // Rely on unauthenticated requests with caching; fine for low-traffic portfolio
-        next: { revalidate: 3600 },
-      }),
-      fetch("https://github-contributions-api.deno.dev/Scardubu.json", {
-        next: { revalidate: 3600 },
-      }),
+    const [userJson, contributionsJson] = await Promise.all([
+      fetchWithCache<GitHubUserResponse>(
+        "https://api.github.com/users/Scardubu",
+        {
+          revalidate: 86400,
+          tags: ["github-user"],
+        }
+      ),
+      fetchWithCache<ContributionsResponse>(
+        "https://github-contributions-api.deno.dev/Scardubu.json",
+        {
+          revalidate: 86400,
+          tags: ["github-contributions"],
+        }
+      ).catch(() => null),
     ]);
-
-    if (!userRes.ok) {
-      throw new Error("Failed to fetch GitHub user data");
-    }
-
-    const userJson = (await userRes.json()) as GitHubUserResponse;
-    let contributionsJson: ContributionsResponse | null = null;
-
-    if (contribRes.ok) {
-      contributionsJson = (await contribRes.json()) as ContributionsResponse;
-    }
 
     const currentYear = new Date().getFullYear();
     const currentYearContributions =

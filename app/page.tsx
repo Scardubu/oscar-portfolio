@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import dynamic from "next/dynamic";
 import { Navigation } from "./components/Navigation";
 import { Hero } from "./components/Hero";
 import { AboutSection } from "./components/AboutSection";
@@ -17,8 +18,34 @@ import { CONTACT_OPTIONS } from "./lib/constants";
 import { Button } from "@/components/ui/button";
 import { Mail, Clock, MapPin } from "lucide-react";
 import { trackEvent } from "./lib/analytics";
-import { ProductionPatternsVisualization } from "@/components/ProductionPatternsVisualization";
-import { LiveBuildFeed } from "@/components/LiveBuildFeed";
+
+// Lazy-load heavier, below-the-fold widgets to improve initial load and LCP
+const ProductionPatternsVisualization = dynamic(
+  () =>
+    import("@/components/ProductionPatternsVisualization").then(
+      (mod) => mod.ProductionPatternsVisualization
+    ),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="glass-panel h-64 rounded-2xl border border-white/10 p-6 text-sm text-gray-400">
+        Loading production patterns...
+      </div>
+    ),
+  }
+);
+
+const LiveBuildFeed = dynamic(
+  () => import("@/components/LiveBuildFeed").then((mod) => mod.LiveBuildFeed),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="glass-panel rounded-2xl border border-white/10 p-4 text-sm text-gray-400">
+        Loading live activity...
+      </div>
+    ),
+  }
+);
 
 // PRD Phase 1-3: Single-page portfolio with Hero + Projects + Skills sections
 export default function Home() {
