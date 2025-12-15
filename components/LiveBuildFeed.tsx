@@ -109,9 +109,20 @@ export function LiveBuildFeed() {
   if (isLoading) {
     return (
       <div className="glass-panel rounded-2xl border border-white/10 p-4">
-        <div className="flex items-center gap-2">
-          <Activity className="h-5 w-5 animate-pulse text-gray-400" />
-          <span className="text-sm text-gray-400">Loading activity...</span>
+        <div className="mb-3 flex items-center gap-2">
+          <Activity className="h-5 w-5 text-accent-primary" />
+          <h3 className="text-sm font-semibold text-white">Live Build Activity</h3>
+        </div>
+        <div className="space-y-3">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="flex items-start gap-3 rounded-lg p-2">
+              <div className="h-4 w-4 animate-pulse rounded bg-white/10" />
+              <div className="flex-1 space-y-2">
+                <div className="h-4 w-3/4 animate-pulse rounded bg-white/10" />
+                <div className="h-3 w-1/4 animate-pulse rounded bg-white/10" />
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     );

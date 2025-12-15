@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { motion, useInView } from "framer-motion";
+import { motion } from "framer-motion";
+import { MetricCard } from "./MetricCard";
 import { ArrowRight, Mail, Download, MapPin } from "lucide-react";
 import Image from "next/image";
 import dynamic from "next/dynamic";
@@ -33,54 +33,6 @@ const HERO_METRICS: Metric[] = [
   { value: 4, suffix: "+", label: "Years Experience", decimals: 0 },
 ];
 
-// PRD Hero-002: Animated counter component with Intersection Observer
-function CountUpMetric({ metric, inView }: { metric: Metric; inView: boolean }) {
-  const [count, setCount] = useState(0);
-
-  useEffect(() => {
-    if (!inView) return;
-
-    const duration = 2000; // 2 seconds per PRD
-    const steps = 60;
-    const increment = metric.value / steps;
-    const stepDuration = duration / steps;
-
-    let current = 0;
-    const timer = setInterval(() => {
-      current += increment;
-      if (current >= metric.value) {
-        setCount(metric.value);
-        clearInterval(timer);
-      } else {
-        setCount(current);
-      }
-    }, stepDuration);
-
-    return () => clearInterval(timer);
-  }, [inView, metric.value]);
-
-  const displayValue =
-    metric.decimals !== undefined
-      ? count.toFixed(metric.decimals)
-      : Math.floor(count).toLocaleString();
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.5 }}
-      className="flex flex-col items-center gap-2 text-center"
-    >
-      <div className="font-mono text-3xl font-bold text-[var(--accent-primary)] drop-shadow-[0_0_10px_rgba(0,217,255,0.3)] md:text-4xl lg:text-5xl">
-        {displayValue}
-        {metric.suffix}
-      </div>
-      <div className="text-sm font-medium text-gray-400 md:text-base">
-        {metric.label}
-      </div>
-    </motion.div>
-  );
-}
 
 // PRD Hero-001 to Hero-006: Main Hero component
 interface HeroProps {
@@ -88,8 +40,6 @@ interface HeroProps {
 }
 
 export function Hero({ onOpenContact }: HeroProps = {}) {
-  const metricsRef = useRef<HTMLDivElement>(null);
-  const metricsInView = useInView(metricsRef, { once: true, margin: "-100px" });
 
   // PRD Hero-004: Smooth scroll to sections
   const scrollToSection = (id: string) => {
@@ -179,14 +129,13 @@ export function Hero({ onOpenContact }: HeroProps = {}) {
 
           {/* PRD Hero-002: Metrics grid with count-up animation */}
           <motion.div
-            ref={metricsRef}
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.8, duration: 0.6 }}
             className="grid grid-cols-2 gap-6 rounded-lg border border-[var(--border)] bg-[var(--bg-secondary)] p-6 md:grid-cols-4 md:gap-8 md:p-8"
           >
             {HERO_METRICS.map((metric, idx) => (
-              <CountUpMetric key={idx} metric={metric} inView={metricsInView} />
+              <MetricCard key={idx} value={metric.value} suffix={metric.suffix} label={metric.label} />
             ))}
           </motion.div>
 

@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import { ContinueReadingBanner } from "@/components/ContinueReadingBanner";
+import { ReadingProgress } from "@/app/components/ReadingProgress";
 
 export const metadata: Metadata = {
   title: {
@@ -37,6 +38,7 @@ export default function BlogLayout({
 }) {
   return (
     <>
+      <ReadingProgress />
       <ContinueReadingBanner />
       {children}
     </>

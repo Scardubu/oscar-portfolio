@@ -14,6 +14,7 @@ import { ContactForm } from "./components/ContactForm";
 import { ContactModal } from "./components/ContactModal";
 import { Footer } from "./components/Footer";
 import { AvailabilityBadge } from "./components/AvailabilityBadge";
+import { KeyboardShortcuts } from "./components/KeyboardShortcuts";
 import { CONTACT_OPTIONS } from "./lib/constants";
 import { Button } from "@/components/ui/button";
 import { Mail, Clock, MapPin } from "lucide-react";
@@ -28,9 +29,7 @@ const ProductionPatternsVisualization = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div className="glass-panel h-64 rounded-2xl border border-white/10 p-6 text-sm text-gray-400">
-        Loading production patterns...
-      </div>
+      <div className="glass-panel h-64 animate-pulse rounded-2xl border border-white/10 bg-white/5 p-6" />
     ),
   }
 );
@@ -40,9 +39,7 @@ const LiveBuildFeed = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div className="glass-panel rounded-2xl border border-white/10 p-4 text-sm text-gray-400">
-        Loading live activity...
-      </div>
+      <div className="glass-panel h-64 animate-pulse rounded-2xl border border-white/10 bg-white/5 p-4" />
     ),
   }
 );
@@ -56,12 +53,13 @@ export default function Home() {
       <Navigation />
       {/* Accessibility: Skip to main content */}
       <a
-        href="#hero"
-        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-accent-primary focus:px-4 focus:py-2 focus:font-bold focus:text-black focus:shadow-lg focus:outline-none focus:ring-2 focus:ring-accent-primary"
+        href="#main-content"
+        className="skip-to-content"
+        aria-label="Skip to main content"
       >
         Skip to main content
       </a>
-      <main className="min-h-screen scroll-smooth">
+      <main id="main-content" tabIndex={-1} className="min-h-screen scroll-smooth">
       <div id="hero">
         <Hero onOpenContact={() => setIsContactModalOpen(true)} />
       </div>
@@ -174,6 +172,7 @@ export default function Home() {
         isOpen={isContactModalOpen}
         onClose={() => setIsContactModalOpen(false)}
       />
+      <KeyboardShortcuts />
     </main>
     </>
   );

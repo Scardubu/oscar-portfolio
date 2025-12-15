@@ -49,6 +49,17 @@
   ],
   "redirects": [
     {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "scardubu.dev"
+        }
+      ],
+      "destination": "https://www.scardubu.dev/:path*",
+      "permanent": true
+    },
+    {
       "source": "/github",
       "destination": "https://github.com/scardubu",
       "permanent": true
@@ -56,6 +67,11 @@
     {
       "source": "/linkedin",
       "destination": "https://linkedin.com/in/oscardubu",
+      "permanent": true
+    },
+    {
+      "source": "/blog/:slug/",
+      "destination": "/blog/:slug",
       "permanent": true
     }
   ]

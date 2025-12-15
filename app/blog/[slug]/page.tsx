@@ -42,15 +42,15 @@ const POST_COMPONENTS: Record<string, () => Promise<{ default: React.ComponentTy
     import("../building-in-nigeria-shipping-globally-remote-ml-engineer/page.mdx"),
   "mlops-999-uptime-transformation-case-study": () =>
     import("../mlops-999-uptime-transformation-case-study/page.mdx"),
-  "nigeria-ml-engineer-3k-mrr-playbook": () =>
-    import("../nigeria-ml-engineer-3k-mrr-playbook/page.mdx"),
+  "nigeria-ml-engineer-mrr-playbook": () =>
+    import("../nigeria-ml-engineer-mrr-playbook/page.mdx"),
   "africa-ai-infra-stack-for-founders": () =>
     import("../africa-ai-infra-stack-for-founders/page.mdx"),
   // New beginner-friendly posts
   "ai-demystified-what-machine-learning-actually-does": () =>
     import("../ai-demystified-what-machine-learning-actually-does/page.mdx"),
-  "side-project-to-3k-mrr-12-month-playbook": () =>
-    import("../side-project-to-3k-mrr-12-month-playbook/page.mdx"),
+  "side-project-to-mrr-12-month-playbook": () =>
+    import("../side-project-to-mrr-12-month-playbook/page.mdx"),
   "your-life-in-2030-ai-realistic-forecast": () =>
     import("../your-life-in-2030-ai-realistic-forecast/page.mdx"),
 };

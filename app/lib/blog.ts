@@ -216,7 +216,7 @@ export const BLOG_POSTS: PostMeta[] = [
     difficulty: "Intermediate",
   },
   {
-    slug: "nigeria-ml-engineer-3k-mrr-playbook",
+    slug: "nigeria-ml-engineer-mrr-playbook",
     title: "From Lagos to $3k MRR: A 12-Month Playbook for Nigerian ML Engineers Going Global",
     description:
       "A practical roadmap for Nigerian and African ML engineers to go from zero to $3k+ MRR working with international clients.",
@@ -276,7 +276,7 @@ export const BLOG_POSTS: PostMeta[] = [
     difficulty: "Beginner",
   },
   {
-    slug: "side-project-to-3k-mrr-12-month-playbook",
+    slug: "side-project-to-mrr-12-month-playbook",
     title: "From 'Just an Idea' to $3,000/Month: How I Built a Profitable AI Business While Working Full-Time",
     description:
       "The complete 12-month playbook from side project to $3k MRR: what worked, what failed spectacularly, and the exact steps you can copy.",
