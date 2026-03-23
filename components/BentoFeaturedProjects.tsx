@@ -1,75 +1,144 @@
-/**
- * BentoFeaturedProjects.tsx — Proof Engine
- * ─────────────────────────────────────────────────────────────────────────────
- * Asymmetric bento grid. Feature card (SabiScore) spans 8 columns.
- * Supporting cards span 4 columns each.
- * Metrics-first: numbers before copy, always.
- * ─────────────────────────────────────────────────────────────────────────────
- */
-
 "use client";
+// components/BentoFeaturedProjects.tsx — Proof Engine
+// ─────────────────────────────────────────────────────────────────────────────
+// Framer Motion:
+//   • whileInView staggered reveals for all cards
+//   • spring physics on hover (lift + glow)
+//   • layout animations for metric expansion
+//   • scroll-driven horizontal parallax on feature card
+// ─────────────────────────────────────────────────────────────────────────────
 
-import React from "react";
-import Link  from "next/link";
-import { LiquidGlassCard } from "@/components/LiquidGlassCard";
-import { MetricBadge }     from "@/components/MetricBadge";
-import { PROJECTS }        from "@/lib/portfolio-data";
-import type { Project }    from "@/lib/portfolio-data";
-import { cn }              from "@/lib/utils";
+import {
+  motion,
+  useReducedMotion,
+  useScroll,
+  useTransform,
+} from "framer-motion";
+import { useRef } from "react";
+import Link from "next/link";
+import { cn } from "@/lib/utils";
+import { PROJECTS } from "@/lib/portfolio-data";
+import type { Project } from "@/lib/portfolio-data";
+import {
+  staggerContainer,
+  staggerSlow,
+  fadeUp,
+  bentoCard,
+  liquidCard,
+  springs,
+} from "@/lib/motion";
 
-// ── Stack tag ────────────────────────────────────────────────────────────────
+// ── Accent config ─────────────────────────────────────────────────────────────
+
+const accentConfig = {
+  cyan:   {
+    cardClass:   "liquid-glass-cyan",
+    textColor:   "var(--accent-primary)",
+    dimColor:    "var(--accent-primary-dim)",
+  },
+  violet: {
+    cardClass:   "liquid-glass-violet",
+    textColor:   "var(--accent-secondary)",
+    dimColor:    "var(--accent-secondary-dim)",
+  },
+  teal:   {
+    cardClass:   "liquid-glass-teal",
+    textColor:   "var(--accent-fintech)",
+    dimColor:    "var(--accent-fintech-dim)",
+  },
+};
+
+// ── Stack tag ─────────────────────────────────────────────────────────────────
 
 function StackTag({ name }: { name: string }) {
   return (
-    <span className="badge badge-secondary font-mono text-[0.65rem]">
+    <motion.span
+      className="badge badge-secondary font-mono text-[0.6rem]"
+      whileHover={{ scale: 1.06 }}
+      transition={springs.snappy}
+    >
       {name}
-    </span>
+    </motion.span>
   );
 }
 
-// ── Project metric row ────────────────────────────────────────────────────────
+// ── Metric block ──────────────────────────────────────────────────────────────
 
-function ProjectMetricRow({
-  metrics,
-  compact = false,
+function MetricBlock({
+  value,
+  label,
+  type,
+  accentColor,
 }: {
-  metrics: Project["metrics"];
-  compact?: boolean;
+  value:       string;
+  label:       string;
+  type:        string;
+  accentColor: string;
 }) {
-  const displayMetrics = compact ? metrics.slice(0, 3) : metrics;
+  const typeColors: Record<string, string> = {
+    live:        "var(--metric-live)",
+    documented:  "var(--metric-documented)",
+    backtested:  "var(--metric-backtested)",
+    snapshot:    "var(--metric-snapshot)",
+  };
+
   return (
-    <div
-      className={cn(
-        "grid gap-3",
-        compact
-          ? "grid-cols-3"
-          : "grid-cols-2 sm:grid-cols-3"
-      )}
-    >
-      {displayMetrics.map((m) => (
-        <div key={m.label} className="flex flex-col gap-0.5">
-          <span className="font-mono font-extrabold text-metric text-primary leading-none">
-            {m.value}
-          </span>
-          <span className="text-caption text-muted leading-tight">{m.label}</span>
-          <MetricBadge type={m.type} className="mt-0.5 self-start" />
-        </div>
-      ))}
+    <div className="flex flex-col gap-0.5">
+      <span
+        className="font-mono font-extrabold leading-none"
+        style={{
+          fontSize: "clamp(1.25rem, 2.5vw, 1.75rem)",
+          color: accentColor,
+        }}
+      >
+        {value}
+      </span>
+      <span className="text-caption text-muted leading-tight">{label}</span>
+      <span
+        className="text-[0.55rem] font-bold uppercase tracking-widest mt-0.5"
+        style={{ color: typeColors[type] ?? typeColors["snapshot"] }}
+      >
+        {type}
+      </span>
     </div>
   );
 }
 
-// ── Feature card (SabiScore) ─────────────────────────────────────────────────
+// ── Feature project card — large, 8-col ──────────────────────────────────────
 
-function FeatureProjectCard({ project }: { project: Project }) {
+function FeatureCard({ project }: { project: Project }) {
+  const prefersReduced = useReducedMotion();
+  const cardRef = useRef<HTMLDivElement>(null);
+  const accent = accentConfig[project.accent];
+
+  // Subtle horizontal parallax on scroll
+  const { scrollYProgress } = useScroll({
+    target: cardRef,
+    offset: ["start end", "end start"],
+  });
+  const parallaxX = useTransform(scrollYProgress, [0, 1], ["1%", "-1%"]);
+
   return (
-    <LiquidGlassCard
-      accent={project.accent}
-      size="feature"
-      interactive
-      depth
-      className="col-span-12 lg:col-span-8 min-h-[420px] flex flex-col justify-between gap-6"
-      data-reveal="scale"
+    <motion.div
+      ref={cardRef}
+      className={cn(
+        "col-span-12 lg:col-span-8",
+        "liquid-glass",
+        accent.cardClass,
+        "bento-cell noise-overlay",
+        "flex flex-col justify-between gap-6 min-h-[420px]"
+      )}
+      variants={bentoCard}
+      whileHover={
+        prefersReduced
+          ? {}
+          : {
+              y: -5,
+              boxShadow: "var(--shadow-liquid-3d-hover)",
+            }
+      }
+      transition={springs.liquid}
+      style={prefersReduced ? {} : { x: parallaxX }}
     >
       {/* Header */}
       <div className="flex flex-col gap-3">
@@ -78,80 +147,224 @@ function FeatureProjectCard({ project }: { project: Project }) {
             <p className="text-caption text-muted mb-1">{project.tagline}</p>
             <h3 className="text-headline text-primary">{project.title}</h3>
           </div>
-          <div className="flex flex-wrap gap-2">
-            {project.stack.map((s) => <StackTag key={s} name={s} />)}
-          </div>
+          <motion.div
+            className="flex flex-wrap gap-1.5"
+            variants={staggerContainer}
+          >
+            {project.stack.map((s) => (
+              <StackTag key={s} name={s} />
+            ))}
+          </motion.div>
         </div>
         <p className="text-body text-secondary max-w-2xl">{project.description}</p>
       </div>
 
-      {/* Metrics */}
+      {/* Metrics grid — depth layer */}
       <div className="liquid-depth-layer p-4 sm:p-6">
-        <p className="text-caption text-muted mb-4">Production Metrics</p>
-        <ProjectMetricRow metrics={project.metrics} />
+        <p className="text-caption text-muted mb-4 uppercase tracking-widest">
+          Production Metrics
+        </p>
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+          {project.metrics.map((m) => (
+            <MetricBlock
+              key={m.label}
+              value={m.value}
+              label={m.label}
+              type={m.type}
+              accentColor={accent.textColor}
+            />
+          ))}
+        </div>
       </div>
 
       {/* Links */}
       <div className="flex flex-wrap gap-3">
         {project.links.caseStudy && (
-          <Link href={project.links.caseStudy} className="btn btn-primary">
-            View Full Case Study →
-          </Link>
+          <motion.div
+            whileHover={prefersReduced ? {} : { scale: 1.03, y: -1 }}
+            whileTap={prefersReduced ? {} : { scale: 0.97 }}
+            transition={springs.snappy}
+          >
+            <Link href={project.links.caseStudy} className="btn btn-primary">
+              View Full Case Study →
+            </Link>
+          </motion.div>
         )}
         {project.links.demo && (
-          <a href={project.links.demo} target="_blank" rel="noopener noreferrer" className="btn btn-outline">
+          <motion.a
+            href={project.links.demo}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn btn-outline"
+            whileHover={prefersReduced ? {} : { scale: 1.02 }}
+            whileTap={prefersReduced ? {} : { scale: 0.97 }}
+            transition={springs.snappy}
+          >
             Live Demo ↗
-          </a>
+          </motion.a>
         )}
         {project.links.repo && (
-          <a href={project.links.repo} target="_blank" rel="noopener noreferrer" className="btn btn-ghost">
+          <motion.a
+            href={project.links.repo}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn btn-ghost"
+            whileHover={prefersReduced ? {} : { scale: 1.02 }}
+            transition={springs.snappy}
+          >
             GitHub ↗
-          </a>
+          </motion.a>
         )}
       </div>
-    </LiquidGlassCard>
+    </motion.div>
+  );
+}
+
+// ── Side metric bento — 4-col ─────────────────────────────────────────────────
+
+function SideMetrics() {
+  const prefersReduced = useReducedMotion();
+
+  const cells = [
+    {
+      label:    "Active Users",
+      value:    "350+",
+      sub:      "Across live projects",
+      accent:   "cyan",
+      gradient: "text-gradient-accent",
+    },
+    {
+      label:    "Avg. API Latency",
+      value:    "87ms",
+      sub:      "p50 production",
+      accent:   "teal",
+      gradient: "text-gradient-fintech",
+    },
+    {
+      label:    "Test Coverage",
+      value:    "90%+",
+      sub:      "Hashablanca ZK platform",
+      accent:   "violet",
+      gradient: "",
+      color:    "var(--accent-secondary)",
+    },
+  ] as const;
+
+  return (
+    <motion.div
+      className="hidden lg:flex col-span-4 flex-col gap-[var(--bento-gap)]"
+      variants={staggerSlow}
+    >
+      {cells.map((cell, i) => (
+        <motion.div
+          key={cell.label}
+          className={cn(
+            "liquid-glass flex flex-col gap-2 bento-cell-sm flex-1",
+            cell.accent === "cyan"   && "liquid-glass-cyan",
+            cell.accent === "teal"   && "liquid-glass-teal",
+            cell.accent === "violet" && "liquid-glass-violet"
+          )}
+          variants={liquidCard}
+          whileHover={
+            prefersReduced
+              ? {}
+              : { y: -3, scale: 1.01 }
+          }
+          transition={springs.liquid}
+        >
+          <p className="text-caption text-muted">{cell.label}</p>
+          <span
+            className={cn(
+              "font-mono font-extrabold leading-none",
+              cell.gradient
+            )}
+            style={{
+              fontSize: "clamp(2rem, 4vw, 3rem)",
+              color: "color" in cell ? cell.color : undefined,
+            }}
+          >
+            {cell.value}
+          </span>
+          <p className="text-caption text-muted">{cell.sub}</p>
+        </motion.div>
+      ))}
+    </motion.div>
   );
 }
 
 // ── Supporting card ───────────────────────────────────────────────────────────
 
-function SupportingProjectCard({
+function SupportingCard({
   project,
-  revealDir,
+  index,
 }: {
-  project:    Project;
-  revealDir:  "left" | "right";
+  project: Project;
+  index:   number;
 }) {
+  const prefersReduced = useReducedMotion();
+  const accent = accentConfig[project.accent];
+
   return (
-    <LiquidGlassCard
-      accent={project.accent}
-      size="md"
-      interactive
-      className="col-span-12 sm:col-span-6 lg:col-span-4 flex flex-col justify-between gap-5 min-h-[320px]"
-      data-reveal={revealDir}
+    <motion.div
+      className={cn(
+        "col-span-12 sm:col-span-6",
+        "liquid-glass",
+        accent.cardClass,
+        "bento-cell",
+        "flex flex-col justify-between gap-4 min-h-[300px]"
+      )}
+      variants={bentoCard}
+      whileHover={
+        prefersReduced
+          ? {}
+          : { y: -4, boxShadow: "var(--shadow-liquid-3d-hover)" }
+      }
+      transition={springs.liquid}
     >
       <div className="flex flex-col gap-2">
         <p className="text-caption text-muted">{project.tagline}</p>
         <h3 className="text-headline text-primary">{project.title}</h3>
-        <p className="text-body text-secondary">{project.description}</p>
+        <p className="text-body text-secondary line-clamp-3">
+          {project.description}
+        </p>
       </div>
 
-      <div className="flex flex-wrap gap-2">
-        {project.stack.map((s) => <StackTag key={s} name={s} />)}
+      <div className="flex flex-wrap gap-1.5">
+        {project.stack.map((s) => (
+          <StackTag key={s} name={s} />
+        ))}
       </div>
 
-      <ProjectMetricRow metrics={project.metrics} compact />
+      <div className="grid grid-cols-3 gap-3">
+        {project.metrics.slice(0, 3).map((m) => (
+          <MetricBlock
+            key={m.label}
+            value={m.value}
+            label={m.label}
+            type={m.type}
+            accentColor={accent.textColor}
+          />
+        ))}
+      </div>
 
       {project.links.caseStudy && (
-        <Link href={project.links.caseStudy} className="btn btn-ghost self-start">
-          Read Case Study →
-        </Link>
+        <motion.div
+          whileHover={prefersReduced ? {} : { x: 3 }}
+          transition={springs.snappy}
+        >
+          <Link
+            href={project.links.caseStudy}
+            className="btn btn-ghost self-start text-sm"
+          >
+            Read Case Study →
+          </Link>
+        </motion.div>
       )}
-    </LiquidGlassCard>
+    </motion.div>
   );
 }
 
-// ── Main export ───────────────────────────────────────────────────────────────
+// ── Section ───────────────────────────────────────────────────────────────────
 
 export default function BentoFeaturedProjects() {
   const [featured, ...rest] = PROJECTS;
@@ -163,72 +376,68 @@ export default function BentoFeaturedProjects() {
       aria-labelledby="projects-heading"
     >
       {/* Section header */}
-      <div className="mb-12" data-reveal>
-        <p className="text-caption text-muted mb-2">Proof Engine</p>
-        <h2 id="projects-heading" className="text-headline text-gradient-kinetic">
+      <motion.div
+        className="mb-12"
+        variants={staggerContainer}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.3 }}
+      >
+        <motion.p className="text-caption text-muted mb-2" variants={fadeUp}>
+          Proof Engine
+        </motion.p>
+        <motion.h2
+          id="projects-heading"
+          className="text-headline text-gradient-kinetic"
+          variants={fadeUp}
+        >
           Featured Builds
-        </h2>
-        <p className="text-subhead text-secondary mt-3 max-w-2xl">
-          Real products where I owned the full stack — from data pipelines and ML models
-          to APIs and frontends. Everything here shipped to real users.
-        </p>
-      </div>
+        </motion.h2>
+        <motion.p
+          className="text-subhead text-secondary mt-3 max-w-2xl"
+          variants={fadeUp}
+        >
+          Real products where I owned the full stack — from data pipelines and ML
+          models to APIs and frontends. Everything here shipped to real users.
+        </motion.p>
+      </motion.div>
 
       {/* Bento grid */}
-      <div className="bento-grid">
-        {/* Feature card */}
-        <FeatureProjectCard project={featured} />
-
-        {/* Side metric bento — desktop only */}
-        <div
-          className="hidden lg:flex col-span-4 flex-col gap-[var(--bento-gap)]"
-          data-reveal="right"
-        >
-          <LiquidGlassCard accent="cyan" size="sm" className="flex flex-col gap-2">
-            <p className="text-caption text-muted">Active Users</p>
-            <span className="text-kinetic-metric font-mono font-extrabold text-gradient-accent leading-none">
-              350+
-            </span>
-            <p className="text-caption text-muted">Across live projects</p>
-          </LiquidGlassCard>
-          <LiquidGlassCard accent="teal" size="sm" className="flex flex-col gap-2">
-            <p className="text-caption text-muted">Avg. API Latency</p>
-            <span className="text-kinetic-metric font-mono font-extrabold text-gradient-fintech leading-none">
-              87ms
-            </span>
-            <p className="text-caption text-muted">p50 production</p>
-          </LiquidGlassCard>
-          <LiquidGlassCard accent="violet" size="sm" className="flex flex-col gap-2 flex-1">
-            <p className="text-caption text-muted">Test Coverage</p>
-            <span className="text-kinetic-metric font-mono font-extrabold leading-none" style={{ color: "var(--accent-secondary)" }}>
-              90%+
-            </span>
-            <p className="text-caption text-muted">Hashablanca ZK platform</p>
-          </LiquidGlassCard>
-        </div>
-
-        {/* Supporting cards */}
+      <motion.div
+        className="bento-grid"
+        variants={staggerSlow}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.1 }}
+      >
+        <FeatureCard project={featured!} />
+        <SideMetrics />
         {rest.map((project, i) => (
-          <SupportingProjectCard
-            key={project.id}
-            project={project}
-            revealDir={i % 2 === 0 ? "left" : "right"}
-          />
+          <SupportingCard key={project.id} project={project} index={i} />
         ))}
-      </div>
+      </motion.div>
 
       {/* CTA */}
-      <div
-        className="mt-12 flex flex-col items-center gap-4 text-center"
-        data-reveal
+      <motion.div
+        className="mt-14 flex flex-col items-center gap-4 text-center"
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.5 }}
+        transition={springs.default}
       >
         <p className="text-subhead text-secondary">
           Have a production ML or AI product in mind?
         </p>
-        <Link href="#contact" className="btn btn-primary">
-          Let's talk about your use case →
-        </Link>
-      </div>
+        <motion.div
+          whileHover={{ scale: 1.04, y: -1 }}
+          whileTap={{ scale: 0.97 }}
+          transition={springs.snappy}
+        >
+          <Link href="#contact" className="btn btn-primary">
+            Let&apos;s talk about your use case →
+          </Link>
+        </motion.div>
+      </motion.div>
     </section>
   );
 }
