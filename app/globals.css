@@ -1813,3 +1813,96 @@
     display:       block;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   PHASE 3 ADDITIONS — append to bottom of globals.css
+   RULE: Extend only. No deletions. No regressions.
+   These additions are ADDITIVE — paste after the existing @media print block.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ── NEW: Skills map node ring utility ──────────────────────────────────
+   Used by LiquidGlassSkillsMap for selected-state ring.
+   CSS ring that honours the node's dynamic --node-accent color.          */
+@layer utilities {
+  .ring-node {
+    box-shadow:
+      0 0 0 2px var(--node-accent, var(--accent-primary)),
+      0 0 24px  var(--node-accent-glow, rgba(0, 217, 255, 0.26));
+  }
+}
+
+/* ── NEW: Contact form select arrow ─────────────────────────────────────
+   Native <select> arrow override for dark surfaces.                      */
+@layer base {
+  select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' stroke='%235a5a6a' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E");
+    background-repeat:   no-repeat;
+    background-position: right 0.875rem center;
+    padding-right:       2.5rem;
+    cursor:              pointer;
+  }
+  select option {
+    background: var(--bg-elevated);
+    color:      var(--text-primary);
+  }
+}
+
+/* ── NEW: Activity feed dot — size variant used in LiveActivity ─────────
+   .metric-dot already exists; this overrides size for inline use.        */
+@layer components {
+  .live-dot {
+    display:        inline-flex;
+    align-items:    center;
+    justify-content:center;
+    width:          0.5rem;
+    height:         0.5rem;
+    border-radius:  50%;
+    background:     currentColor;
+    flex-shrink:    0;
+  }
+}
+
+/* ── NEW: Skill node drag cursor ─────────────────────────────────────────
+   Applied inline via Tailwind — documented here for clarity.
+   cursor-grab and cursor-grabbing are Tailwind v3+ utilities.            */
+
+/* ── NEW: Bento tight-metric variant ────────────────────────────────────
+   3-up metric row inside a liquid glass card.                            */
+@layer components {
+  .bento-metric-row {
+    display:               grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap:                   var(--bento-gap);
+  }
+  .bento-metric-row-2 {
+    display:               grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap:                   var(--bento-gap);
+  }
+}
+
+/* ── NEW: Form submit spinner ────────────────────────────────────────────
+   .animate-orbit already defined — this adds the border-based spinner.  */
+@layer utilities {
+  .spinner {
+    border:        2px solid rgba(255, 255, 255, 0.15);
+    border-top-color: var(--accent-primary);
+    border-radius: 50%;
+    animation:     oscar-orbit 0.7s linear infinite;
+  }
+}
+
+/* ── NEW: Section divider — subtle cyan line between major sections ──────
+   Apply as <hr className="section-divider" /> between page sections.    */
+@layer utilities {
+  .section-divider {
+    border:        none;
+    height:        1px;
+    background:    linear-gradient(90deg,
+                     transparent 0%,
+                     rgba(0, 217, 255, 0.12) 30%,
+                     rgba(124, 58, 237, 0.10) 70%,
+                     transparent 100%);
+    margin:        0;
+  }
+}
