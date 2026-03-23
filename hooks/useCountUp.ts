@@ -1,23 +1,20 @@
-/**
- * useCountUp.ts
- * ─────────────────────────────────────────────────────────────────────────────
- * Animates a number from 0 → target using requestAnimationFrame.
- * Respects prefers-reduced-motion — skips animation if user prefers.
- * Uses easeOutExpo for snappy, decelerating feel matching the design token.
- * ─────────────────────────────────────────────────────────────────────────────
- */
-
 "use client";
+// hooks/useCountUp.ts
+// ─────────────────────────────────────────────────────────────────────────────
+// Animates a number from 0 → target using requestAnimationFrame.
+// Respects prefers-reduced-motion — skips to final value instantly.
+// Uses easeOutExpo for a snappy, decelerating feel.
+// ─────────────────────────────────────────────────────────────────────────────
 
 import { useEffect, useRef, useState } from "react";
 
-type UseCountUpOptions = {
+interface UseCountUpOptions {
   target:    number;
-  duration?: number;  // ms — default 1800
-  decimals?: number;  // decimal places — default 0
-  delay?:    number;  // ms before start — default 0
-  start?:    boolean; // gate — only runs when true (wire to IntersectionObserver)
-};
+  duration?: number;   // ms — default 1800
+  decimals?: number;   // decimal places — default 0
+  delay?:    number;   // ms before animation starts
+  start?:    boolean;  // gate — only animates when true
+}
 
 function easeOutExpo(t: number): number {
   return t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
@@ -29,13 +26,12 @@ export function useCountUp({
   decimals = 0,
   delay    = 0,
   start    = true,
-}: UseCountUpOptions) {
-  const [count, setCount]   = useState(0);
-  const rafRef               = useRef<number | null>(null);
-  const startTimeRef         = useRef<number | null>(null);
+}: UseCountUpOptions): string | number {
+  const [count, setCount] = useState(0);
+  const rafRef             = useRef<number | null>(null);
+  const startTimeRef       = useRef<number | null>(null);
 
   useEffect(() => {
-    // Respect prefers-reduced-motion — jump to final value immediately
     const prefersReduced =
       typeof window !== "undefined" &&
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -54,7 +50,6 @@ export function useCountUp({
         const progress = Math.min(elapsed / duration, 1);
         const eased    = easeOutExpo(progress);
         const current  = parseFloat((eased * target).toFixed(decimals));
-
         setCount(current);
 
         if (progress < 1) {
