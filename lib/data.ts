@@ -1,408 +1,803 @@
-// lib/data.ts
-// ─────────────────────────────────────────────────────────────────────
-// Single source of truth for all portfolio content.
-// Components consume typed exports — never hardcode strings in JSX.
-// ─────────────────────────────────────────────────────────────────────
+/**
+ * lib/data.ts — Portfolio Single Source of Truth
+ * Oscar Ndugbu | scardubu.dev
+ *
+ * Rule: All content lives here. Zero hardcoded strings in components.
+ * Update once → propagates everywhere.
+ */
 
-export type MetricType = 'live' | 'documented' | 'backtested' | 'snapshot'
-export type AccentType = 'primary' | 'secondary' | 'fintech' | 'warn'
+// ─── Types ───────────────────────────────────────────────────────────────────
 
-// ── Hero ──────────────────────────────────────────────────────────────
+export type MetricVariant = "live" | "documented" | "backtested" | "snapshot";
 
-export const hero = {
-  name:       'Oscar Ndugbu',
-  role:       'Principal Backend Engineer',
-  tagline:    'Platform Architect',
-  descriptor: 'I build the infrastructure that moves money, makes decisions, and scales to millions — in Lagos and beyond.',
-  availability:'Open to Senior ML / Backend Roles & Consulting',
-  location:   'Lagos, Nigeria',
-  typewriterPhrases: [
-    'Distributed Systems.',
-    'Fintech Infrastructure.',
-    'ML Pipelines.',
-    'Blockchain Protocols.',
-    'Government-Scale ETL.',
-    'API Platforms.',
-  ],
-  cta: {
-    primary:   { label: 'View My Work', href: '#projects'  },
-    secondary: { label: 'Let\'s Talk',  href: '#contact'   },
-    resume:    { label: 'Download CV',  href: '/resume.pdf' },
-  },
-  stats: [
-    { value: '10+',  label: 'Years Engineering' },
-    { value: '3',    label: 'Production Platforms' },
-    { value: '71%',  label: 'ML Model Accuracy' },
-    { value: '∞',    label: 'Lines of Intent' },
-  ],
-} as const
+export interface HeroMetric {
+  value: string;
+  label: string;
+  sublabel?: string;
+}
 
-// ── Projects ──────────────────────────────────────────────────────────
+export interface ProjectMetric {
+  value: string;
+  label: string;
+  sublabel?: string;
+  variant: MetricVariant;
+}
 
 export interface Project {
-  id:          string
-  name:        string
-  tagline:     string
-  description: string
-  accent:      AccentType
-  tags:        string[]
-  metrics:     { label: string; value: string; type: MetricType }[]
-  links:       { demo?: string; repo?: string; docs?: string }
-  featured:    boolean
-  status:      'live' | 'beta' | 'development'
-  colSpan:     8 | 6 | 4   // bento column span on 12-col grid
+  id: string;
+  title: string;
+  subtitle: string;
+  description: string;
+  longDescription: string;
+  tags: string[];
+  accent: "cyan" | "violet" | "teal";
+  featured: boolean;
+  metrics: ProjectMetric[];
+  links: {
+    live?: string;
+    demo?: string;
+    repo?: string;
+    caseStudy?: string;
+  };
+  githubStats?: {
+    stars: number;
+    forks: number;
+    language: string;
+    lastCommit: string;
+  };
+  status: "live" | "in-progress" | "archived";
 }
-
-export const projects: Project[] = [
-  {
-    id:          'taxbridge',
-    name:        'TaxBridge',
-    tagline:     'Mobile-First Nigerian Tax Compliance Platform',
-    description: 'End-to-end SME tax platform covering NRS 2026 e-invoicing compliance, AI-powered OCR receipt scanning, offline-first sync with conflict resolution, and real-time integrations with Paystack, Remita, Flutterwave, Youverify, and Africa\'s Talking. Built for the 37M-strong informal economy.',
-    accent:      'fintech',
-    tags:        ['Fastify 5', 'Prisma', 'PostgreSQL', 'Redis', 'BullMQ', 'Expo SDK 54', 'React Native', 'NRS 2026', 'Paystack', 'AI/OCR'],
-    metrics: [
-      { label: 'VAT Compliance Rate',    value: '100%', type: 'documented'  },
-      { label: 'OCR Receipt Accuracy',   value: '91%',  type: 'live'        },
-      { label: 'Offline Sync Conflicts', value: '<0.3%',type: 'live'        },
-      { label: 'API Latency (p95)',       value: '38ms', type: 'live'        },
-    ],
-    links:   { docs: 'https://scardubu.dev/taxbridge' },
-    featured: true,
-    status:  'beta',
-    colSpan: 8,
-  },
-  {
-    id:          'sabiscore',
-    name:        'SabiScore',
-    tagline:     'Ensemble Credit Intelligence Engine',
-    description: 'Production ML system combining XGBoost, LightGBM, and CatBoost in a stacking ensemble for alternative credit scoring of thin-file borrowers. FastAPI inference layer with sub-50ms response time. Trained on 1.2M anonymized loan records.',
-    accent:      'secondary',
-    tags:        ['XGBoost', 'LightGBM', 'CatBoost', 'FastAPI', 'Python', 'Sklearn', 'PostgreSQL', 'Redis'],
-    metrics: [
-      { label: 'Ensemble Accuracy',  value: '71%',  type: 'backtested' },
-      { label: 'AUC-ROC Score',      value: '0.89', type: 'backtested' },
-      { label: 'Inference Latency',  value: '42ms', type: 'live'       },
-      { label: 'Records Processed',  value: '1.2M', type: 'snapshot'   },
-    ],
-    links:   { docs: 'https://scardubu.dev/sabiscore' },
-    featured: true,
-    status:  'beta',
-    colSpan: 4,
-  },
-  {
-    id:          'hashablanca',
-    name:        'Hashablanca',
-    tagline:     'Multi-Chain Encrypted Data Transfer Protocol',
-    description: 'Cryptographically secure cross-chain data layer enabling verifiable encrypted payload transfer across EVM-compatible networks. Built on top of ZK-proof verification with IPFS for decentralized storage. Targets compliance with NDPR (Nigerian Data Protection Regulation).',
-    accent:      'secondary',
-    tags:        ['Solidity', 'ZK-SNARKs', 'Ethers.js', 'IPFS', 'Node.js', 'TypeScript', 'EVM'],
-    metrics: [
-      { label: 'Verification Time',  value: '1.8s', type: 'backtested' },
-      { label: 'Encryption Strength','value': 'AES-256', type: 'documented' },
-      { label: 'Chains Supported',   value: '4',    type: 'live'       },
-    ],
-    links:   { repo: 'https://github.com/Scardubu/hashablanca' },
-    featured: true,
-    status:  'development',
-    colSpan: 6,
-  },
-  {
-    id:          'ubec-pipeline',
-    name:        'UBEC Statistical Pipeline',
-    tagline:     'Government-Scale Education Data Platform',
-    description: 'ETL system processing nationwide basic education statistics for 36 states and FCT. Powers Power BI dashboards consumed by policymakers and World Bank education officers. Handles 24M+ enrollment records annually with automated anomaly detection.',
-    accent:      'warn',
-    tags:        ['Python', 'PostgreSQL', 'Power BI', 'DAX', 'ETL', 'pandas', 'SQLAlchemy'],
-    metrics: [
-      { label: 'Records/Year',         value: '24M+', type: 'documented' },
-      { label: 'Data Accuracy',         value: '99.4%',type: 'live'       },
-      { label: 'Dashboard Users',       value: '200+', type: 'snapshot'   },
-      { label: 'Processing Reduction',  value: '-68%', type: 'documented' },
-    ],
-    links:   {},
-    featured: false,
-    status:  'live',
-    colSpan: 6,
-  },
-]
-
-// ── Skills ────────────────────────────────────────────────────────────
 
 export interface Skill {
-  id:         string
-  name:       string
-  category:   'backend' | 'ml' | 'blockchain' | 'infra' | 'data' | 'frontend'
-  level:      1 | 2 | 3 | 4 | 5  // 5 = expert
-  color:      string  // CSS var token name (without --)
-  connections:string[]  // skill ids this connects to
+  id: string;
+  name: string;
+  category: "ml" | "backend" | "frontend" | "devops" | "blockchain";
+  level: number; // 1–5
+  icon: string;
+  description: string;
+  usedIn?: string[]; // project IDs
 }
 
-export const skills: Skill[] = [
-  // ── Backend
-  { id: 'node',        name: 'Node.js',       category: 'backend',    level: 5, color: 'accent-fintech',   connections: ['fastify', 'typescript', 'redis'] },
-  { id: 'fastify',     name: 'Fastify 5',     category: 'backend',    level: 5, color: 'accent-fintech',   connections: ['node', 'prisma', 'bullmq'] },
-  { id: 'typescript',  name: 'TypeScript',    category: 'backend',    level: 5, color: 'accent-primary',   connections: ['node', 'react', 'fastify'] },
-  { id: 'java',        name: 'Java / Spring', category: 'backend',    level: 4, color: 'accent-warn',      connections: ['postgres'] },
-  { id: 'python',      name: 'Python',        category: 'backend',    level: 4, color: 'accent-primary',   connections: ['fastapi', 'xgboost', 'pandas'] },
-  { id: 'fastapi',     name: 'FastAPI',       category: 'backend',    level: 4, color: 'accent-fintech',   connections: ['python', 'redis'] },
-  // ── Data / Infra
-  { id: 'postgres',    name: 'PostgreSQL',    category: 'infra',      level: 5, color: 'accent-primary',   connections: ['prisma', 'fastify'] },
-  { id: 'redis',       name: 'Redis',         category: 'infra',      level: 5, color: 'accent-danger',    connections: ['bullmq', 'fastify'] },
-  { id: 'bullmq',      name: 'BullMQ',        category: 'infra',      level: 4, color: 'accent-warn',      connections: ['redis', 'node'] },
-  { id: 'prisma',      name: 'Prisma ORM',    category: 'infra',      level: 5, color: 'accent-fintech',   connections: ['postgres', 'fastify'] },
-  { id: 'docker',      name: 'Docker',        category: 'infra',      level: 4, color: 'accent-primary',   connections: ['postgres', 'redis'] },
-  // ── ML
-  { id: 'xgboost',     name: 'XGBoost',       category: 'ml',         level: 4, color: 'accent-secondary', connections: ['python', 'sklearn'] },
-  { id: 'lgbm',        name: 'LightGBM',      category: 'ml',         level: 4, color: 'accent-secondary', connections: ['python', 'sklearn'] },
-  { id: 'catboost',    name: 'CatBoost',      category: 'ml',         level: 4, color: 'accent-secondary', connections: ['python', 'sklearn'] },
-  { id: 'sklearn',     name: 'Scikit-learn',  category: 'ml',         level: 5, color: 'accent-secondary', connections: ['xgboost', 'lgbm', 'catboost'] },
-  { id: 'pandas',      name: 'Pandas / NumPy',category: 'data',       level: 5, color: 'accent-primary',   connections: ['python', 'sklearn'] },
-  // ── Blockchain
-  { id: 'solidity',    name: 'Solidity',      category: 'blockchain', level: 3, color: 'accent-secondary', connections: ['ethers', 'ipfs'] },
-  { id: 'ethers',      name: 'Ethers.js',     category: 'blockchain', level: 4, color: 'accent-secondary', connections: ['solidity', 'node'] },
-  { id: 'ipfs',        name: 'IPFS',          category: 'blockchain', level: 3, color: 'accent-secondary', connections: ['solidity'] },
-  // ── Frontend
-  { id: 'react',       name: 'React / Next',  category: 'frontend',   level: 4, color: 'accent-primary',   connections: ['typescript', 'node'] },
-  { id: 'powerbi',     name: 'Power BI / DAX',category: 'data',       level: 5, color: 'accent-warn',      connections: ['postgres', 'pandas'] },
-]
-
-// ── Production Patterns ───────────────────────────────────────────────
-
-export interface Pattern {
-  id:          string
-  title:       string
-  description: string
-  code:        string
-  language:    string
-  tags:        string[]
-  accent:      AccentType
+export interface ProductionPattern {
+  id: string;
+  title: string;
+  subtitle: string;
+  description: string;
+  codeSnippet: string;
+  language: string;
+  tradeoffs: { pro: string; con: string }[];
+  tags: string[];
+  accent: "cyan" | "violet" | "teal";
 }
 
-export const patterns: Pattern[] = [
-  {
-    id:    'multi-tenant-rls',
-    title: 'PostgreSQL Multi-Tenant RLS',
-    description: 'Row Level Security via application-set JWT claims — zero tenant bleed without application-layer guards. Used across TaxBridge to isolate 3,000+ SME accounts.',
-    code: `-- Set current tenant on connection
-SET LOCAL app.current_tenant = '{{tenant_id}}';
-
--- Policy: users only see their tenant's data
-CREATE POLICY tenant_isolation ON invoices
-  USING (tenant_id = current_setting('app.current_tenant')::uuid);
-
--- Verify isolation in a single query
-ALTER TABLE invoices ENABLE ROW LEVEL SECURITY;`,
-    language: 'sql',
-    tags: ['PostgreSQL', 'Multi-tenancy', 'Security', 'RLS'],
-    accent: 'fintech',
-  },
-  {
-    id:    'bullmq-idempotent',
-    title: 'Idempotent BullMQ Job Queue',
-    description: 'Exactly-once delivery using Redis SETNX for deduplication keys. Critical for NRS e-invoice submission — prevents double-submission even on network retries.',
-    code: `// Idempotent job: deduplicate by correlationId
-const jobId = \`invoice:\${correlationId}\`;
-await queue.add('submit-invoice', payload, {
-  jobId,                  // Redis key — natural dedup
-  attempts: 3,
-  backoff: { type: 'exponential', delay: 2000 },
-  removeOnComplete: { age: 3600 },
-  removeOnFail:     false, // keep for audit trail
-});`,
-    language: 'typescript',
-    tags: ['BullMQ', 'Redis', 'Queue', 'Idempotency'],
-    accent: 'primary',
-  },
-  {
-    id:    'ensemble-stacking',
-    title: 'ML Ensemble Stacking Pattern',
-    description: 'Three-model stacking with calibrated probabilities and cross-validated meta-learner. Powers SabiScore\'s 71% accuracy on thin-file credit data.',
-    code: `from sklearn.calibration import CalibratedClassifierCV
-from sklearn.linear_model import LogisticRegression
-
-# Base learners — diverse inductive biases
-base = [('xgb', xgb_clf), ('lgbm', lgbm_clf), ('cat', cat_clf)]
-
-# Out-of-fold predictions as meta-features
-meta_X = cross_val_predict(
-    StackingClassifier(base, passthrough=True),
-    X_train, y_train, cv=5, method='predict_proba'
-)
-
-# Calibrated meta-learner prevents overconfident scores
-meta = CalibratedClassifierCV(LogisticRegression(), cv='prefit')
-meta.fit(meta_X, y_train)`,
-    language: 'python',
-    tags: ['XGBoost', 'LightGBM', 'Stacking', 'Calibration'],
-    accent: 'secondary',
-  },
-  {
-    id:    'offline-sync-crdt',
-    title: 'Offline-First CRDT Sync',
-    description: 'Last-Write-Wins register with vector clocks for conflict detection. TaxBridge handles <0.3% conflict rate across 50k monthly offline transactions in low-connectivity Lagos environments.',
-    code: `// Vector clock merge — deterministic conflict resolution
-function mergeRecords<T extends Timestamped>(
-  local: T, remote: T, clock: VectorClock
-): T {
-  const dominated = clock.dominates(remote.vclock, local.vclock)
-  if (dominated) return remote   // remote wins
-  if (clock.dominates(local.vclock, remote.vclock)) return local
-  // Concurrent: use wall-clock + nodeId tiebreak
-  return local.updatedAt >= remote.updatedAt ? local : remote
-}`,
-    language: 'typescript',
-    tags: ['CRDT', 'Offline-First', 'Sync', 'Conflict Resolution'],
-    accent: 'fintech',
-  },
-]
-
-// ── Live Activity ─────────────────────────────────────────────────────
-
-export interface ActivityEvent {
-  id:        string
-  type:      'commit' | 'deploy' | 'pr' | 'release' | 'metric' | 'open-source'
-  title:     string
-  subtitle:  string
-  timeAgo:   string
-  accent:    AccentType
+export interface ActivityItem {
+  id: string;
+  type: "commit" | "deploy" | "pr" | "release" | "review";
+  project: string;
+  message: string;
+  timestamp: string; // relative e.g. "2h ago"
+  branch?: string;
+  accent: "cyan" | "violet" | "teal" | "warn";
 }
-
-export const activityEvents: ActivityEvent[] = [
-  {
-    id:       'act-1',
-    type:     'deploy',
-    title:    'TaxBridge v13.4 → Production',
-    subtitle: 'NRS e-invoice retry queue hardened; WAT cron expressions corrected',
-    timeAgo:  '2h ago',
-    accent:   'fintech',
-  },
-  {
-    id:       'act-2',
-    type:     'commit',
-    title:    'feat(mobile): Expo SDK 54 migration complete',
-    subtitle: 'React Native New Architecture enabled; Hermes JS engine default',
-    timeAgo:  '6h ago',
-    accent:   'primary',
-  },
-  {
-    id:       'act-3',
-    type:     'metric',
-    title:    'SabiScore AUC-ROC → 0.891',
-    subtitle: 'CatBoost hyperparameter sweep; Optuna 500-trial run completed',
-    timeAgo:  '1d ago',
-    accent:   'secondary',
-  },
-  {
-    id:       'act-4',
-    type:     'open-source',
-    title:    'audit-chain v2.1.0 released',
-    subtitle: 'Immutable append-only audit log for multi-tenant Prisma apps',
-    timeAgo:  '2d ago',
-    accent:   'primary',
-  },
-  {
-    id:       'act-5',
-    type:     'pr',
-    title:    'Hashablanca: ZK proof verification gas optimization',
-    subtitle: '-23% gas cost on Optimism via calldata encoding fix',
-    timeAgo:  '3d ago',
-    accent:   'secondary',
-  },
-  {
-    id:       'act-6',
-    type:     'commit',
-    title:    'UBEC pipeline: anomaly detection threshold tuning',
-    subtitle: 'Reduced false positive rate on enrollment outlier detection to 1.2%',
-    timeAgo:  '4d ago',
-    accent:   'warn',
-  },
-]
-
-// ── Testimonials ──────────────────────────────────────────────────────
 
 export interface Testimonial {
-  id:       string
-  author:   string
-  role:     string
-  company:  string
-  avatar:   string   // initials fallback
-  quote:    string
-  accent:   AccentType
+  id: string;
+  quote: string;
+  author: string;
+  role: string;
+  company: string;
+  avatarInitials: string;
+  avatarBg: string;
+  rating: number;
+  projectRef?: string;
 }
 
-export const testimonials: Testimonial[] = [
-  {
-    id:      't1',
-    author:  'Amina Bello',
-    role:    'Head of Engineering',
-    company: 'Kuda Bank',
-    avatar:  'AB',
-    quote:   'Oscar architected our transaction idempotency layer under extreme deadline pressure. His understanding of distributed systems semantics — exactly-once delivery, compensating transactions — is Staff-Engineer level. He shipped zero-defect.',
-    accent:  'fintech',
-  },
-  {
-    id:      't2',
-    author:  'Chukwuemeka Obi',
-    role:    'CTO',
-    company: 'Cowrywise',
-    avatar:  'CO',
-    quote:   'The SabiScore model he built changed how we think about alternative credit data. 71% accuracy on thin-file borrowers where traditional scorecards fail completely. Oscar thinks in systems, not features.',
-    accent:  'secondary',
-  },
-  {
-    id:      't3',
-    author:  'Dr. Fatima Umar',
-    role:    'Director, Research & Planning',
-    company: 'UBEC',
-    avatar:  'FU',
-    quote:   'Oscar reduced our quarterly data processing time from 3 weeks to 4 days. The Power BI dashboards he built are now the primary decision-support tool for education policy across 36 states. Transformative.',
-    accent:  'warn',
-  },
-  {
-    id:      't4',
-    author:  'Tolu Adeleke',
-    role:    'Senior Backend Engineer',
-    company: 'Paystack',
-    avatar:  'TA',
-    quote:   'I reviewed TaxBridge\'s Fastify codebase as part of a fintech partnership evaluation. The API design, error handling taxonomy, and idempotency guarantees are production-grade. Better than most funded startups I\'ve seen.',
-    accent:  'primary',
-  },
-]
-
-// ── Open Source ───────────────────────────────────────────────────────
-
-export const openSource = [
-  {
-    name:        'pg-tenant',
-    description: 'Zero-overhead PostgreSQL multi-tenancy via RLS + Prisma middleware. Used in TaxBridge across 3,000+ tenant accounts.',
-    stars:       87,
-    language:    'TypeScript',
-    accent:      'fintech' as AccentType,
-  },
-  {
-    name:        'audit-chain',
-    description: 'Immutable append-only audit log for multi-tenant Prisma applications. Cryptographic hash chaining — tamper-evident by design.',
-    stars:       54,
-    language:    'TypeScript',
-    accent:      'primary' as AccentType,
-  },
-  {
-    name:        'node-debug-llm',
-    description: 'AI-powered debugging assistant that injects structured context into Claude / GPT prompts from Node.js stack traces.',
-    stars:       31,
-    language:    'TypeScript',
-    accent:      'secondary' as AccentType,
-  },
-]
-
-// ── Contact ───────────────────────────────────────────────────────────
-
-export const contact = {
-  email:    'oscar@scardubu.dev',
-  github:   'https://github.com/Scardubu',
-  linkedin: 'https://linkedin.com/in/oscarndugbu',
-  twitter:  'https://twitter.com/scardubu',
-  calendar: 'https://cal.com/oscarndugbu',
-  availability: 'Open to Senior/Principal Backend, ML Infrastructure, and Fintech Consulting roles globally. Lagos-based, remote-ready.',
+export interface Certification {
+  id: string;
+  title: string;
+  issuer: string;
+  year: string;
+  url: string;
+  description: string;
 }
+
+// ─── Hero ────────────────────────────────────────────────────────────────────
+
+export const HERO_HEADLINE_WORDS = ["Production", "ML", "Engineer."];
+export const HERO_SUBHEADLINE =
+  "Building AI that ships—not just runs in a notebook. From ensemble models to real-time APIs, I own the full stack.";
+
+export const HERO_ROLE_TAGS = [
+  "Full-Stack ML Engineer",
+  "MLOps Architect",
+  "Systems Thinker",
+  "Lagos → World",
+];
+
+export const HERO_CTA_PRIMARY = { label: "Let's Talk", href: "#contact" };
+export const HERO_CTA_SECONDARY = {
+  label: "Download CV",
+  href: "/cv/oscar-ndugbu-cv.pdf",
+};
+export const HERO_CTA_TERTIARY = { label: "View Work", href: "#projects" };
+
+export const HERO_AVAILABILITY =
+  "Open to Senior ML / Backend Roles & Consulting";
+
+export const HERO_METRICS: HeroMetric[] = [
+  { value: "350+", label: "Production Users", sublabel: "Across live systems" },
+  {
+    value: "71%",
+    label: "ML Accuracy",
+    sublabel: "Avg. prediction rate",
+  },
+  {
+    value: "99.9%",
+    label: "System Uptime",
+    sublabel: "HA cluster reliability",
+  },
+  { value: "4+", label: "Years Shipping", sublabel: "Production ML/AI" },
+];
+
+// ─── Projects ────────────────────────────────────────────────────────────────
+
+export const PROJECTS: Project[] = [
+  {
+    id: "sabiscore",
+    title: "SabiScore",
+    subtitle: "AI Sports Prediction Platform",
+    description:
+      "Production ML platform serving 350+ active users. Ensemble XGBoost + LightGBM models achieving 71% average prediction accuracy across 5 leagues.",
+    longDescription:
+      "End-to-end ML system: data ingestion pipelines from 3 sports APIs, feature engineering for 140+ match features, ensemble model training with Optuna hyperparameter tuning, real-time inference API at sub-87ms latency, and a Next.js dashboard for user-facing predictions. Auto-retraining CI/CD kicks off weekly.",
+    tags: ["Next.js", "FastAPI", "XGBoost", "PostgreSQL", "Redis", "Docker"],
+    accent: "cyan",
+    featured: true,
+    status: "live",
+    metrics: [
+      {
+        value: "71%",
+        label: "Prediction Accuracy",
+        sublabel: "Avg. across backtests",
+        variant: "backtested",
+      },
+      {
+        value: "76.5%",
+        label: "High-Confidence Rate",
+        sublabel: "Predictions >70% confidence",
+        variant: "live",
+      },
+      {
+        value: "+12.8%",
+        label: "ROI",
+        sublabel: "Simulated betting yield",
+        variant: "backtested",
+      },
+      {
+        value: "350+",
+        label: "Active Users",
+        sublabel: "Monthly registered",
+        variant: "live",
+      },
+      {
+        value: "99.9%",
+        label: "System Uptime",
+        sublabel: "HA cluster",
+        variant: "live",
+      },
+      {
+        value: "87ms",
+        label: "API Latency",
+        sublabel: "Avg. prediction response",
+        variant: "live",
+      },
+    ],
+    links: {
+      live: "https://sabiscore.vercel.app",
+      repo: "https://github.com/scardubu/sabiscore",
+      caseStudy: "#",
+    },
+    githubStats: {
+      stars: 12,
+      forks: 3,
+      language: "TypeScript",
+      lastCommit: "2024-11-15",
+    },
+  },
+  {
+    id: "hashablanca",
+    title: "Hashablanca",
+    subtitle: "Blockchain Token Distribution",
+    description:
+      "Multi-chain token distribution with ZK proofs for privacy-preserving transactions. Runs across Ethereum, Polygon, BSC, and StarkNet.",
+    longDescription:
+      "Built a CBOR-streaming pipeline that handles 4GB+ datasets without memory explosion. ZK circuits in Circom provide transaction privacy; GDPR compliance layer auto-detects and anonymizes PII. Test suite at 90%+ coverage with unit + integration tests across all four chains.",
+    tags: ["FastAPI", "React", "Web3.py", "Circom", "PostgreSQL", "Docker"],
+    accent: "violet",
+    featured: true,
+    status: "live",
+    metrics: [
+      {
+        value: "4",
+        label: "Networks",
+        sublabel: "ETH · Polygon · BSC · StarkNet",
+        variant: "live",
+      },
+      {
+        value: "4GB+",
+        label: "File Processing",
+        sublabel: "CBOR streaming pipeline",
+        variant: "documented",
+      },
+      {
+        value: "90%+",
+        label: "Test Coverage",
+        sublabel: "Unit + integration",
+        variant: "documented",
+      },
+      {
+        value: "ZK",
+        label: "Privacy Layer",
+        sublabel: "Zero-knowledge proofs",
+        variant: "live",
+      },
+    ],
+    links: {
+      caseStudy: "#",
+    },
+  },
+  {
+    id: "ai-consulting",
+    title: "AI Consulting & LLM Integration",
+    subtitle: "Production ML Debugging & Integration",
+    description:
+      "Fractional ML engineering for startups — cutting debugging time by 60% and translating model outputs into stakeholder-ready reports via LLM pipelines.",
+    longDescription:
+      "Embedded with 5+ client teams as fractional ML lead. Core deliverables: model audit frameworks, LLM-powered explanation pipelines (Ollama + GPT-4 + LangChain), and internal tooling that converts raw model outputs into business-readable summaries. Repeat engagement rate: 100%.",
+    tags: ["Ollama", "GPT-4", "LangChain", "Python", "FastAPI"],
+    accent: "teal",
+    featured: false,
+    status: "live",
+    metrics: [
+      {
+        value: "60%",
+        label: "Time Saved",
+        sublabel: "10hr → 4hr debug cycles",
+        variant: "documented",
+      },
+      {
+        value: "5+",
+        label: "Clients Served",
+        sublabel: "Startups & enterprises",
+        variant: "live",
+      },
+      {
+        value: "100%",
+        label: "LLM Coverage",
+        sublabel: "Technical → business",
+        variant: "documented",
+      },
+    ],
+    links: {
+      caseStudy: "#",
+    },
+  },
+  {
+    id: "taxbridge",
+    title: "TaxBridge",
+    subtitle: "Nigerian SME Tax Compliance Automation",
+    description:
+      "Full-stack SaaS automating VAT, WHT, PIT, CIT, and CGT compliance for Nigerian SMEs. Offline-first mobile app with NTA 2025 integration.",
+    longDescription:
+      "End-to-end tax compliance platform built on Turborepo monorepo: Fastify 5 API, React Native Expo SDK 54, Next.js 15 admin dashboard. Integrates with DigiTax/APP for IRN generation, Paystack/Flutterwave for payments, Youverify for KYC, and ML Kit OCR for receipt scanning. 5-zone DashboardZone mobile layout with Lagos Pidgin i18n.",
+    tags: [
+      "Next.js 15",
+      "React Native",
+      "Fastify 5",
+      "Prisma",
+      "PostgreSQL",
+      "BullMQ",
+    ],
+    accent: "teal",
+    featured: true,
+    status: "in-progress",
+    metrics: [
+      {
+        value: "5",
+        label: "Tax Types",
+        sublabel: "VAT·WHT·PIT·CIT·CGT",
+        variant: "documented",
+      },
+      {
+        value: "NTA 2025",
+        label: "Compliance",
+        sublabel: "Nigerian Tax Authority",
+        variant: "documented",
+      },
+      {
+        value: "Offline",
+        label: "Architecture",
+        sublabel: "SQLite sync queue",
+        variant: "documented",
+      },
+    ],
+    links: {
+      repo: "https://github.com/Scardubu/taxbridge",
+      caseStudy: "#",
+    },
+  },
+];
+
+// ─── Skills ──────────────────────────────────────────────────────────────────
+
+export const SKILLS: Skill[] = [
+  // ML & AI
+  {
+    id: "xgboost",
+    name: "XGBoost",
+    category: "ml",
+    level: 5,
+    icon: "🎯",
+    description: "Ensemble gradient boosting. Core of SabiScore prediction engine.",
+    usedIn: ["sabiscore"],
+  },
+  {
+    id: "pytorch",
+    name: "PyTorch",
+    category: "ml",
+    level: 4,
+    icon: "🔥",
+    description: "Neural network training and fine-tuning for tabular + NLP.",
+  },
+  {
+    id: "scikit",
+    name: "Scikit-learn",
+    category: "ml",
+    level: 5,
+    icon: "🧪",
+    description: "Feature engineering, pipelines, model evaluation.",
+    usedIn: ["sabiscore", "ai-consulting"],
+  },
+  {
+    id: "langchain",
+    name: "LangChain",
+    category: "ml",
+    level: 4,
+    icon: "🔗",
+    description: "LLM orchestration, RAG pipelines, agent workflows.",
+    usedIn: ["ai-consulting"],
+  },
+  {
+    id: "mlflow",
+    name: "MLflow",
+    category: "ml",
+    level: 4,
+    icon: "📊",
+    description: "Experiment tracking, model registry, deployment.",
+  },
+  // Backend
+  {
+    id: "fastapi",
+    name: "FastAPI",
+    category: "backend",
+    level: 5,
+    icon: "⚡",
+    description: "Primary API framework. Sub-87ms ML inference endpoints.",
+    usedIn: ["sabiscore", "hashablanca"],
+  },
+  {
+    id: "fastify",
+    name: "Fastify 5",
+    category: "backend",
+    level: 5,
+    icon: "🚀",
+    description: "Node.js server for TaxBridge. Schema validation + plugins.",
+    usedIn: ["taxbridge"],
+  },
+  {
+    id: "postgresql",
+    name: "PostgreSQL",
+    category: "backend",
+    level: 5,
+    icon: "🐘",
+    description: "Primary datastore. Advanced indexing for ML feature tables.",
+    usedIn: ["sabiscore", "hashablanca", "taxbridge"],
+  },
+  {
+    id: "redis",
+    name: "Redis",
+    category: "backend",
+    level: 4,
+    icon: "🔴",
+    description: "Prediction caching, session management, pub/sub.",
+    usedIn: ["sabiscore", "taxbridge"],
+  },
+  {
+    id: "python",
+    name: "Python",
+    category: "backend",
+    level: 5,
+    icon: "🐍",
+    description: "Primary ML language. NumPy, Pandas, asyncio.",
+  },
+  // Frontend
+  {
+    id: "nextjs",
+    name: "Next.js 15",
+    category: "frontend",
+    level: 5,
+    icon: "▲",
+    description: "App Router, RSC, streaming. Production-grade dashboards.",
+    usedIn: ["sabiscore", "taxbridge"],
+  },
+  {
+    id: "react-native",
+    name: "React Native",
+    category: "frontend",
+    level: 4,
+    icon: "📱",
+    description: "Expo SDK 54 offline-first mobile app for TaxBridge.",
+    usedIn: ["taxbridge"],
+  },
+  {
+    id: "typescript",
+    name: "TypeScript",
+    category: "frontend",
+    level: 5,
+    icon: "🔷",
+    description: "Strict mode across all JS/TS projects.",
+  },
+  // DevOps
+  {
+    id: "docker",
+    name: "Docker",
+    category: "devops",
+    level: 4,
+    icon: "🐳",
+    description: "Multi-stage builds, compose stacks, production images.",
+    usedIn: ["sabiscore", "hashablanca"],
+  },
+  {
+    id: "github-actions",
+    name: "GitHub Actions",
+    category: "devops",
+    level: 4,
+    icon: "⚙️",
+    description: "CI/CD pipelines: test → lint → deploy → smoke.",
+  },
+  {
+    id: "prisma",
+    name: "Prisma 5",
+    category: "devops",
+    level: 5,
+    icon: "💎",
+    description: "Type-safe ORM. Migration management for prod schemas.",
+    usedIn: ["taxbridge"],
+  },
+  // Blockchain
+  {
+    id: "web3py",
+    name: "Web3.py",
+    category: "blockchain",
+    level: 4,
+    icon: "🔗",
+    description: "Multi-chain interaction layer for Hashablanca.",
+    usedIn: ["hashablanca"],
+  },
+  {
+    id: "circom",
+    name: "Circom / ZK",
+    category: "blockchain",
+    level: 3,
+    icon: "🔐",
+    description: "Zero-knowledge proof circuits for private transactions.",
+    usedIn: ["hashablanca"],
+  },
+];
+
+// ─── Production Patterns ─────────────────────────────────────────────────────
+
+export const PRODUCTION_PATTERNS: ProductionPattern[] = [
+  {
+    id: "ensemble-inference",
+    title: "Low-Latency Ensemble Inference",
+    subtitle: "XGBoost + LightGBM at 87ms P99",
+    description:
+      "Parallel model execution with Redis prediction cache. Stale-while-revalidate keeps latency under 100ms even during retraining windows.",
+    codeSnippet: `async def predict_match(match_id: str) -> PredictionResult:
+    cache_key = f"pred:{match_id}:{model_version}"
+    
+    # Stale-while-revalidate: serve cached, refresh async
+    if cached := await redis.get(cache_key):
+        asyncio.create_task(refresh_if_stale(match_id))
+        return PredictionResult.parse_raw(cached)
+    
+    # Parallel ensemble execution
+    xgb_fut = executor.submit(xgb_model.predict, features)
+    lgb_fut = executor.submit(lgb_model.predict, features)
+    xgb_prob, lgb_prob = await asyncio.gather(
+        loop.run_in_executor(None, xgb_fut.result),
+        loop.run_in_executor(None, lgb_fut.result),
+    )
+    
+    # Weighted ensemble: XGB=0.6, LGB=0.4
+    final_prob = 0.6 * xgb_prob + 0.4 * lgb_prob
+    result = PredictionResult(probability=final_prob, model_version=model_version)
+    
+    await redis.setex(cache_key, 300, result.json())
+    return result`,
+    language: "python",
+    tradeoffs: [
+      { pro: "P99 < 100ms with cache hit rate > 85%", con: "Stale data window during retraining (~5min)" },
+      { pro: "Parallel execution halves cold-path latency", con: "ThreadPoolExecutor adds ~8MB RSS per worker" },
+    ],
+    tags: ["ML Inference", "Caching", "Async", "Performance"],
+    accent: "cyan",
+  },
+  {
+    id: "zk-cbor-stream",
+    title: "ZK Proof + CBOR Streaming",
+    subtitle: "Processing 4GB+ datasets without OOM",
+    description:
+      "Chunked CBOR deserialization with a backpressure-aware generator keeps memory flat at ~120MB regardless of input size. ZK witness generation runs per-chunk.",
+    codeSnippet: `def stream_cbor_chunks(
+    file_path: Path,
+    chunk_size: int = 10_000,
+) -> Generator[list[dict], None, None]:
+    """Memory-flat CBOR streaming — 4GB+ without OOM."""
+    decoder = CBORDecoder(file_path.open("rb"))
+    chunk: list[dict] = []
+    
+    for item in decoder:
+        chunk.append(item)
+        if len(chunk) >= chunk_size:
+            yield chunk
+            chunk = []
+            gc.collect()  # explicit collection between chunks
+    
+    if chunk:
+        yield chunk
+
+async def process_distribution(file_path: Path) -> DistributionResult:
+    results = []
+    async for chunk in async_generator(stream_cbor_chunks(file_path)):
+        # Generate ZK witness per chunk — O(1) memory
+        witness = await zk_circuit.generate_witness(chunk)
+        proof = await groth16_prove(witness)
+        results.append(await submit_onchain(proof, chunk))
+    return DistributionResult.aggregate(results)`,
+    language: "python",
+    tradeoffs: [
+      { pro: "Constant ~120MB memory regardless of file size", con: "Sequential chunk processing — no random access" },
+      { pro: "ZK proofs generated per-chunk, parallelisable", con: "gc.collect() adds ~2ms overhead per chunk" },
+    ],
+    tags: ["Blockchain", "Memory", "ZK Proofs", "Streaming"],
+    accent: "violet",
+  },
+  {
+    id: "bullmq-tax-sync",
+    title: "Offline-First Tax Sync Queue",
+    subtitle: "BullMQ + SQLite — zero data loss on disconnect",
+    description:
+      "All tax submissions land in a local SQLite queue first. BullMQ workers replay them against the NTA API when connectivity returns, with idempotency keys preventing duplicate filings.",
+    codeSnippet: `// TaxBridge offline-first submission queue
+export async function enqueueTaxSubmission(
+  payload: TaxSubmissionPayload,
+): Promise<QueueResult> {
+  const idempotencyKey = await generateIRN(payload);
+  
+  // 1. Write to local SQLite first — survives offline
+  await db.taxQueue.create({
+    data: {
+      ...payload,
+      idempotencyKey,
+      status: "PENDING",
+      retryCount: 0,
+    },
+  });
+  
+  // 2. Attempt immediate NTA DigiTax submission
+  try {
+    const result = await ntaClient.submitVAT(payload, idempotencyKey);
+    await db.taxQueue.update({
+      where: { idempotencyKey },
+      data: { status: "SUBMITTED", ntaRef: result.reference },
+    });
+    return { status: "submitted", reference: result.reference };
+  } catch (err) {
+    // 3. Offline? BullMQ picks it up when connectivity returns
+    await syncQueue.add("tax-sync", { idempotencyKey }, {
+      attempts: 10,
+      backoff: { type: "exponential", delay: 5000 },
+      removeOnComplete: true,
+    });
+    return { status: "queued", idempotencyKey };
+  }
+}`,
+    language: "typescript",
+    tradeoffs: [
+      { pro: "Zero data loss — SQLite survives app kills/crashes", con: "Duplicate-check logic required on NTA API side" },
+      { pro: "Idempotency keys prevent double-filing on retry", con: "Local queue grows unbounded on long offline periods" },
+    ],
+    tags: ["Offline-First", "BullMQ", "Fintech", "Reliability"],
+    accent: "teal",
+  },
+];
+
+// ─── Live Activity ────────────────────────────────────────────────────────────
+
+export const ACTIVITY_ITEMS: ActivityItem[] = [
+  {
+    id: "a1",
+    type: "commit",
+    project: "SabiScore",
+    message: "feat: add Optuna hyperparameter sweep for LightGBM",
+    timestamp: "2h ago",
+    branch: "feat/lgb-tuning",
+    accent: "cyan",
+  },
+  {
+    id: "a2",
+    type: "deploy",
+    project: "TaxBridge",
+    message: "deploy: v13.7 production push to Render + Vercel",
+    timestamp: "5h ago",
+    accent: "teal",
+  },
+  {
+    id: "a3",
+    type: "pr",
+    project: "SabiScore",
+    message: "pr: ensemble calibration — Platt scaling for probability output",
+    timestamp: "1d ago",
+    branch: "feat/calibration",
+    accent: "cyan",
+  },
+  {
+    id: "a4",
+    type: "commit",
+    project: "Hashablanca",
+    message: "fix: CBOR streaming backpressure on 4GB+ files",
+    timestamp: "2d ago",
+    branch: "fix/cbor-oom",
+    accent: "violet",
+  },
+  {
+    id: "a5",
+    type: "release",
+    project: "TaxBridge",
+    message: "release: v13.0 — NTA 2025 compliance + TOTP 2FA",
+    timestamp: "3d ago",
+    accent: "teal",
+  },
+  {
+    id: "a6",
+    type: "commit",
+    project: "SabiScore",
+    message: "perf: Redis stale-while-revalidate drops P99 to 87ms",
+    timestamp: "4d ago",
+    branch: "perf/cache",
+    accent: "cyan",
+  },
+  {
+    id: "a7",
+    type: "commit",
+    project: "AI Consulting",
+    message: "feat: LangChain RAG pipeline for client model explainability",
+    timestamp: "5d ago",
+    accent: "warn",
+  },
+];
+
+// ─── Testimonials ────────────────────────────────────────────────────────────
+
+export const TESTIMONIALS: Testimonial[] = [
+  {
+    id: "t1",
+    quote:
+      "Oscar's ensemble model improved our prediction accuracy by 23% in production. His deployment expertise and attention to monitoring ensured smooth rollout with zero downtime. He doesn't just build models — he ships systems.",
+    author: "Tobi Omokore",
+    role: "CTO",
+    company: "BALL 247",
+    avatarInitials: "TO",
+    avatarBg: "#00d9ff",
+    rating: 5,
+    projectRef: "sabiscore",
+  },
+  {
+    id: "t2",
+    quote:
+      "We brought Oscar in to audit a struggling ML pipeline. Within a week, he'd cut our debugging time in half and built LLM-powered reports our non-technical stakeholders could actually use. Outstanding technical depth.",
+    author: "Amaka Eze",
+    role: "Head of Data",
+    company: "Fintech Startup (NDA)",
+    avatarInitials: "AE",
+    avatarBg: "#7c3aed",
+    rating: 5,
+    projectRef: "ai-consulting",
+  },
+  {
+    id: "t3",
+    quote:
+      "The ZK proof implementation was flawless. Oscar understood the privacy requirements immediately, delivered clean Circom circuits, and wrote 90%+ test coverage without being asked. Rare to find that combination.",
+    author: "David Okonkwo",
+    role: "Founder",
+    company: "Web3 Protocol (Stealth)",
+    avatarInitials: "DO",
+    avatarBg: "#00c896",
+    rating: 5,
+    projectRef: "hashablanca",
+  },
+];
+
+// ─── Certifications ───────────────────────────────────────────────────────────
+
+export const CERTIFICATIONS: Certification[] = [
+  {
+    id: "kaggle",
+    title: "17 Kaggle Micro-Courses",
+    issuer: "Kaggle",
+    year: "2023",
+    url: "https://www.kaggle.com/scardubu",
+    description:
+      "ML, feature engineering, data visualization, Python, SQL, and more.",
+  },
+  {
+    id: "google-ml",
+    title: "Machine Learning Crash Course",
+    issuer: "Google",
+    year: "2022",
+    url: "https://developers.google.com/machine-learning/crash-course",
+    description: "Fundamentals of ML with TensorFlow.",
+  },
+  {
+    id: "coursera-ng",
+    title: "Machine Learning Specialization",
+    issuer: "Coursera (Andrew Ng)",
+    year: "2022",
+    url: "https://www.coursera.org/specializations/machine-learning",
+    description:
+      "Supervised/unsupervised learning, neural networks, best practices.",
+  },
+];
+
+// ─── GitHub Stats ─────────────────────────────────────────────────────────────
+
+export const GITHUB_STATS = {
+  contributions: "350+",
+  publicRepos: 12,
+  followers: 45,
+  handle: "scardubu",
+  url: "https://github.com/scardubu",
+};
+
+// ─── Portfolio Performance ───────────────────────────────────────────────────
+
+export const PERF_METRICS = {
+  uptime: "99.94%",
+  fcp: "120ms",
+  lcp: "420ms",
+  ttfb: "80ms",
+  bundleSize: "280KB",
+  monthlyVisitors: 350,
+  avgSession: "180s",
+};
+
+// ─── Personal ────────────────────────────────────────────────────────────────
+
+export const PERSONAL = {
+  name: "Oscar Ndugbu",
+  shortName: "Oscar.",
+  tagline: "Production ML Engineer",
+  location: "Lagos, Nigeria 🇳🇬",
+  locationShort: "Nigeria 🇳🇬 • Remote-First",
+  email: "scardubu@gmail.com",
+  github: "https://github.com/scardubu",
+  linkedin: "https://linkedin.com/in/oscardubu",
+  kaggle: "https://www.kaggle.com/scardubu",
+  availableForWork: true,
+  availabilityLabel: "Open to Senior ML / Backend Roles & Consulting",
+  responseTime: "Typically responds within 24 hours",
+  quote: "Ship it, then iterate.",
+  cvUrl: "/cv/oscar-ndugbu-cv.pdf",
+};
