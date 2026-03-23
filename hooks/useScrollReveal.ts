@@ -1,66 +1,48 @@
-// hooks/useScrollReveal.ts
-// ─────────────────────────────────────────────────────────────────────
-// GPU-safe IntersectionObserver scroll reveal.
-// Adds data-revealed attribute; CSS animation handles the visual state.
-// ─────────────────────────────────────────────────────────────────────
-'use client'
+"use client";
 
-import { useEffect, useRef } from 'react'
+import { useEffect } from "react";
 
-interface UseScrollRevealOptions {
-  threshold?: number
-  rootMargin?: string
-  once?:      boolean
-}
-
-export function useScrollReveal<T extends HTMLElement>(
-  options: UseScrollRevealOptions = {}
-) {
-  const ref = useRef<T>(null)
-  const { threshold = 0.15, rootMargin = '0px 0px -60px 0px', once = true } = options
-
+/**
+ * Initializes a data-reveal IntersectionObserver for scroll reveals.
+ * Add `data-reveal` to any element to trigger `.is-revealed` class.
+ * CSS in globals.css handles the actual animation via .animate-reveal-up.
+ *
+ * Call once at layout level — not per-component.
+ */
+export function useScrollReveal(): void {
   useEffect(() => {
-    const el = ref.current
-    if (!el) return
+    const prefersReduced = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
 
-    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    if (prefersReduced) {
-      el.setAttribute('data-revealed', 'true')
-      return
+    const els = document.querySelectorAll<HTMLElement>("[data-reveal]");
+
+    if (prefersReduced || els.length === 0) {
+      // Instantly reveal all if reduced motion
+      els.forEach((el) => el.classList.add("is-revealed"));
+      return;
     }
 
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            el.setAttribute('data-revealed', 'true')
-            if (once) observer.unobserve(el)
-          } else if (!once) {
-            el.removeAttribute('data-revealed')
+            const el = entry.target as HTMLElement;
+            const delay = el.dataset.revealDelay ?? "0";
+            el.style.animationDelay = `${delay}ms`;
+            el.classList.add("is-revealed");
+            observer.unobserve(el);
           }
-        })
+        });
       },
-      { threshold, rootMargin }
-    )
+      { threshold: 0.12, rootMargin: "0px 0px -60px 0px" },
+    );
 
-    observer.observe(el)
-    return () => observer.disconnect()
-  }, [threshold, rootMargin, once])
+    els.forEach((el) => {
+      el.classList.add("reveal-init");
+      observer.observe(el);
+    });
 
-  return ref
-}
-
-
-export function useReducedMotion(): boolean {
-  const [reduced, setReduced] = useState(false)
-
-  useEff(() => {
-    const mq = window.matchMedia('(prefers-reduced-motion: reduce)')
-    setReduced(mq.matches)
-    const handler = (e: MediaQueryListEvent) => setReduced(e.matches)
-    mq.addEventListener('change', handler)
-    return () => mq.removeEventListener('change', handler)
-  }, [])
-
-  return reduced
+    return () => observer.disconnect();
+  }, []);
 }
