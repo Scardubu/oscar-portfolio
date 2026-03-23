@@ -10,12 +10,24 @@
      2. :root design tokens — single source of truth for every value
      3. .dark  — shadcn/ui compat (mirrors :root, portfolio is dark-only)
      4. @layer base  — resets, element styles, type scale
-     5. @layer components — skip-link, prose-blog, card, badge, btn
-     6. @layer utilities — surfaces, glows, animations, helpers
+     5. @layer components — skip-link, prose-blog, card, badge, btn,
+                            liquid glass, bento grid (EXTENDED)
+     6. @layer utilities — surfaces, glows, animations, helpers (EXTENDED)
      7. @media print — recruiter-friendly PDF output
    ─────────────────────────────────────────────────────────────────────
    Rule: NEVER hardcode a colour, duration, or spacing value in a
    component file. Always reference a token. Comments explain WHY.
+
+   PHASE 2 EXTENSIONS (marked ── NEW ──):
+     • Liquid Glass system (full specular / refraction / 3D shadow)
+     • Bento Grid system (asymmetric, density-scaled, aspect tokens)
+     • Kinetic typography (--fs-kinetic, --lh-kinetic, .text-kinetic)
+     • Motion system (GPU-safe reveal, parallax, refract keyframes)
+     • Dopamine gradients (cyan/violet/teal radial composite)
+     • Retro-grid overlay (perspectival floor-plane for hero)
+     • Noise overlay utility (grain texture via ::after)
+     • Extended stagger scale (delay-1000 → delay-1500)
+     • @property --liquid-shift + --scroll-progress (animatable)
    ═══════════════════════════════════════════════════════════════════════ */
 
 /* ── @property — enables smooth CSS-native transitions on custom props ── */
@@ -30,13 +42,13 @@
   initial-value: 0;
   inherits:      false;
 }
-/* ── NEW: Liquid refraction progress — animatable for prismatic effects ── */
+/* ── Liquid refraction progress — animatable for prismatic effects ── */
 @property --liquid-shift {
   syntax:        '<percentage>';
   initial-value: 0%;
   inherits:      false;
 }
-/* ── NEW: Scroll progress token — driven by JS ScrollTimeline polyfill ── */
+/* ── Scroll progress token — driven by JS ScrollTimeline polyfill ── */
 @property --scroll-progress {
   syntax:        '<number>';
   initial-value: 0;
@@ -64,7 +76,7 @@
     --bg-primary:   var(--bg-base);
     --bg-secondary: var(--bg-elevated);
 
-    /* ── NEW: Liquid Glass backgrounds ───────────────────────────────── */
+    /* ── Liquid Glass backgrounds ─────────────────────────────────────── */
     /* Dynamic background for liquid glass cards — more saturated than    */
     /* standard glass, RGB derived from #0c0c10 → 12,12,16               */
     --bg-glass-liquid:        rgba(12, 12, 16, 0.45);
@@ -80,7 +92,7 @@
     /* Input form surface — slightly brighter for legibility              */
     --border-input:   rgba(255, 255, 255, 0.15);
 
-    /* ── NEW: Liquid Glass borders ───────────────────────────────────── */
+    /* ── Liquid Glass borders ─────────────────────────────────────────── */
     /* Top highlight — simulates top-light refraction on glass panels     */
     --border-liquid-top:    rgba(255, 255, 255, 0.18);
     /* Bottom edge — deep shadow to reinforce 3D depth                   */
@@ -89,6 +101,8 @@
     --border-liquid-cyan:   rgba(0, 217, 255, 0.15);
     /* Violet-tinted glass edge — ZK / blockchain panels                 */
     --border-liquid-violet: rgba(124, 58, 237, 0.15);
+    /* Teal glass edge — fintech / MLOps panels                          */
+    --border-liquid-teal:   rgba(0, 200, 150, 0.15);
 
     /* ── Accent palette ───────────────────────────────────────────────── */
     --accent-primary:   #00d9ff;   /* cyan   — primary CTA / interactive   */
@@ -155,7 +169,7 @@
     --fs-metric:   clamp(1.75rem, 4vw, 2.5rem);     /* MetricBadge nums    */
     --fs-code:     0.875em;                          /* relative — scales   */
 
-    /* ── NEW: Kinetic typography scale ────────────────────────────────── */
+    /* ── Kinetic typography scale ─────────────────────────────────────── */
     /* Oversized display — hero signature element, above --fs-display     */
     --fs-kinetic:        clamp(3.5rem, 10vw, 8rem);
     /* Oversized metric — giant number callouts in bento grid             */
@@ -171,7 +185,7 @@
     --lh-prose:   1.85;   /* long-form reading — blog articles             */
     --lh-loose:   2.0;    /* spaced lists                                  */
 
-    /* ── NEW: Kinetic leading ─────────────────────────────────────────── */
+    /* ── Kinetic leading ─────────────────────────────────────────────── */
     /* Tighter than --lh-tight for oversized kinetic display text         */
     --lh-kinetic: 0.95;
 
@@ -189,7 +203,7 @@
     --gradient-surface:     linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.015) 100%);
     --gradient-card-shine:  linear-gradient(135deg, rgba(0,217,255,0.06) 0%, transparent 50%);
 
-    /* ── NEW: Dopamine gradients — high-contrast, vivid, memorable ────── */
+    /* ── Dopamine gradients — high-contrast, vivid, memorable ─────────── */
     /* Hero accent orb — large radial haze behind kinetic text            */
     --gradient-dopamine-cyan:   radial-gradient(ellipse 80% 60% at 20% 40%, rgba(0,217,255,0.15) 0%, transparent 60%);
     /* Secondary orb — violet offset to create depth                      */
@@ -202,17 +216,17 @@
       radial-gradient(ellipse 60% 80% at 80% 60%, rgba(124,58,237,0.10) 0%, transparent 60%),
       radial-gradient(ellipse 40% 40% at 60% 20%, rgba(0,200,150,0.06) 0%, transparent 50%);
 
-    /* ── NEW: Liquid Glass gradients ─────────────────────────────────── */
+    /* ── Liquid Glass gradients ──────────────────────────────────────── */
     /* Top-edge specular — simulates refracted light on glass surface     */
-    --gradient-liquid-specular:  linear-gradient(180deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.00) 40%);
+    --gradient-liquid-specular:   linear-gradient(180deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.00) 40%);
     /* Bottom-edge shadow — reinforces 3D depth                           */
-    --gradient-liquid-shadow:    linear-gradient(0deg,   rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.00) 50%);
+    --gradient-liquid-shadow:     linear-gradient(0deg,   rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.00) 50%);
     /* Inner refraction — subtle cyan prismatic wash inside glass         */
-    --gradient-liquid-refraction:linear-gradient(135deg, rgba(0,217,255,0.04) 0%, rgba(124,58,237,0.02) 50%, rgba(0,200,150,0.03) 100%);
+    --gradient-liquid-refraction: linear-gradient(135deg, rgba(0,217,255,0.04) 0%, rgba(124,58,237,0.02) 50%, rgba(0,200,150,0.03) 100%);
     /* Hover state — amplified specular + cyan bleed                      */
-    --gradient-liquid-hover:     linear-gradient(135deg, rgba(0,217,255,0.08) 0%, rgba(124,58,237,0.04) 100%);
+    --gradient-liquid-hover:      linear-gradient(135deg, rgba(0,217,255,0.08) 0%, rgba(124,58,237,0.04) 100%);
 
-    /* ── NEW: Retro grid pattern ─────────────────────────────────────── */
+    /* ── Retro grid pattern ──────────────────────────────────────────── */
     /* CSS Grid echo — perspectival floor plane for hero section          */
     --gradient-retro-grid:
       linear-gradient(rgba(0,217,255,0.04) 1px, transparent 1px),
@@ -224,7 +238,7 @@
     --ease-spring:       cubic-bezier(0.34, 1.56, 0.64, 1);/* bouncy UI   */
     --ease-standard:     cubic-bezier(0.4,  0,    0.2,  1);/* Material    */
 
-    /* ── NEW: Liquid ease — smoother than spring for glass morphs ──────  */
+    /* ── Liquid ease — smoother than spring for glass morphs ─────────── */
     --ease-liquid:   cubic-bezier(0.25, 0.46, 0.45, 0.94);
     /* Inertia ease — overshoots slightly, ideal for draggable elements   */
     --ease-inertia:  cubic-bezier(0.22, 1.2, 0.36, 1);
@@ -236,7 +250,7 @@
     --duration-slow:    380ms;
     --duration-enter:   550ms;
 
-    /* ── NEW: Liquid motion durations ────────────────────────────────── */
+    /* ── Liquid motion durations ─────────────────────────────────────── */
     --duration-liquid:  700ms;  /* glass morph transitions                */
     --duration-reveal:  900ms;  /* scroll reveal entrances                */
     --duration-kinetic: 1200ms; /* kinetic text orchestration             */
@@ -254,7 +268,7 @@
     --shadow-glow-violet:    0 0 28px -4px rgba(124,58,237,0.40);
     --shadow-glow-teal:      0 0 28px -4px rgba(0,200,150,0.40);
 
-    /* ── NEW: Liquid 3D shadow system ────────────────────────────────── */
+    /* ── Liquid 3D shadow system ─────────────────────────────────────── */
     /* Composite layered shadow — key light + ambient + colored glow      */
     --shadow-liquid-3d:
       0 2px  4px  rgba(0,0,0,0.45),   /* tight contact shadow            */
@@ -301,12 +315,12 @@
     --space-badge-x:   0.625rem;
     --space-badge-gap: 0.375rem;
 
-    /* ── NEW: Bento grid spacing ──────────────────────────────────────── */
+    /* ── Bento grid spacing ──────────────────────────────────────────── */
     --bento-gap:    clamp(0.75rem, 1.5vw, 1.25rem);   /* grid gap         */
     --bento-pad:    clamp(1.5rem,  3vw,   2.5rem);    /* cell padding     */
     --bento-pad-sm: clamp(1rem,    2vw,   1.5rem);    /* compact cell pad */
 
-    /* ── NEW: Bento aspect ratios (used via aspect-ratio utility) ──────  */
+    /* ── Bento aspect ratios (used via aspect-ratio utility) ─────────── */
     --aspect-bento-wide:   21 / 9;  /* feature header cell               */
     --aspect-bento-square: 1 / 1;   /* metric cells, skill nodes         */
     --aspect-bento-tall:   3 / 4;   /* portrait feature cells            */
@@ -319,10 +333,10 @@
     --radius-lg:   10px;   /* default component radius                     */
     --radius-xl:   16px;   /* large cards, modals                          */
     --radius-2xl:  24px;   /* feature cards                                */
-    --radius-3xl:  32px;   /* ── NEW: liquid glass panels                  */
+    --radius-3xl:  32px;   /* liquid glass panels                          */
     --radius-full: 9999px; /* pills, avatars                               */
 
-    /* ── NEW: Liquid refraction ──────────────────────────────────────── */
+    /* ── Liquid refraction ──────────────────────────────────────────── */
     /* Controls the opacity range of dynamic refraction overlays          */
     --liquid-refraction:         var(--gradient-liquid-refraction);
     /* Opacity multiplier — tuned per component, default full             */
@@ -557,7 +571,6 @@
   }
 
   /* ── Semantic type-scale classes ─────────────────────────────────────── */
-
   .text-display {
     font-size:             var(--fs-display);
     font-weight:           800;
@@ -565,7 +578,7 @@
     letter-spacing:        -0.035em;
     color:                 var(--text-primary);
     text-wrap:             balance;
-    font-feature-settings: "ss01" 1, "cv01" 1; /* Geist stylistic sets  */
+    font-feature-settings: "ss01" 1, "cv01" 1;
   }
   .text-headline {
     font-size:      var(--fs-headline);
@@ -602,7 +615,7 @@
     font-family:          var(--font-jetbrains-mono), ui-monospace, 'Fira Code', monospace;
   }
 
-  /* ── NEW: Kinetic text class ──────────────────────────────────────────── */
+  /* ── Kinetic text classes ─────────────────────────────────────────────── */
   /* Oversized, ultra-tight, max-contrast display text — hero authority    */
   .text-kinetic {
     font-size:             var(--fs-kinetic);
@@ -637,7 +650,6 @@
     word-break:    keep-all;
     white-space:   nowrap;
   }
-  /* Reset white-space inside pre blocks                                  */
   pre code:not([class]) {
     white-space:   pre;
     word-break:    normal;
@@ -899,90 +911,199 @@
   }
   .card-interactive:hover::after { opacity: 1; }
 
-  /* ── NEW: Liquid Glass Cards ──────────────────────────────────────────── */
+  /* ══════════════════════════════════════════════════════════════════════
+     LIQUID GLASS SYSTEM — Phase 2 Extension
+     Architecture: base glass → specular pseudo → shimmer pseudo → variants
+     All GPU-safe (opacity, transform, backdrop-filter only on composites)
+     ══════════════════════════════════════════════════════════════════════ */
+
   /* Base liquid glass — frosted, layered, subtly refractive              */
   .liquid-glass {
     position:                relative;
-    background:              var(--bg-glass-liquid);
-    /* Specular top highlight + refraction layer + shadow bottom          */
-    background-image:
-      var(--gradient-liquid-specular),
-      var(--gradient-liquid-refraction),
-      var(--gradient-liquid-shadow);
-    background-blend-mode:   screen, normal, multiply;
+    overflow:                hidden;
+    /* Composite background: inner gradient + dark base                   */
+    background:
+      linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03)),
+      linear-gradient(180deg, rgba(10, 10, 10, 0.70), rgba(15, 15, 20, 0.78));
     backdrop-filter:         var(--blur-liquid);
     -webkit-backdrop-filter: var(--blur-liquid);
-    border:                  1px solid var(--border-liquid-top);
-    border-bottom-color:     var(--border-liquid-bottom);
+    border:                  1px solid rgba(255, 255, 255, 0.10);
     border-radius:           var(--radius-2xl);
-    box-shadow:              var(--shadow-liquid-3d);
-    overflow:                hidden;
+    /* 3D shadow stack — contact + ambient + glow                         */
+    box-shadow:
+      0 20px 60px rgba(0, 0, 0, 0.28),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    /* Promote to compositor layer — prevent repaint on backdrop change   */
+    transform:               translateZ(0);
     isolation:               isolate;
     transition:
       box-shadow   var(--duration-liquid) var(--ease-liquid),
       transform    var(--duration-slow)   var(--ease-liquid),
       border-color var(--duration-base)   ease;
   }
-  /* Liquid glass hover — amplified glow + subtle lift                   */
-  .liquid-glass-hover:hover {
-    box-shadow:   var(--shadow-liquid-3d-hover);
-    transform:    translateY(-4px) scale(1.005);
-    border-color: var(--border-liquid-cyan);
-  }
-  /* Depth layer — inner panel inside a liquid glass card                */
-  .liquid-depth-layer {
-    background:              rgba(255, 255, 255, 0.02);
-    backdrop-filter:         blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    border:                  1px solid rgba(255, 255, 255, 0.06);
-    border-radius:           var(--radius-xl);
-  }
-  /* Liquid glass — cyan variant (featured projects, hero CTA)           */
-  .liquid-glass-cyan {
-    border-color:  var(--border-liquid-cyan);
-    box-shadow:    var(--shadow-liquid-3d), var(--shadow-glow-cyan-far);
-  }
-  /* Liquid glass — violet variant (ZK / blockchain)                     */
-  .liquid-glass-violet {
-    border-color:  var(--border-liquid-violet);
-    box-shadow:    var(--shadow-liquid-3d), 0 0 60px -20px rgba(124,58,237,0.15);
-  }
-  /* Floating glass — maximum elevation, hero panels                     */
-  .liquid-glass-float {
-    box-shadow: var(--shadow-liquid-float);
+
+  /* Top-left + bottom-right specular highlights — refraction sim         */
+  .liquid-glass::before {
+    content:        '';
+    position:       absolute;
+    inset:          0;
+    pointer-events: none;
+    background:
+      radial-gradient(circle at top left,    rgba(255, 255, 255, 0.12), transparent 35%),
+      radial-gradient(circle at bottom right, rgba(255, 255, 255, 0.06), transparent 30%);
+    opacity:        0.9;
+    z-index:        1;
+    /* No will-change here — it's a static pseudo                        */
   }
 
-  /* ── NEW: Bento Grid System ───────────────────────────────────────────── */
-  /* Base bento grid container — asymmetric, tactile                     */
+  /* Diagonal shimmer sweep — fires on hover via .liquid-glass-hover      */
+  .liquid-glass::after {
+    content:        '';
+    position:       absolute;
+    inset:          0;
+    pointer-events: none;
+    background:     linear-gradient(120deg, transparent 0%, rgba(255, 255, 255, 0.06) 24%, transparent 48%);
+    transform:      translateX(-120%);
+    opacity:        0;
+    transition:     transform var(--duration-liquid) var(--ease-liquid),
+                    opacity   var(--duration-liquid) var(--ease-liquid);
+    z-index:        2;
+  }
+
+  /* Hover class — applied alongside .liquid-glass for interactive cards  */
+  .liquid-glass-hover {
+    transition: transform    var(--duration-base)   var(--ease-liquid),
+                box-shadow   var(--duration-base)   var(--ease-liquid),
+                border-color var(--duration-base)   ease;
+    will-change: transform;
+  }
+  .liquid-glass-hover:hover {
+    border-color: var(--border-liquid-cyan);
+    box-shadow:
+      0 24px 70px rgba(0, 0, 0, 0.34),
+      0 0    0 1px rgba(0, 217, 255, 0.10),
+      inset 0 1px 0 rgba(255, 255, 255, 0.10);
+    transform:    translateY(-4px) scale(1.004);
+  }
+  /* Trigger shimmer sweep on hover                                       */
+  .liquid-glass-hover:hover::after {
+    transform: translateX(120%);
+    opacity:   1;
+  }
+
+  /* Depth layer — inner panel nested inside a liquid glass card          */
+  .liquid-depth-layer {
+    position:                relative;
+    overflow:                hidden;
+    border-radius:           var(--radius-xl);
+    border:                  1px solid rgba(255, 255, 255, 0.08);
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02)),
+      linear-gradient(180deg, rgba(11, 11, 14, 0.98), rgba(14, 14, 18, 0.98));
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.08),
+      inset 0 -16px 32px rgba(0, 0, 0, 0.18);
+  }
+  .liquid-depth-layer::before {
+    content:    '';
+    position:   absolute;
+    inset:      0;
+    pointer-events: none;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent 32%);
+    z-index:    1;
+  }
+
+  /* Depth shell — 1px gradient border wrapper for premium cards          */
+  .liquid-glass-depth-shell {
+    padding: 1px;
+    background:
+      linear-gradient(135deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.03)),
+      linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(0, 0, 0, 0.06));
+    border-radius: calc(var(--radius-2xl) + 1px); /* 1px overhang        */
+  }
+
+  /* ── Liquid glass colour variants ────────────────────────────────────── */
+  /* Cyan — primary CTA, featured project cards                           */
+  .liquid-glass-cyan {
+    border-color: var(--border-liquid-cyan);
+    box-shadow:
+      0 20px 60px rgba(0, 0, 0, 0.28),
+      0 0    0 1px rgba(0, 217, 255, 0.08),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08),
+      var(--shadow-glow-cyan-far);
+  }
+  /* Violet — ZK, blockchain, Web3 panels                                */
+  .liquid-glass-violet {
+    border-color: var(--border-liquid-violet);
+    box-shadow:
+      0 20px 60px rgba(0, 0, 0, 0.28),
+      0 0    0 1px rgba(123, 97, 255, 0.08),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  }
+  /* Teal — fintech, MLOps, monitoring panels                             */
+  .liquid-glass-teal {
+    border-color: var(--border-liquid-teal);
+    box-shadow:
+      0 20px 60px rgba(0, 0, 0, 0.28),
+      0 0    0 1px rgba(16, 185, 129, 0.08),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  }
+  /* Float — maximum elevation, hero panels                               */
+  .liquid-glass-float {
+    box-shadow: var(--shadow-liquid-float);
+    animation:  oscar-liquid-float 7s var(--ease-liquid) infinite;
+  }
+
+  /* ══════════════════════════════════════════════════════════════════════
+     BENTO GRID SYSTEM — Phase 2 Extension
+     12-column base, asymmetric by composition, density-scaled
+     ══════════════════════════════════════════════════════════════════════ */
+
+  /* Container — 12-col, fluid gap from bento token                      */
   .bento-grid {
     display:               grid;
     gap:                   var(--bento-gap);
     grid-template-columns: repeat(12, 1fr);
     align-items:           start;
   }
-  /* Responsive column spans — compose with .col-span-N classes           */
-  /* Wide feature (2/3): use col-span-8 on 12-col grid                  */
-  /* Narrow column (1/3): use col-span-4 on 12-col grid                 */
-  /* Half-width: col-span-6                                              */
+  /* Auto-fit responsive fallback — 280px min cells for mobile           */
+  .bento-grid-auto {
+    display:               grid;
+    gap:                   var(--bento-gap);
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    align-items:           start;
+  }
 
-  /* Bento cell — base cell class                                        */
+  /* Bento cell — base cell; radius + overflow + position set here       */
   .bento-cell {
     padding:       var(--bento-pad);
     border-radius: var(--radius-2xl);
     overflow:      hidden;
     position:      relative;
+    /* Prevents bleed from child liquid-glass overflow                   */
+    isolation:     isolate;
   }
-  /* Compact bento cell — metric tiles, small callouts                   */
+  /* Compact bento cell — metric tiles, skill callouts                   */
   .bento-cell-sm {
     padding:       var(--bento-pad-sm);
     border-radius: var(--radius-xl);
     overflow:      hidden;
     position:      relative;
+    isolation:     isolate;
   }
-  /* Density: tight — minimal padding for dense info grids               */
+  /* Dense grid variant — for info-heavy sections                        */
   .bento-tight {
     gap:     calc(var(--bento-gap) * 0.6);
     padding: calc(var(--bento-pad) * 0.7);
+  }
+  /* Feature cell — spans full width, oversized visual impact            */
+  .bento-cell-feature {
+    grid-column: 1 / -1;
+    padding:     var(--bento-pad);
+    border-radius: var(--radius-3xl);
+    overflow:    hidden;
+    position:    relative;
+    isolation:   isolate;
   }
 
   /* ── Badge / pill ─────────────────────────────────────────────────────── */
@@ -1140,20 +1261,20 @@
     background: var(--gradient-surface);
   }
 
-  /* ── NEW: Dopamine visual accents ────────────────────────────────────── */
+  /* ── Dopamine visual accents ─────────────────────────────────────────── */
   /* Dopamine overlay — radial background applied to section containers   */
   .dopamine-bg {
-    background-image: var(--gradient-dopamine-full);
+    background-image:      var(--gradient-dopamine-full);
     background-attachment: fixed;
   }
   /* Cyan dopamine only — hero, CTA sections                             */
-  .dopamine-cyan  { background-image: var(--gradient-dopamine-cyan);   }
+  .dopamine-cyan   { background-image: var(--gradient-dopamine-cyan);   }
   /* Violet dopamine — blockchain / ZK sections                          */
-  .dopamine-violet{ background-image: var(--gradient-dopamine-violet); }
+  .dopamine-violet { background-image: var(--gradient-dopamine-violet); }
   /* Teal dopamine — fintech / compliance sections                       */
-  .dopamine-teal  { background-image: var(--gradient-dopamine-teal);   }
+  .dopamine-teal   { background-image: var(--gradient-dopamine-teal);   }
 
-  /* ── NEW: Retro grid overlay ─────────────────────────────────────────── */
+  /* ── Retro grid overlay ──────────────────────────────────────────────── */
   /* Perspectival grid — applied to hero section via pseudo or div layer  */
   .retro-grid {
     background-image: var(--gradient-retro-grid);
@@ -1161,27 +1282,34 @@
     mask-image:       linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.4) 40%, rgba(0,0,0,0.4) 70%, transparent 100%);
     -webkit-mask-image: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.4) 40%, rgba(0,0,0,0.4) 70%, transparent 100%);
   }
-  /* Perspective version — 3D floor plane effect                         */
+  /* 3D floor plane — perspective version for hero depth illusion         */
   .retro-grid-perspective {
     background-image: var(--gradient-retro-grid);
     background-size:  40px 40px;
-    transform:        perspective(400px) rotateX(45deg);
-    transform-origin: center top;
-    opacity:          0.4;
+    transform:        perspective(500px) rotateX(50deg);
+    transform-origin: center bottom;
+    opacity:          0.35;
+    /* will-change suppressed — only add on scroll-driven sections        */
   }
 
-  /* ── NEW: Noise overlay ───────────────────────────────────────────────── */
-  /* Adds fine grain texture over any surface — retro-futurist finish     */
-  /* Applied via ::after pseudo-element on containers                    */
+  /* ── Noise overlay ───────────────────────────────────────────────────── */
+  /* Fine grain texture over any surface — retro-futurist CRT finish     */
+  /* Applied via ::after — container must have position:relative          */
+  .noise-overlay {
+    position: relative;
+    isolation: isolate;
+  }
   .noise-overlay::after {
-    content:         '';
-    position:        absolute;
-    inset:           0;
+    content:    '';
+    position:   absolute;
+    inset:      0;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
     background-size: 200px 200px;
     pointer-events:  none;
     border-radius:   inherit;
     z-index:         1;
+    /* Blend mode: overlay keeps the grain subtle on dark surfaces        */
+    mix-blend-mode:  overlay;
   }
 
   /* ── Glow effects — all reference shadow tokens ──────────────────────── */
@@ -1247,8 +1375,7 @@
     text-rendering:          optimizeLegibility;
   }
 
-  /* ── NEW: Motion gradient text ────────────────────────────────────────── */
-  /* Faster, more vivid variant — used on kinetic headlines              */
+  /* Motion gradient text — faster, more vivid — kinetic headlines        */
   .text-gradient-kinetic {
     background:              linear-gradient(135deg, #00d9ff 0%, #7b61ff 40%, #00c896 70%, #00d9ff 100%);
     background-size:         300% auto;
@@ -1285,7 +1412,7 @@
     .hover-lift:not(:hover) { will-change: auto; }
   }
 
-  /* ── Scrollbar suppression — horizontal carousels ─────────────────── */
+  /* ── Scrollbar suppression — horizontal carousels ────────────────────── */
   .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
   .scrollbar-hide::-webkit-scrollbar { display: none; }
 
@@ -1310,7 +1437,11 @@
     border-radius:  var(--radius-lg);
   }
 
-  /* ── @keyframes — all namespaced with oscar- prefix ─────────────────── */
+  /* ══════════════════════════════════════════════════════════════════════
+     @keyframes — all namespaced oscar- prefix to prevent collisions
+     GPU-safe rule: animate ONLY transform, opacity, filter
+     Never animate: width, height, top, left, padding, margin, border
+     ══════════════════════════════════════════════════════════════════════ */
 
   @keyframes oscar-gradient-shift {
     0%, 100% { background-position: 0%   center; }
@@ -1354,9 +1485,9 @@
     75%, 100% { transform: scale(1.8); opacity: 0; }
   }
   @keyframes oscar-float {
-    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    0%, 100% { transform: translateY(0px)   rotate(0deg); }
     33%       { transform: translateY(-12px) rotate(1deg); }
-    66%       { transform: translateY(-6px) rotate(-1deg); }
+    66%       { transform: translateY(-6px)  rotate(-1deg); }
   }
   @keyframes oscar-blink {
     0%, 100% { opacity: 1; }
@@ -1367,16 +1498,22 @@
     to   { transform: rotate(360deg); }
   }
 
-  /* ── NEW: Liquid refraction animation ────────────────────────────────── */
-  /* Slow prismatic sweep — GPU-safe, opacity + background-position only  */
+  /* ── Liquid float — replaces generic float for glass cards ─────────── */
+  @keyframes oscar-liquid-float {
+    0%, 100% { transform: translateY(0px); }
+    50%       { transform: translateY(-5px); }
+  }
+
+  /* ── Liquid refraction — @property --liquid-shift drives the sweep ── */
+  /* GPU-safe: only opacity transitions; background-position on pseudo   */
   @keyframes oscar-refract {
     0%   { --liquid-shift: 0%;   opacity: 0.6; }
     50%  { --liquid-shift: 100%; opacity: 1;   }
     100% { --liquid-shift: 0%;   opacity: 0.6; }
   }
 
-  /* ── NEW: Scroll reveal — opacity + translateY only (GPU-safe) ────────  */
-  /* Applied via data-reveal attribute + IntersectionObserver in JS      */
+  /* ── Scroll reveal — opacity + translateY only ───────────────────────  */
+  /* Drive with IntersectionObserver: add .is-visible → animation fires  */
   @keyframes oscar-reveal-up {
     from { opacity: 0; transform: translateY(2rem); }
     to   { opacity: 1; transform: translateY(0);    }
@@ -1385,21 +1522,65 @@
     from { opacity: 0; transform: scale(0.96) translateY(1rem); }
     to   { opacity: 1; transform: scale(1)    translateY(0);    }
   }
-
-  /* ── NEW: Kinetic text entrance ──────────────────────────────────────── */
-  /* Staggered word/char reveal — orchestrated via Framer Motion          */
-  @keyframes oscar-kinetic-in {
-    from { opacity: 0; transform: translateY(0.6em) skewY(3deg); clip-path: inset(0 0 100% 0); }
-    to   { opacity: 1; transform: translateY(0)     skewY(0deg); clip-path: inset(0 0 0% 0);   }
+  /* Stagger-reveal — horizontal slide for bento cells in a row          */
+  @keyframes oscar-reveal-left {
+    from { opacity: 0; transform: translateX(-1.5rem); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes oscar-reveal-right {
+    from { opacity: 0; transform: translateX(1.5rem); }
+    to   { opacity: 1; transform: translateX(0); }
   }
 
-  /* ── NEW: Parallax float — subtle Y drift, GPU-safe ─────────────────── */
+  /* ── Kinetic text entrance — clip-path + skew for dramatic reveal ─── */
+  /* Orchestrated by Framer Motion stagger; GPU-safe clip-path path      */
+  @keyframes oscar-kinetic-in {
+    from {
+      opacity:    0;
+      transform:  translateY(0.6em) skewY(3deg);
+      clip-path:  inset(0 0 100% 0);
+    }
+    to {
+      opacity:    1;
+      transform:  translateY(0) skewY(0deg);
+      clip-path:  inset(0 0 0% 0);
+    }
+  }
+  /* Word reveal — softer, for subtitle text                             */
+  @keyframes oscar-word-in {
+    from { opacity: 0; transform: translateY(0.4em); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── Parallax drift — subtle Y, GPU-safe ─────────────────────────── */
   @keyframes oscar-parallax-drift {
     0%, 100% { transform: translateY(0px); }
     50%       { transform: translateY(-8px); }
   }
 
-  /* ── Animation utility classes ───────────────────────────────────────── */
+  /* ── Counter roll — number increment visual ──────────────────────── */
+  /* Used with JS countUp; keyframe provides entry state                */
+  @keyframes oscar-counter-enter {
+    from { opacity: 0; transform: translateY(1em); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── Ping + glow pulse — live-status indicators ──────────────────── */
+  @keyframes oscar-ping-glow {
+    0%        { transform: scale(1);   opacity: 0.7; box-shadow: 0 0 0 0 rgba(34,197,94,0.4); }
+    70%       { transform: scale(1.4); opacity: 0;   box-shadow: 0 0 0 10px rgba(34,197,94,0); }
+    100%      { transform: scale(1);   opacity: 0;   box-shadow: 0 0 0 0 rgba(34,197,94,0); }
+  }
+
+  /* ── Scan line — CRT retro-futurist effect ───────────────────────── */
+  /* Applied as pointer-events:none overlay on hero with low opacity     */
+  @keyframes oscar-scanline {
+    0%   { transform: translateY(-100%); }
+    100% { transform: translateY(100vh); }
+  }
+
+  /* ── Animation utility classes ────────────────────────────────────── */
+  /* Each sets will-change only on properties that animate               */
   .animate-fade-in     { animation: oscar-fade-in     400ms var(--ease-out-expo)  both; will-change: opacity; }
   .animate-fade-up     { animation: oscar-fade-up     550ms var(--ease-out-expo)  both; will-change: opacity, transform; }
   .animate-fade-down   { animation: oscar-fade-down   550ms var(--ease-out-expo)  both; will-change: opacity, transform; }
@@ -1408,17 +1589,24 @@
   .animate-slide-left  { animation: oscar-slide-in-left  450ms var(--ease-out-expo) both; will-change: opacity, transform; }
   .animate-float       { animation: oscar-float       6s ease-in-out infinite; }
   .animate-ping        { animation: oscar-ping        1.4s ease-in-out infinite; }
+  .animate-ping-glow   { animation: oscar-ping-glow   2.0s ease-in-out infinite; }
   .animate-orbit       { animation: oscar-orbit       12s linear infinite; }
   .animate-blink       { animation: oscar-blink       1.1s step-end infinite; }
 
-  /* ── NEW: Liquid + reveal + kinetic animation utilities ──────────────── */
-  .animate-refract       { animation: oscar-refract         8s  ease-in-out infinite; }
-  .animate-reveal-up     { animation: oscar-reveal-up       var(--duration-reveal) var(--ease-out-expo) both; will-change: opacity, transform; }
-  .animate-reveal-scale  { animation: oscar-reveal-scale    var(--duration-reveal) var(--ease-out-expo) both; will-change: opacity, transform; }
-  .animate-kinetic-in    { animation: oscar-kinetic-in      var(--duration-kinetic) var(--ease-out-expo) both; will-change: opacity, transform; }
-  .animate-parallax      { animation: oscar-parallax-drift  4s  ease-in-out infinite; }
+  /* Liquid + reveal + kinetic                                           */
+  .animate-liquid-float  { animation: oscar-liquid-float    7s  var(--ease-liquid)   infinite; }
+  .animate-refract       { animation: oscar-refract         8s  ease-in-out          infinite; }
+  .animate-reveal-up     { animation: oscar-reveal-up       var(--duration-reveal)   var(--ease-out-expo) both; will-change: opacity, transform; }
+  .animate-reveal-scale  { animation: oscar-reveal-scale    var(--duration-reveal)   var(--ease-out-expo) both; will-change: opacity, transform; }
+  .animate-reveal-left   { animation: oscar-reveal-left     var(--duration-reveal)   var(--ease-out-expo) both; will-change: opacity, transform; }
+  .animate-reveal-right  { animation: oscar-reveal-right    var(--duration-reveal)   var(--ease-out-expo) both; will-change: opacity, transform; }
+  .animate-kinetic-in    { animation: oscar-kinetic-in      var(--duration-kinetic)  var(--ease-out-expo) both; will-change: opacity, transform, clip-path; }
+  .animate-word-in       { animation: oscar-word-in         600ms                    var(--ease-out-expo) both; will-change: opacity, transform; }
+  .animate-parallax      { animation: oscar-parallax-drift  4s  ease-in-out          infinite; }
+  .animate-counter       { animation: oscar-counter-enter   500ms                    var(--ease-out-expo) both; will-change: opacity, transform; }
+  .animate-scanline      { animation: oscar-scanline        8s  linear               infinite; }
 
-  /* Stagger delay helpers — apply as class on children                  */
+  /* ── Stagger delay helpers — base set ──────────────────────────────── */
   .delay-0   { animation-delay:   0ms; }
   .delay-75  { animation-delay:  75ms; }
   .delay-150 { animation-delay: 150ms; }
@@ -1428,13 +1616,51 @@
   .delay-600 { animation-delay: 600ms; }
   .delay-800 { animation-delay: 800ms; }
 
-  /* ── NEW: Extended stagger scale ─────────────────────────────────────── */
+  /* ── Extended stagger scale — for long bento grids ──────────────── */
   .delay-1000 { animation-delay: 1000ms; }
   .delay-1200 { animation-delay: 1200ms; }
   .delay-1500 { animation-delay: 1500ms; }
+  .delay-2000 { animation-delay: 2000ms; }
 
-  /* ── Reduced-motion guards on animation utilities ────────────────────── */
+  /* ── Scroll-reveal state classes (driven by IntersectionObserver) ── */
+  /* Default hidden state — JS adds .is-visible to trigger animation    */
+  [data-reveal] {
+    opacity:    0;
+    transform:  translateY(2rem);
+    transition:
+      opacity   var(--duration-reveal) var(--ease-out-expo),
+      transform var(--duration-reveal) var(--ease-out-expo);
+  }
+  [data-reveal].is-visible {
+    opacity:   1;
+    transform: translateY(0);
+  }
+  [data-reveal="scale"] {
+    transform: scale(0.96) translateY(1rem);
+  }
+  [data-reveal="scale"].is-visible {
+    transform: scale(1) translateY(0);
+  }
+  [data-reveal="left"] {
+    transform: translateX(-1.5rem);
+    opacity:   0;
+  }
+  [data-reveal="left"].is-visible {
+    transform: translateX(0);
+    opacity:   1;
+  }
+  [data-reveal="right"] {
+    transform: translateX(1.5rem);
+    opacity:   0;
+  }
+  [data-reveal="right"].is-visible {
+    transform: translateX(0);
+    opacity:   1;
+  }
+
+  /* ── Reduced-motion guards — comprehensive ──────────────────────── */
   @media (prefers-reduced-motion: reduce) {
+    /* One-shot entrance animations → disabled, always visible          */
     .animate-fade-in,
     .animate-fade-up,
     .animate-fade-down,
@@ -1443,23 +1669,46 @@
     .animate-slide-left,
     .animate-reveal-up,
     .animate-reveal-scale,
-    .animate-kinetic-in {
+    .animate-reveal-left,
+    .animate-reveal-right,
+    .animate-kinetic-in,
+    .animate-word-in,
+    .animate-counter {
       animation: none !important;
-      opacity:   1   !important;
+      opacity:   1    !important;
       transform: none !important;
+      clip-path: none !important;
     }
+    /* Looping decorative animations → stop completely                  */
     .animate-float,
     .animate-ping,
+    .animate-ping-glow,
     .animate-orbit,
     .animate-blink,
     .animate-refract,
-    .animate-parallax { animation: none !important; }
-    .skeleton          { animation: none !important; }
+    .animate-parallax,
+    .animate-liquid-float,
+    .animate-scanline { animation: none !important; }
+
+    /* Skeleton loader — no shimmer, static surface                     */
+    .skeleton { animation: none !important; }
+
+    /* Gradient text — no sweep                                         */
     .text-gradient-accent,
     .text-gradient-kinetic { animation: none !important; }
-    /* Liquid transitions — instant, no transform                        */
+
+    /* Liquid transitions — instant, no transform                       */
     .liquid-glass,
-    .liquid-glass-hover { transition: none !important; }
+    .liquid-glass-hover     { transition: none !important; }
+    .liquid-glass-hover:hover { transform: none !important; }
+
+    /* Reveal data attributes — always visible                          */
+    [data-reveal],
+    [data-reveal].is-visible {
+      opacity:    1    !important;
+      transform:  none !important;
+      transition: none !important;
+    }
   }
 }
 
@@ -1470,15 +1719,15 @@
 
 @media print {
   :root {
-    --bg-base:      #ffffff;
-    --bg-surface:   #f8f8f8;
-    --bg-elevated:  #f0f0f0;
-    --text-primary: #111111;
-    --text-secondary:#333333;
-    --text-muted:   #666666;
-    --text-code:    #5b21b6;
-    --border-subtle: rgba(0,0,0,0.08);
-    --border-default:rgba(0,0,0,0.15);
+    --bg-base:        #ffffff;
+    --bg-surface:     #f8f8f8;
+    --bg-elevated:    #f0f0f0;
+    --text-primary:   #111111;
+    --text-secondary: #333333;
+    --text-muted:     #666666;
+    --text-code:      #5b21b6;
+    --border-subtle:  rgba(0,0,0,0.08);
+    --border-default: rgba(0,0,0,0.15);
   }
 
   body {
@@ -1488,185 +1737,79 @@
     font-size:        11pt;
   }
 
+  /* Hide nav chrome, looping animations, non-essential UI               */
   nav, footer, .skip-to-content,
   [data-hide-print], .animate-float,
   .animate-ping, .animate-orbit,
+  .animate-scanline,
   button:not([data-print]) { display: none !important; }
 
+  /* Kill all motion + visual FX — ink-safe                              */
   *, *::before, *::after {
     animation:       none        !important;
     transition:      none        !important;
     box-shadow:      none        !important;
     text-shadow:     none        !important;
     backdrop-filter: none        !important;
+    -webkit-backdrop-filter: none !important;
+    will-change:     auto        !important;
   }
 
+  /* Gradient text — print fallback to solid violet                      */
   .text-gradient-accent,
-  .text-gradient-kinetic {
+  .text-gradient-kinetic,
+  .text-gradient-fintech {
     -webkit-text-fill-color: #5b21b6 !important;
     background:              none    !important;
+    background-clip:         unset   !important;
   }
 
-  /* Liquid glass — print fallback to standard surface                   */
+  /* Liquid glass → standard print surface                               */
   .liquid-glass,
   .liquid-glass-cyan,
-  .liquid-glass-violet {
+  .liquid-glass-violet,
+  .liquid-glass-teal {
     background:      #f8f8f8 !important;
     backdrop-filter: none    !important;
     border:          1px solid #ddd !important;
   }
+  .liquid-glass::before,
+  .liquid-glass::after {
+    display: none !important;
+  }
 
+  /* Show full URLs for hyperlinks                                        */
   a[href]::after {
-    content: " (" attr(href) ")";
+    content:   " (" attr(href) ")";
     font-size: 0.75em;
-    color: #5b21b6;
+    color:     #5b21b6;
   }
   a[href^="#"]::after,
   a[href^="javascript:"]::after { content: none; }
 
+  /* Avoid orphaned headings + break inside cards                         */
   h1, h2, h3 { page-break-after: avoid; }
-  .card, .bento-cell, figure, pre { page-break-inside: avoid; }
+  .card, .bento-cell, .bento-cell-sm, .bento-cell-feature,
+  figure, pre { page-break-inside: avoid; }
 
+  /* Card / surface print fallback                                        */
   .card, .surface, .surface-elevated,
-  .bento-cell, .bento-cell-sm {
-    border: 1px solid #ddd !important;
-    background: #f9f9f9    !important;
-  }
-}
-
-@layer utilities {
-  html {
-    scroll-behavior: smooth;
+  .bento-cell, .bento-cell-sm, .bento-cell-feature {
+    border:     1px solid #ddd !important;
+    background: #f9f9f9       !important;
   }
 
-  .liquid-glass {
-    position: relative;
-    overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.10);
-    background:
-      linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03)),
-      linear-gradient(180deg, rgba(10, 10, 10, 0.70), rgba(15, 15, 20, 0.78));
-    backdrop-filter: blur(18px) saturate(145%);
-    -webkit-backdrop-filter: blur(18px) saturate(145%);
-    box-shadow:
-      0 20px 60px rgba(0, 0, 0, 0.28),
-      inset 0 1px 0 rgba(255, 255, 255, 0.08);
-    border-radius: 1.5rem;
-    transform: translateZ(0);
+  /* Bento grid — collapse to single column for print                    */
+  .bento-grid {
+    display:               block !important;
+    columns:               2;
+    column-gap:            1rem;
   }
-
-  .liquid-glass::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    background:
-      radial-gradient(circle at top left, rgba(255, 255, 255, 0.12), transparent 35%),
-      radial-gradient(circle at bottom right, rgba(255, 255, 255, 0.06), transparent 30%);
-    opacity: 0.9;
-  }
-
-  .liquid-glass::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    background: linear-gradient(120deg, transparent 0%, rgba(255, 255, 255, 0.06) 24%, transparent 48%);
-    transform: translateX(-120%);
-    opacity: 0;
-    transition: transform 0.7s ease, opacity 0.7s ease;
-  }
-
-  .liquid-glass-hover {
-    transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease;
-    will-change: transform;
-  }
-
-  .liquid-glass-hover:hover {
-    border-color: rgba(0, 217, 255, 0.26);
-    box-shadow:
-      0 24px 70px rgba(0, 0, 0, 0.34),
-      0 0 0 1px rgba(0, 217, 255, 0.10),
-      inset 0 1px 0 rgba(255, 255, 255, 0.10);
-  }
-
-  .liquid-glass-hover:hover::after {
-    transform: translateX(120%);
-    opacity: 1;
-  }
-
-  .liquid-glass-cyan {
-    border-color: rgba(0, 217, 255, 0.18);
-    box-shadow:
-      0 20px 60px rgba(0, 0, 0, 0.28),
-      0 0 0 1px rgba(0, 217, 255, 0.08),
-      inset 0 1px 0 rgba(255, 255, 255, 0.08);
-  }
-
-  .liquid-glass-violet {
-    border-color: rgba(123, 97, 255, 0.18);
-    box-shadow:
-      0 20px 60px rgba(0, 0, 0, 0.28),
-      0 0 0 1px rgba(123, 97, 255, 0.08),
-      inset 0 1px 0 rgba(255, 255, 255, 0.08);
-  }
-
-  .liquid-glass-teal {
-    border-color: rgba(16, 185, 129, 0.22);
-    box-shadow:
-      0 20px 60px rgba(0, 0, 0, 0.28),
-      0 0 0 1px rgba(16, 185, 129, 0.08),
-      inset 0 1px 0 rgba(255, 255, 255, 0.08);
-  }
-
-  .liquid-glass-float {
-    animation: liquid-glass-float 7s ease-in-out infinite;
-  }
-
-  .liquid-glass-depth-shell {
-    padding: 1px;
-    background:
-      linear-gradient(135deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.03)),
-      linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(0, 0, 0, 0.06));
-  }
-
-  .liquid-depth-layer {
-    position: relative;
-    overflow: hidden;
-    border-radius: 1.4rem;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    background:
-      linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02)),
-      linear-gradient(180deg, rgba(11, 11, 14, 0.98), rgba(14, 14, 18, 0.98));
-    box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.08),
-      inset 0 -16px 32px rgba(0, 0, 0, 0.18);
-  }
-
-  .liquid-depth-layer::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent 32%);
-  }
-
-  @keyframes liquid-glass-float {
-    0%,
-    100% {
-      transform: translateY(0);
-    }
-    50% {
-      transform: translateY(-5px);
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .liquid-glass-float,
-    .liquid-glass-hover,
-    .liquid-glass-hover::after {
-      animation: none !important;
-      transition: none !important;
-    }
+  .bento-cell,
+  .bento-cell-sm,
+  .bento-cell-feature {
+    break-inside:  avoid;
+    margin-bottom: 1rem;
+    display:       block;
   }
 }
