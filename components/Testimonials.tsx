@@ -1,86 +1,93 @@
-/**
- * Testimonials.tsx — Social Proof Engine
- * ─────────────────────────────────────────────────────────────────────────────
- * Three testimonials with entrance stagger, liquid glass cards, accent rings.
- * Auto-cycles with keyboard accessibility. 
- * ─────────────────────────────────────────────────────────────────────────────
- */
-
 "use client";
+// components/Testimonials.tsx — Social Proof Engine
+// ─────────────────────────────────────────────────────────────────────────────
+// Framer Motion:
+//   • AnimatePresence with custom slide direction
+//   • drag-to-swipe gesture for testimonial carousel
+//   • whileInView stagger for stat row
+//   • spring physics on card lift
+// ─────────────────────────────────────────────────────────────────────────────
 
-import React, { useState, useEffect, useCallback } from "react";
-import { LiquidGlassCard } from "@/components/LiquidGlassCard";
-import { TESTIMONIALS }    from "@/lib/portfolio-data";
-import { cn }              from "@/lib/utils";
+import {
+  motion,
+  AnimatePresence,
+  useReducedMotion,
+} from "framer-motion";
+import { useState, useEffect, useCallback } from "react";
+import { cn } from "@/lib/utils";
+import { TESTIMONIALS } from "@/lib/portfolio-data";
+import {
+  staggerContainer,
+  staggerFast,
+  fadeUp,
+  testimonialSlide,
+  springs,
+} from "@/lib/motion";
 
 // ── Avatar ────────────────────────────────────────────────────────────────────
 
 function Avatar({
   initials,
   accent,
-  size = "md",
 }: {
   initials: string;
   accent:   string;
-  size?:    "sm" | "md";
 }) {
-  const dim = size === "sm" ? "w-8 h-8 text-[0.65rem]" : "w-12 h-12 text-sm";
   return (
-    <div
-      className={cn(
-        "rounded-full flex items-center justify-center font-bold flex-shrink-0",
-        dim
-      )}
+    <motion.div
+      className="w-12 h-12 rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0"
       style={{
         background:  accent + "22",
         color:       accent,
         border:      `1.5px solid ${accent}44`,
       }}
+      whileHover={{ scale: 1.08, borderColor: accent + "99" }}
+      transition={springs.snappy}
       aria-hidden="true"
     >
       {initials}
-    </div>
+    </motion.div>
   );
 }
 
-// ── Quote card ────────────────────────────────────────────────────────────────
+// ── Testimonial card ──────────────────────────────────────────────────────────
 
 function TestimonialCard({
   testimonial,
-  index,
-  active,
+  direction,
 }: {
   testimonial: (typeof TESTIMONIALS)[number];
-  index:       number;
-  active:      boolean;
+  direction:   number;
 }) {
+  const prefersReduced = useReducedMotion();
+
   return (
-    <LiquidGlassCard
-      size="md"
-      interactive
-      className={cn(
-        "col-span-12 sm:col-span-4 flex flex-col gap-5",
-        "transition-all duration-500",
-        active ? "opacity-100 scale-100" : "opacity-70 scale-[0.98]"
-      )}
-      data-reveal="scale"
-      style={{ animationDelay: `${index * 120}ms` }}
+    <motion.div
+      key={testimonial.id}
+      className="liquid-glass bento-cell flex flex-col gap-5 w-full"
+      style={{ borderColor: testimonial.accent + "33" }}
+      custom={direction}
+      variants={prefersReduced ? undefined : testimonialSlide}
+      initial="enter"
+      animate="center"
+      exit="exit"
+      drag="x"
+      dragConstraints={{ left: 0, right: 0 }}
+      dragElastic={0.12}
     >
       {/* Quote mark */}
       <div
-        className="text-4xl font-serif leading-none select-none"
-        style={{ color: testimonial.accent + "55" }}
+        className="text-5xl font-serif leading-none select-none -mb-2"
+        style={{ color: testimonial.accent + "44" }}
         aria-hidden="true"
       >
         "
       </div>
 
-      {/* Quote */}
-      <blockquote className="text-body text-secondary flex-1 leading-relaxed">
+      <blockquote className="text-body text-secondary leading-relaxed flex-1">
         {testimonial.quote}
       </blockquote>
 
-      {/* Attribution */}
       <div className="flex items-center gap-3 pt-3 border-t border-white/[0.06]">
         <Avatar initials={testimonial.initials} accent={testimonial.accent} />
         <div>
@@ -92,31 +99,42 @@ function TestimonialCard({
           </p>
         </div>
       </div>
-    </LiquidGlassCard>
+    </motion.div>
   );
 }
 
-// ── Social proof stats ────────────────────────────────────────────────────────
+// ── Proof stats ───────────────────────────────────────────────────────────────
 
 const PROOF_STATS = [
-  { icon: "🏢", value: "5+",    label: "Companies Served"     },
-  { icon: "⭐", value: "100%",  label: "Client Satisfaction"  },
-  { icon: "🔄", value: "3x",    label: "Repeat Engagements"   },
-];
+  { icon: "🏢", value: "5+",   label: "Companies Served"    },
+  { icon: "⭐", value: "100%", label: "Client Satisfaction" },
+  { icon: "🔄", value: "3×",   label: "Repeat Engagements"  },
+] as const;
 
 // ── Main export ───────────────────────────────────────────────────────────────
 
 export default function Testimonials() {
-  const [activeIdx, setActiveIdx] = useState(0);
+  const prefersReduced = useReducedMotion();
+  const [[activeIdx, direction], setPage] = useState([0, 0]);
 
-  // Auto-cycle every 5s
+  const paginate = useCallback(
+    (newDir: number) => {
+      setPage(([cur]) => [
+        (cur + newDir + TESTIMONIALS.length) % TESTIMONIALS.length,
+        newDir,
+      ]);
+    },
+    []
+  );
+
+  // Auto-advance
   useEffect(() => {
-    const id = setInterval(
-      () => setActiveIdx((i) => (i + 1) % TESTIMONIALS.length),
-      5000
-    );
+    if (prefersReduced) return;
+    const id = setInterval(() => paginate(1), 5200);
     return () => clearInterval(id);
-  }, []);
+  }, [paginate, prefersReduced]);
+
+  const current = TESTIMONIALS[activeIdx]!;
 
   return (
     <section
@@ -125,33 +143,52 @@ export default function Testimonials() {
       aria-labelledby="testimonials-heading"
     >
       {/* Header */}
-      <div className="mb-12" data-reveal>
-        <p className="text-caption text-muted mb-2">Social Proof</p>
-        <h2
+      <motion.div
+        className="mb-12"
+        variants={staggerContainer}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.3 }}
+      >
+        <motion.p className="text-caption text-muted mb-2" variants={fadeUp}>
+          Social Proof
+        </motion.p>
+        <motion.h2
           id="testimonials-heading"
           className="text-headline text-gradient-kinetic"
+          variants={fadeUp}
         >
           What Clients Say
-        </h2>
-        <p className="text-subhead text-secondary mt-3 max-w-xl">
-          Real feedback from teams I've shipped production ML systems for.
-        </p>
-      </div>
+        </motion.h2>
+        <motion.p
+          className="text-subhead text-secondary mt-3 max-w-xl"
+          variants={fadeUp}
+        >
+          Real feedback from teams I&apos;ve shipped production ML systems for.
+        </motion.p>
+      </motion.div>
 
-      {/* Proof stats bar */}
-      <div
+      {/* Stats row */}
+      <motion.div
         className="liquid-glass rounded-2xl mb-8 overflow-hidden"
-        data-reveal
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={springs.liquid}
       >
         <div className="grid grid-cols-3">
           {PROOF_STATS.map((stat, i) => (
-            <div
+            <motion.div
               key={stat.label}
               className={cn(
-                "flex flex-col sm:flex-row items-center gap-2 sm:gap-3",
-                "py-4 px-4 text-center sm:text-left",
+                "flex flex-col sm:flex-row items-center gap-2 sm:gap-3 py-4 px-4 text-center sm:text-left",
                 i < PROOF_STATS.length - 1 && "border-r border-white/[0.06]"
               )}
+              variants={fadeUp}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              transition={{ ...springs.default, delay: i * 0.1 }}
             >
               <span className="text-2xl" aria-hidden="true">{stat.icon}</span>
               <div>
@@ -160,44 +197,73 @@ export default function Testimonials() {
                 </p>
                 <p className="text-caption text-muted mt-0.5">{stat.label}</p>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
-      </div>
+      </motion.div>
 
-      {/* Cards grid */}
-      <div className="bento-grid">
-        {TESTIMONIALS.map((t, i) => (
+      {/* Carousel */}
+      <div className="relative overflow-hidden">
+        <AnimatePresence mode="wait" custom={direction}>
           <TestimonialCard
-            key={t.id}
-            testimonial={t}
-            index={i}
-            active={i === activeIdx}
+            key={current.id}
+            testimonial={current}
+            direction={direction}
           />
-        ))}
+        </AnimatePresence>
       </div>
 
-      {/* Dot indicators */}
-      <div
-        className="flex justify-center gap-2 mt-6"
-        role="tablist"
-        aria-label="Testimonial navigation"
-      >
-        {TESTIMONIALS.map((_, i) => (
-          <button
-            key={i}
-            role="tab"
-            aria-selected={i === activeIdx}
-            onClick={() => setActiveIdx(i)}
-            className={cn(
-              "h-1.5 rounded-full transition-all duration-300",
-              i === activeIdx
-                ? "w-6 bg-[var(--accent-primary)]"
-                : "w-1.5 bg-white/20 hover:bg-white/40"
-            )}
-            aria-label={`View testimonial ${i + 1}`}
-          />
-        ))}
+      {/* Controls */}
+      <div className="flex items-center justify-center gap-4 mt-6">
+        <motion.button
+          onClick={() => paginate(-1)}
+          className="w-8 h-8 rounded-full liquid-glass flex items-center justify-center text-muted hover:text-primary transition-colors"
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+          transition={springs.snappy}
+          aria-label="Previous testimonial"
+        >
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+            <path d="M8 2L4 6l4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </motion.button>
+
+        {/* Dots */}
+        <div className="flex gap-2" role="tablist" aria-label="Testimonial navigation">
+          {TESTIMONIALS.map((t, i) => (
+            <motion.button
+              key={t.id}
+              role="tab"
+              aria-selected={i === activeIdx}
+              aria-label={`View testimonial from ${t.name}`}
+              onClick={() =>
+                setPage(([cur]) => [i, i > cur ? 1 : -1])
+              }
+              className="rounded-full transition-colors"
+              animate={{
+                width:      i === activeIdx ? 24 : 6,
+                background: i === activeIdx
+                  ? "var(--accent-primary)"
+                  : "rgba(255,255,255,0.2)",
+              }}
+              style={{ height: 6 }}
+              transition={springs.layout}
+            />
+          ))}
+        </div>
+
+        <motion.button
+          onClick={() => paginate(1)}
+          className="w-8 h-8 rounded-full liquid-glass flex items-center justify-center text-muted hover:text-primary transition-colors"
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+          transition={springs.snappy}
+          aria-label="Next testimonial"
+        >
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+            <path d="M4 2l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </motion.button>
       </div>
     </section>
   );
