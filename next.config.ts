@@ -1,170 +1,82 @@
 import type { NextConfig } from "next";
-import { withSentryConfig } from "@sentry/nextjs";
-import createMDX from "@next/mdx";
+import bundleAnalyzer from "@next/bundle-analyzer";
 
-const withMDX = createMDX({
-  extension: /\.mdx?$/,
+const withBundleAnalyzer = bundleAnalyzer({
+  enabled: process.env.ANALYZE === "true",
 });
 
 const nextConfig: NextConfig = {
-  // PRD Phase 7: Performance optimizations
-  reactStrictMode: true,
-  // Allow MDX pages for the blog system
-  pageExtensions: ["ts", "tsx", "mdx"],
-  
-  // Image optimization - enhanced for LCP improvement
-  images: {
-    formats: ["image/avif", "image/webp"],
-    qualities: [75, 85],
-    deviceSizes: [640, 750, 828, 1080, 1200, 1920],
-    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
-    minimumCacheTTL: 31536000, // 1 year cache for optimized images
-    remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "ui-avatars.com",
-      },
-    ],
+  // ── Compiler ──────────────────────────────────────────────────────────
+  compiler: {
+    removeConsole: process.env.NODE_ENV === "production",
   },
 
-  // Compression
-  compress: true,
+  // ── Images ────────────────────────────────────────────────────────────
+  images: {
+    formats: ["image/avif", "image/webp"],
+    remotePatterns: [
+      { protocol: "https", hostname: "avatars.githubusercontent.com" },
+      { protocol: "https", hostname: "github.com" },
+      { protocol: "https", hostname: "raw.githubusercontent.com" },
+    ],
+    dangerouslyAllowSVG: false,
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
+  },
 
-  // Security headers
+  // ── Headers — security + performance ─────────────────────────────────
   async headers() {
     return [
       {
-        // Disable caching for CV downloads to ensure fresh file
-        source: "/cv/:path*",
+        source: "/(.*)",
         headers: [
+          { key: "X-DNS-Prefetch-Control",   value: "on" },
+          { key: "X-Frame-Options",          value: "SAMEORIGIN" },
+          { key: "X-Content-Type-Options",   value: "nosniff" },
+          { key: "Referrer-Policy",          value: "strict-origin-when-cross-origin" },
+          { key: "Permissions-Policy",       value: "camera=(), microphone=(), geolocation=()" },
           {
-            key: "Cache-Control",
-            value: "no-cache, no-store, must-revalidate",
+            key: "Content-Security-Policy",
+            value: [
+              "default-src 'self'",
+              "script-src 'self' 'unsafe-eval' 'unsafe-inline'",
+              "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+              "font-src 'self' https://fonts.gstatic.com",
+              "img-src 'self' data: blob: https:",
+              "connect-src 'self' https:",
+              "frame-ancestors 'none'",
+            ].join("; "),
           },
         ],
       },
-      // Static assets - immutable caching
+      // Cache static assets aggressively
       {
-        source: "/_next/static/:path*",
+        source: "/fonts/(.*)",
         headers: [
-          {
-            key: "Cache-Control",
-            value: "public, max-age=31536000, immutable",
-          },
-        ],
-      },
-      // Images - long cache
-      {
-        source: "/:path*.(jpg|jpeg|png|webp|avif|svg|ico)",
-        headers: [
-          {
-            key: "Cache-Control",
-            value: "public, max-age=31536000, immutable",
-          },
-        ],
-      },
-      // Fonts - immutable
-      {
-        source: "/:path*.(woff|woff2|ttf|eot)",
-        headers: [
-          {
-            key: "Cache-Control",
-            value: "public, max-age=31536000, immutable",
-          },
+          { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
         ],
       },
       {
-        source: "/:path*",
+        source: "/_next/static/(.*)",
         headers: [
-          {
-            key: "X-DNS-Prefetch-Control",
-            value: "on",
-          },
-          {
-            key: "Strict-Transport-Security",
-            value: "max-age=63072000; includeSubDomains; preload",
-          },
-          {
-            key: "X-Frame-Options",
-            value: "SAMEORIGIN",
-          },
-          {
-            key: "X-Content-Type-Options",
-            value: "nosniff",
-          },
-          {
-            key: "X-XSS-Protection",
-            value: "1; mode=block",
-          },
-          {
-            key: "Referrer-Policy",
-            value: "origin-when-cross-origin",
-          },
-          {
-            key: "Permissions-Policy",
-            value: "camera=(), microphone=(), geolocation=()",
-          },
+          { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
         ],
       },
     ];
   },
 
-  // Bundle optimization
+  // ── Experimental ──────────────────────────────────────────────────────
   experimental: {
-    optimizePackageImports: [
-      "lucide-react",
-      "framer-motion",
-      "recharts",
-      "date-fns",
-      "react-hot-toast",
-      "@radix-ui/react-dialog",
-      "@radix-ui/react-slot",
-    ],
+    optimizePackageImports: ["lucide-react", "framer-motion", "@radix-ui/react-dialog"],
+    reactCompiler: false, // Enable when stable
   },
 
-  // Turbopack configuration (Next.js 16+)
-  turbopack: {},
+  // ── Output ────────────────────────────────────────────────────────────
+  output: "standalone",
 
-  // Webpack configuration for bundle analysis (legacy - use with --webpack flag)
-  webpack: (config, { isServer }) => {
-    // Bundle analyzer (run with ANALYZE=true pnpm build --webpack)
-    if (process.env.ANALYZE === "true") {
-      const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
-      config.plugins.push(
-        new BundleAnalyzerPlugin({
-          analyzerMode: "static",
-          reportFilename: isServer
-            ? "../analyze/server.html"
-            : "./analyze/client.html",
-          openAnalyzer: false,
-        })
-      );
-    }
-
-    return config;
+  // ── Logging ───────────────────────────────────────────────────────────
+  logging: {
+    fetches: { fullUrl: true },
   },
 };
 
-// Sentry configuration options
-const sentryOptions = {
-  // Suppresses source map uploading logs during build
-  silent: true,
-  
-  // Upload a larger set of source maps for prettier stack traces (increases build time)
-  widenClientFileUpload: true,
-
-  // Routes browser requests to Sentry through a Next.js rewrite to circumvent ad-blockers
-  tunnelRoute: "/monitoring",
-
-  // Hides source maps from generated client bundles
-  hideSourceMaps: true,
-
-  // Automatically tree-shake Sentry logger statements to reduce bundle size
-  disableLogger: true,
-
-  // Enables automatic instrumentation of Vercel Cron Monitors
-  automaticVercelMonitors: true,
-};
-
-// Export the Sentry + MDX wrapped config
-export default withSentryConfig(withMDX(nextConfig), sentryOptions);
+export default withBundleAnalyzer(nextConfig);
