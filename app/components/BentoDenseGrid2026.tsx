@@ -26,7 +26,7 @@ const PROJECT_STORY: Record<
     surface: "Realtime predictions, elegant decision support, platform-grade flow",
     outcome: "Engineered to feel fast, composed, and reliable under pressure.",
     accent: "cyan",
-    span: "lg:col-span-7 lg:row-span-2",
+    span: "lg:col-span-7",
   },
   hashablanca: {
     eyebrow: "Privacy-first infrastructure",
@@ -62,8 +62,7 @@ export function BentoDenseGrid2026() {
           <motion.article
             key={project.id}
             initial={{ opacity: 0, y: 18 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.55, delay: index * 0.08 }}
             className={story.span}
           >
@@ -148,8 +147,7 @@ export function BentoDenseGrid2026() {
 
       <motion.aside
         initial={{ opacity: 0, y: 18 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-100px" }}
+        animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.55, delay: 0.24 }}
         className="lg:col-span-7"
       >

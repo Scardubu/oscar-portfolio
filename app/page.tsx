@@ -125,7 +125,7 @@ export default function Home() {
             <a href="#top" className="group flex items-center gap-3">
               <div className="hero-nav-mark">OD</div>
               <div className="leading-tight">
-                <div className="text-sm font-semibold">Oscar Dubu</div>
+                <div className="text-sm font-semibold">Oscar Ndugbu</div>
                 <div className="text-xs text-[var(--text-secondary)]">
                   Full-Stack AI Engineer • Platform Architect
                 </div>

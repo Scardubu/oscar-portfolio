@@ -8,7 +8,7 @@
  * ──────────────────────────────────────────────────────────────────────────
  */
 
-import { CSSProperties, forwardRef, useId, useState } from 'react';
+import { type CSSProperties, type ReactNode, forwardRef, useId, useState } from 'react';
 import { motion, type HTMLMotionProps } from 'framer-motion';
 import { LiquidGlassRefractionSVG } from '@/app/components/LiquidGlassRefractionSVG';
 import { cn } from '@/lib/utils';
@@ -23,7 +23,13 @@ interface LiquidGlassCardProps extends HTMLMotionProps<'div'> {
   noPad?: boolean;
   as?: 'div' | 'article' | 'section' | 'li';
   refraction?: boolean;
+  children?: ReactNode;
 }
+
+type PointerStyle = CSSProperties & {
+  '--mouse-x': string;
+  '--mouse-y': string;
+};
 
 const variantClass: Record<Variant, string> = {
   default: 'liquid-glass',
@@ -56,9 +62,9 @@ export const LiquidGlassCard = forwardRef<HTMLDivElement, LiquidGlassCardProps>(
     ref
   ) => {
     const filterId = useId().replace(/:/g, '-');
-    const [pointerStyle, setPointerStyle] = useState<CSSProperties>({
-      ['--mouse-x' as '--mouse-x']: '50%',
-      ['--mouse-y' as '--mouse-y']: '40%',
+    const [pointerStyle, setPointerStyle] = useState<PointerStyle>({
+      '--mouse-x': '50%',
+      '--mouse-y': '40%',
     });
 
     const handlePointerMove: NonNullable<HTMLMotionProps<'div'>['onPointerMove']> = (event) => {
@@ -67,8 +73,8 @@ export const LiquidGlassCard = forwardRef<HTMLDivElement, LiquidGlassCardProps>(
       const y = ((event.clientY - rect.top) / rect.height) * 100;
 
       setPointerStyle({
-        ['--mouse-x' as '--mouse-x']: `${x}%`,
-        ['--mouse-y' as '--mouse-y']: `${y}%`,
+        '--mouse-x': `${x}%`,
+        '--mouse-y': `${y}%`,
       });
 
       onPointerMove?.(event);
@@ -76,8 +82,8 @@ export const LiquidGlassCard = forwardRef<HTMLDivElement, LiquidGlassCardProps>(
 
     const handlePointerLeave: NonNullable<HTMLMotionProps<'div'>['onPointerLeave']> = (event) => {
       setPointerStyle({
-        ['--mouse-x' as '--mouse-x']: '50%',
-        ['--mouse-y' as '--mouse-y']: '40%',
+        '--mouse-x': '50%',
+        '--mouse-y': '40%',
       });
 
       onPointerLeave?.(event);
