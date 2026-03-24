@@ -97,6 +97,7 @@ function MetricCell({
   index:  number;
 }) {
   const [started, setStarted] = useState(false);
+  const isQualitative = value === 0 && suffix === "";
   const count = useCountUp({
     target:   value,
     decimals: value % 1 !== 0 ? 1 : 0,
@@ -117,16 +118,20 @@ function MetricCell({
       viewport={{ once: true, amount: 0.5 }}
     >
       <span
-        className="text-metric text-gradient-accent font-mono tabular-nums leading-none"
+        className={cn(
+          "text-gradient-accent font-mono leading-none",
+          isQualitative ? "text-sm font-semibold" : "text-metric tabular-nums"
+        )}
         aria-live="polite"
-        aria-label={`${value}${suffix} ${label}`}
+        aria-label={isQualitative ? label : `${value}${suffix} ${label}`}
       >
-        {count}
-        {suffix}
+        {isQualitative ? label : `${count}${suffix}`}
       </span>
-      <span className="text-caption text-muted text-center leading-tight">
-        {label}
-      </span>
+      {!isQualitative && (
+        <span className="text-caption text-muted text-center leading-tight">
+          {label}
+        </span>
+      )}
       {type === "live" && (
         <span className="relative inline-flex h-1.5 w-1.5" aria-hidden="true">
           <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--metric-live)] opacity-75" />

@@ -2592,12 +2592,6 @@
 }
 
 @layer utilities {
-  /* ── Shimmer sweep keyframes ── */
-  @keyframes shimmer-sweep-anim {
-    0% { transform: translateX(-100%); }
-    100% { transform: translateX(100%); }
-  }
-
   /* ── Bento 2.0 Active Grid — dense auto-flow with tactile density ── */
   .bento-2026-active {
     display: grid;
@@ -2614,4 +2608,10 @@
   .liquid-depth-dynamic:hover {
     --glass-thickness: 1.15;
   }
+}
+
+/* ── Shimmer sweep keyframes (root level for broad compatibility) ── */
+@keyframes shimmer-sweep-anim {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
 }
