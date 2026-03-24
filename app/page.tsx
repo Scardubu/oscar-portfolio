@@ -127,7 +127,7 @@ export default function Home() {
                 OD
               </div>
               <div className="leading-tight">
-                <div className="text-sm font-semibold">Oscar Dubu</div>
+                <div className="text-sm font-semibold">Oscar Ndugbu</div>
                 <div className="text-xs text-[var(--text-secondary)]">
                   Full-Stack ML Engineer • Fintech & AI Systems
                 </div>
@@ -147,7 +147,12 @@ export default function Home() {
                 asChild
                 className="hidden min-h-11 rounded-full border-white/10 bg-white/[0.03] px-4 text-sm font-medium text-[var(--text-primary)] hover:border-[var(--accent-primary)]/35 hover:bg-white/[0.06] hover:text-[var(--accent-primary)] lg:inline-flex"
               >
-                <a href="mailto:scardubu@gmail.com">Email</a>
+                <a
+                  href="mailto:scardubu@gmail.com"
+                  aria-label="Send email to Oscar"
+                >
+                  Email
+                </a>
               </Button>
               <Button
                 onClick={() => {

@@ -234,6 +234,7 @@ export function Hero({ onOpenContact }: HeroProps = {}) {
             >
               <a
                 href="mailto:scardubu@gmail.com"
+                aria-label="Contact Oscar via email"
                 className="inline-flex min-h-10 items-center rounded-full border border-white/10 bg-white/[0.03] px-4 py-2 font-medium text-[var(--text-primary)] transition-colors hover:border-[var(--accent-primary)]/35 hover:text-[var(--accent-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-base)]"
               >
                 scardubu@gmail.com
