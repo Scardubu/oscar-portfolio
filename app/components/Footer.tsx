@@ -1,74 +1,54 @@
-import Link from "next/link";
-import { Github, Linkedin, Mail, MapPin, Heart, BookOpen } from "lucide-react";
-import { trackEvent } from "@/app/lib/analytics";
+import { Github, Linkedin, Mail } from 'lucide-react';
 
-// PRD Phase 6: Footer with social links and performance metrics
 export function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="border-t border-white/5 bg-gradient-to-b from-bg-secondary to-bg-primary px-6 py-12 lg:px-12 lg:py-20">
-      <div className="mx-auto max-w-7xl">
-        <div className="flex flex-col gap-8 md:flex-row md:items-start md:justify-between">
-          <div className="space-y-3">
-            <p className="text-xl font-bold text-white lg:text-2xl">Oscar Ndugbu</p>
-            <p className="text-base text-gray-400">Full-Stack AI Engineer • Platform Architect</p>
-            <div className="flex items-center gap-2 text-sm text-gray-500">
-              <MapPin className="h-4 w-4 text-green-500" />
-              <span>Nigeria 🇳🇬 • Remote-First</span>
-            </div>
-            <p className="text-sm italic text-cyan-400/80">
-              Production systems, clear product thinking, calm execution.
-            </p>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-4">
-            <Link
-              href="/blog"
-              onClick={() => trackEvent("Footer", "Click", "Blog")}
-              className="flex items-center gap-2 rounded-lg border border-slate-700 bg-slate-800/50 px-4 py-2 text-sm text-gray-300 transition-all hover:border-accent-primary/50 hover:text-accent-primary"
-            >
-              <BookOpen className="h-4 w-4" />
-              Blog
-            </Link>
-            <a
-              href="https://github.com/scardubu"
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => trackEvent("Footer", "Click", "GitHub")}
-              className="flex items-center gap-2 rounded-lg border border-slate-700 bg-slate-800/50 px-4 py-2 text-sm text-gray-300 transition-all hover:border-cyan-400/50 hover:text-cyan-400"
-            >
-              <Github className="h-4 w-4" />
-              GitHub
-            </a>
-            <a
-              href="https://linkedin.com/in/oscardubu"
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => trackEvent("Footer", "Click", "LinkedIn")}
-              className="flex items-center gap-2 rounded-lg border border-slate-700 bg-slate-800/50 px-4 py-2 text-sm text-gray-300 transition-all hover:border-blue-400/50 hover:text-blue-400"
-            >
-              <Linkedin className="h-4 w-4" />
-              LinkedIn
-            </a>
-            <a
-              href="mailto:scardubu@gmail.com"
-              onClick={() => trackEvent("Footer", "Click", "Email")}
-              className="flex items-center gap-2 rounded-lg border border-slate-700 bg-slate-800/50 px-4 py-2 text-sm text-gray-300 transition-all hover:border-green-400/50 hover:text-green-400"
-            >
-              <Mail className="h-4 w-4" />
-              Email
-            </a>
-          </div>
+    <footer className="border-t border-white/6 pt-8 pb-10 md:pb-14">
+      <div className="glass-surface glass-surface-light flex flex-col gap-6 rounded-[1.75rem] px-6 py-6 md:flex-row md:items-end md:justify-between md:px-8">
+        <div className="space-y-3">
+          <p className="text-lg font-semibold text-[var(--text-primary)]">Oscar Dubu</p>
+          <p className="max-w-xl text-sm leading-7 text-[var(--text-secondary)] md:text-base">
+            Production AI systems, full-stack delivery, and product surfaces that stay legible under
+            real operating conditions.
+          </p>
+          <p className="text-xs tracking-[0.22em] text-[var(--text-muted)] uppercase">
+            Nigeria NG · Remote-First
+          </p>
         </div>
 
-        <div className="mt-10 flex flex-col items-center gap-4 border-t border-white/5 pt-8 md:flex-row md:justify-between">
-          <p className="flex items-center gap-1 text-sm text-gray-500">
-            © {currentYear} Oscar Ndugbu. Built with <Heart className="h-4 w-4 text-red-500" /> in Naija.
-          </p>
-          <p className="text-xs text-gray-600">Next.js 15 • React 19 • Tailwind CSS 4</p>
+        <div className="flex flex-wrap items-center gap-3">
+          <a
+            href="https://github.com/Scardubu"
+            target="_blank"
+            rel="noreferrer"
+            className="focus-ring-branded inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-[var(--text-primary)]"
+          >
+            <Github className="h-4 w-4" />
+            GitHub
+          </a>
+          <a
+            href="https://linkedin.com/in/oscardubu"
+            target="_blank"
+            rel="noreferrer"
+            className="focus-ring-branded inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-[var(--text-primary)]"
+          >
+            <Linkedin className="h-4 w-4" />
+            LinkedIn
+          </a>
+          <a
+            href="mailto:scardubu@gmail.com"
+            className="focus-ring-branded inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-[var(--text-primary)]"
+          >
+            <Mail className="h-4 w-4" />
+            Email
+          </a>
         </div>
       </div>
+      <p className="pt-5 text-center text-xs text-[var(--text-muted)]">
+        © {currentYear} Oscar Dubu · Built with Next.js 15, TypeScript, Tailwind CSS 4, and Framer
+        Motion.
+      </p>
     </footer>
   );
 }
