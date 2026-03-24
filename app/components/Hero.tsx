@@ -117,7 +117,7 @@ export function Hero({ onOpenContact }: HeroProps = {}) {
               </span>
               <span className="badge badge-primary liquid-badge-sheen">
                 <Sparkles className="h-3.5 w-3.5" />
-                Open to Senior ML / Full-Stack Roles &amp; Consulting
+                Open to senior roles and high-impact work
               </span>
             </div>
 
@@ -128,7 +128,7 @@ export function Hero({ onOpenContact }: HeroProps = {}) {
                 transition={revealTransition(0.1)}
                 className="hero-headline hero-headline-liquid max-w-4xl text-balance font-semibold tracking-tight text-[var(--text-primary)]"
               >
-                Hey, I&apos;m Oscar 👋
+                Full-Stack AI Engineer for reliable AI products and platform systems.
               </motion.h1>
 
               <motion.div
@@ -138,13 +138,10 @@ export function Hero({ onOpenContact }: HeroProps = {}) {
                 className="max-w-3xl space-y-4 text-pretty text-base leading-8 text-[var(--text-secondary)] md:text-lg"
               >
                 <p>
-                  I architect production AI systems that distill frontier intelligence into elegant, trusted tools people rely on every single day.
+                  I design and ship AI products, platform workflows, and full-stack systems that stay clear under real operating pressure.
                 </p>
                 <p>
-                  SabiScore, my flagship sports intelligence platform, powers real-time insights that sharpen every decision — engineered for seamless flow and unwavering performance at global scale.
-                </p>
-                <p>
-                  From Nigeria to audiences worldwide, I fuse cutting-edge AI research with intuitive product mastery to create experiences that don&apos;t just work — they captivate, perform, and endure.
+                  My edge is the combination: applied ML depth, product judgment, and the discipline to turn complex behavior into interfaces teams can trust.
                 </p>
               </motion.div>
             </div>
@@ -157,29 +154,29 @@ export function Hero({ onOpenContact }: HeroProps = {}) {
             >
               <div className="flex flex-col gap-5 md:flex-row md:items-start md:justify-between">
                 <div className="space-y-3">
-                  <p className="hero-proof-kicker">SabiScore flagship platform</p>
+                  <p className="hero-proof-kicker">How I work</p>
                   <h2 className="text-xl font-semibold tracking-tight text-[var(--text-primary)] md:text-2xl">
-                    A living sports intelligence surface where research rigor, product feel, and operational trust meet in one seamless experience.
+                    Senior ownership across product, platform, and model behavior.
                   </h2>
                 </div>
                 <span className="hero-live-pill">
                   <span className="hero-live-dot" />
-                  Real-time feel
+                  Built for real use
                 </span>
               </div>
 
               <div className="grid gap-3 pt-5 sm:grid-cols-3">
                 <div className="hero-proof-stat">
-                  <span className="hero-proof-value">Platform clarity</span>
-                  <span className="hero-proof-label">Decision-first interface</span>
+                  <span className="hero-proof-value">Problem framing</span>
+                  <span className="hero-proof-label">Start with user decisions, not model demos</span>
                 </div>
                 <div className="hero-proof-stat">
-                  <span className="hero-proof-value">Model trust</span>
-                  <span className="hero-proof-label">Signals that stay legible under pressure</span>
+                  <span className="hero-proof-value">System design</span>
+                  <span className="hero-proof-label">Build for reliability, observability, and handoff</span>
                 </div>
                 <div className="hero-proof-stat">
-                  <span className="hero-proof-value">Global posture</span>
-                  <span className="hero-proof-label">Built from Nigeria for audiences everywhere</span>
+                  <span className="hero-proof-value">Product finish</span>
+                  <span className="hero-proof-label">Keep interfaces calm, legible, and fast</span>
                 </div>
               </div>
             </motion.article>
@@ -196,7 +193,7 @@ export function Hero({ onOpenContact }: HeroProps = {}) {
                 className="hero-primary-cta min-h-12 rounded-full px-6 text-sm font-semibold md:px-7"
               >
                 <Mail className="h-4 w-4" />
-                Let&apos;s Talk
+                Start a conversation
               </Button>
               <Button
                 size="lg"
@@ -204,7 +201,7 @@ export function Hero({ onOpenContact }: HeroProps = {}) {
                 onClick={() => scrollToSection("projects")}
                 className="hero-secondary-cta min-h-12 rounded-full px-6 text-sm font-semibold md:px-7"
               >
-                Explore selected systems
+                Review selected work
                 <ArrowRight className="h-4 w-4" />
               </Button>
               <Button
@@ -214,7 +211,7 @@ export function Hero({ onOpenContact }: HeroProps = {}) {
                 className="hero-download-cta bookmark-ripple min-h-12 rounded-full px-5 text-sm font-medium"
               >
                 <Bookmark className="h-4 w-4" />
-                {bookmarkState === "saved" ? "Link copied for later" : "Bookmark for updates"}
+                {bookmarkState === "saved" ? "Portfolio link copied" : "Save portfolio link"}
               </Button>
             </motion.div>
 
@@ -231,7 +228,7 @@ export function Hero({ onOpenContact }: HeroProps = {}) {
               >
                 scardubu@gmail.com
               </a>
-              <span>Battle-tested Full-Stack AI Engineer &amp; Platform Architect building elegant systems with durable product conviction.</span>
+              <span>Full-Stack AI Engineer &amp; Platform Architect focused on production systems, clear communication, and durable execution.</span>
             </motion.div>
           </motion.div>
 
@@ -284,7 +281,7 @@ export function Hero({ onOpenContact }: HeroProps = {}) {
                 className="hero-portrait-pill hero-portrait-pill-top"
               >
                 <span className="hero-live-dot" />
-                Production systems with product taste
+                Reliable systems, clear interfaces
               </motion.div>
 
               <motion.div
