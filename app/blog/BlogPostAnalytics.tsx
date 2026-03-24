@@ -1,142 +1,172 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
-import { trackEvent } from "@/app/lib/analytics";
+import * as React from "react";
+import { useMemo, useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { blogUrl } from "@/lib/config";
+import { FeaturedArticle } from "@/components/blog/FeaturedArticle";
 
-interface BlogPostAnalyticsProps {
+// ─────────────────────────────────────────
+// Types
+// ─────────────────────────────────────────
+
+interface BlogPost {
   slug: string;
   title: string;
-  readingTime?: string; // e.g., "10 min"
+  excerpt: string;
+  date: string;
+  readMin: number;
+  tags: string[];
+  tier: 1 | 2 | 3;
 }
 
-export function BlogPostAnalytics({ slug, title, readingTime }: BlogPostAnalyticsProps) {
-  const [progress, setProgress] = useState(0);
-  const [isComplete, setIsComplete] = useState(false);
-  const [timeLeft, setTimeLeft] = useState<string | null>(null);
-  const [mounted, setMounted] = useState(false);
+// ─────────────────────────────────────────
+// Component
+// ─────────────────────────────────────────
 
-  // Prevent hydration mismatch
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+export default function BlogListClient({
+  posts,
+  tags,
+  relatedMap,
+}: {
+  posts: BlogPost[];
+  tags: string[];
+  relatedMap: Record<string, BlogPost[]>;
+}) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
-  // Parse reading time to minutes
-  const totalMinutes = readingTime
-    ? parseInt(readingTime.replace(/\D/g, ""), 10) || 10
-    : 10;
+  const [query, setQuery] = useState(searchParams.get("q") || "");
+  const [activeTag, setActiveTag] = useState<string | null>(
+    searchParams.get("tag")
+  );
 
-  const onScroll = useCallback(() => {
-    const doc = document.documentElement;
-    const scrollTop = window.scrollY || doc.scrollTop;
-    const viewportHeight = window.innerHeight;
-    const docHeight = doc.scrollHeight;
-    const scrollableHeight = docHeight - viewportHeight;
-
-    if (scrollableHeight <= 0) {
-      setProgress(100);
-      return;
-    }
-
-    const currentProgress = Math.min((scrollTop / scrollableHeight) * 100, 100);
-    setProgress(currentProgress);
-
-    // Calculate time left based on progress
-    const remainingPercent = 100 - currentProgress;
-    const minutesLeft = Math.ceil((remainingPercent / 100) * totalMinutes);
-
-    if (currentProgress >= 95) {
-      setIsComplete(true);
-      setTimeLeft(null);
-    } else if (minutesLeft <= 1) {
-      setTimeLeft("< 1 min left");
-    } else {
-      setTimeLeft(`${minutesLeft} min left`);
-    }
-  }, [totalMinutes]);
+  // ─────────────────────────────────────────
+  // Sync URL (NO server rerender)
+  // ─────────────────────────────────────────
 
   useEffect(() => {
-    if (!mounted) return;
-    
-    trackEvent("Blog", "ViewPost", slug);
+    const params = new URLSearchParams();
 
-    let hasFired75 = false;
-    let hasFired100 = false;
+    if (query) params.set("q", query);
+    if (activeTag) params.set("tag", activeTag);
 
-    function handleScrollTracking() {
-      const doc = document.documentElement;
-      const scrollTop = window.scrollY || doc.scrollTop;
-      const viewportHeight = window.innerHeight;
-      const docHeight = doc.scrollHeight;
-      const ratio = (scrollTop + viewportHeight) / docHeight;
+    router.replace(`?${params.toString()}`, { scroll: false });
+  }, [query, activeTag, router]);
 
-      if (ratio >= 0.75 && !hasFired75) {
-        hasFired75 = true;
-        trackEvent("Blog", "ScrollDepth", title, 75);
-      }
+  // ─────────────────────────────────────────
+  // Filtering
+  // ─────────────────────────────────────────
 
-      if (ratio >= 0.95 && !hasFired100) {
-        hasFired100 = true;
-        trackEvent("Blog", "ArticleComplete", slug);
-      }
-    }
+  const filtered = useMemo(() => {
+    return posts.filter((p) => {
+      const matchesQuery =
+        p.title.toLowerCase().includes(query.toLowerCase()) ||
+        p.excerpt.toLowerCase().includes(query.toLowerCase());
 
-    function combinedScroll() {
-      onScroll();
-      handleScrollTracking();
-    }
+      const matchesTag = activeTag ? p.tags.includes(activeTag) : true;
 
-    window.addEventListener("scroll", combinedScroll, { passive: true });
-    combinedScroll(); // Initial call after mount
+      return matchesQuery && matchesTag;
+    });
+  }, [posts, query, activeTag]);
 
-    return () => window.removeEventListener("scroll", combinedScroll);
-  }, [mounted, slug, title, onScroll]);
+  const tier1 = filtered.filter((p) => p.tier === 1);
+  const tier2 = filtered.filter((p) => p.tier === 2);
+  const tier3 = filtered.filter((p) => p.tier === 3);
+
+  // ─────────────────────────────────────────
+  // Analytics Hook (extend later)
+  // ─────────────────────────────────────────
+
+  function trackClick(slug: string) {
+    console.log("track:click", slug);
+  }
+
+  // ─────────────────────────────────────────
+  // UI
+  // ─────────────────────────────────────────
 
   return (
-    <div className="sticky top-16 z-30 -mx-6 mb-8 lg:-mx-12">
-      {/* Progress bar */}
-      <div className="h-1 w-full bg-white/5">
-        <div
-          className={`h-full transition-all duration-150 ${
-            isComplete
-              ? "bg-green-500"
-              : "bg-gradient-to-r from-cyan-500 to-purple-500"
-          }`}
-          style={{ width: `${progress}%` }}
-          role="progressbar"
-          aria-valuenow={Math.round(progress)}
-          aria-valuemin={0}
-          aria-valuemax={100}
-          aria-label="Reading progress"
-        />
+    <div className="mt-10">
+      {/* Search */}
+      <input
+        type="text"
+        placeholder="Search articles..."
+        className="w-full mb-6 p-3 rounded-lg border"
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+      />
+
+      {/* Tags */}
+      <div className="flex flex-wrap gap-2 mb-10">
+        {tags.map((tag) => (
+          <button
+            key={tag}
+            onClick={() =>
+              setActiveTag(activeTag === tag ? null : tag)
+            }
+            className={`px-3 py-1 text-xs rounded-full border ${
+              activeTag === tag ? "bg-black text-white" : ""
+            }`}
+          >
+            #{tag}
+          </button>
+        ))}
       </div>
 
-      {/* Time left badge */}
-      <div className="flex justify-end px-6 lg:px-12">
-        <div
-          className={`-mt-1 rounded-b-lg px-3 py-1 text-xs font-medium transition-all ${
-            isComplete
-              ? "bg-green-500/20 text-green-400"
-              : "bg-white/5 text-gray-400"
-          }`}
-        >
-          {isComplete ? (
-            <span className="flex items-center gap-1">
-              <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
-                <path
-                  fillRule="evenodd"
-                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                  clipRule="evenodd"
-                />
-              </svg>
-              Article complete!
-            </span>
-          ) : timeLeft ? (
-            timeLeft
-          ) : (
-            `${totalMinutes} min read`
-          )}
+      {/* Tier 1 */}
+      {tier1.length > 0 && (
+        <section className="mb-16">
+          <h2 className="font-bold mb-4">Implementation Deep Dives</h2>
+          <div className="grid md:grid-cols-2 gap-4">
+            {tier1.map((p) => (
+              <div key={p.slug} onClick={() => trackClick(p.slug)}>
+                <FeaturedArticle post={p} />
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Tier 2 */}
+      {tier2.length > 0 && (
+        <section className="mb-16">
+          <h2 className="font-bold mb-4">Architecture & Context</h2>
+          <div className="flex flex-col gap-3">
+            {tier2.map((p) => (
+              <a key={p.slug} href={blogUrl(p.slug)}>
+                {p.title}
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Tier 3 */}
+      {tier3.length > 0 && (
+        <section>
+          <h2 className="font-bold opacity-60 mb-4">Other Posts</h2>
+          <div className="flex flex-col gap-2 opacity-70">
+            {tier3.map((p) => (
+              <a key={p.slug} href={blogUrl(p.slug)}>
+                {p.title}
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Related (context-aware suggestion) */}
+      {filtered.length === 1 && (
+        <div className="mt-16">
+          <h3 className="font-semibold mb-3">Related Articles</h3>
+          {relatedMap[filtered[0].slug]?.map((p) => (
+            <a key={p.slug} href={blogUrl(p.slug)}>
+              {p.title}
+            </a>
+          ))}
         </div>
-      </div>
+      )}
     </div>
   );
 }
