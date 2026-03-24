@@ -1,123 +1,217 @@
-// ═══════════════════════════════════════════════════════════════════════
-// Testimonials.tsx
-// ═══════════════════════════════════════════════════════════════════════
- 
-import { testimonials, type Testimonial } from '@/lib/data'
- 
-export function Testimonials() {
-  const sectionRef = useScrollReveal<HTMLElement>({ threshold: 0.08 })
-  const [activeIdx, setActiveIdx] = useState(0)
-  const current = testimonials[activeIdx]
- 
-  const accentVarMap3 = {
-    primary:   'var(--accent-primary)',
-    secondary: 'var(--accent-secondary)',
-    fintech:   'var(--accent-fintech)',
-    warn:      'var(--accent-warn)',
-  }
- 
+'use client';
+/**
+ * components/sections/Testimonials.tsx
+ * ──────────────────────────────────────────────────────────────────────────
+ * REWRITE — Social Proof Engine
+ *
+ * Three testimonials with:
+ * - Motion-staggered reveal on scroll into view
+ * - Star ratings
+ * - Avatar initials with brand-matched colors
+ * - Company badge + project reference
+ * - Trusted signal metrics below cards
+ * ──────────────────────────────────────────────────────────────────────────
+ */
+
+import { useRef } from 'react';
+import { motion, useInView } from 'framer-motion';
+import { Star, Quote } from 'lucide-react';
+import { TESTIMONIALS } from '@/lib/data';
+import { cn } from '@/lib/utils';
+
+// ── Stars ─────────────────────────────────────────────────────────────────
+
+function Stars({ count }: { count: number }) {
+  return (
+    <div className="flex gap-0.5" aria-label={`${count} out of 5 stars`}>
+      {Array.from({ length: 5 }, (_, i) => (
+        <Star
+          key={i}
+          size={14}
+          strokeWidth={0}
+          fill={i < count ? 'var(--accent-warn)' : 'var(--border-default)'}
+        />
+      ))}
+    </div>
+  );
+}
+
+// ── Avatar ────────────────────────────────────────────────────────────────
+
+function Avatar({ initials, color }: { initials: string; color: string }) {
+  return (
+    <div
+      className="w-11 h-11 rounded-full flex items-center justify-center flex-shrink-0
+                 text-sm font-bold"
+      style={{
+        background: `${color}22`, // ~13% opacity
+        border:     `2px solid ${color}44`,
+        color:      color,
+      }}
+    >
+      {initials}
+    </div>
+  );
+}
+
+// ── Testimonial card ──────────────────────────────────────────────────────
+
+function TestimonialCard({
+  testimonial,
+  index,
+  inView,
+}: {
+  testimonial: typeof TESTIMONIALS[number];
+  index:       number;
+  inView:      boolean;
+}) {
+  return (
+    <motion.article
+      initial={{ opacity: 0, y: 32 }}
+      animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{
+        duration: 0.65,
+        delay:    0.15 + index * 0.12,
+        ease:     [0.16, 1, 0.3, 1],
+      }}
+      className="liquid-glass rounded-[var(--radius-2xl)] p-[var(--bento-pad)]
+                 flex flex-col gap-5 h-full
+                 hover:shadow-[var(--shadow-liquid-3d-hover)]
+                 transition-shadow duration-[var(--duration-slow)]"
+    >
+      {/* Quote icon + stars */}
+      <div className="flex items-start justify-between gap-3">
+        <div
+          className="w-9 h-9 rounded-[var(--radius-md)] flex items-center justify-center"
+          style={{ background: 'var(--accent-primary-dim)', border: '1px solid var(--accent-primary-border)' }}
+        >
+          <Quote size={16} style={{ color: 'var(--accent-primary)' }} strokeWidth={2} />
+        </div>
+        <Stars count={testimonial.stars} />
+      </div>
+
+      {/* Quote text */}
+      <blockquote
+        className="flex-1 leading-relaxed"
+        style={{
+          color:      'var(--text-secondary)',
+          fontSize:   'var(--fs-body)',
+          lineHeight: 'var(--lh-relaxed)',
+          fontStyle:  'italic',
+        }}
+      >
+        "{testimonial.quote}"
+      </blockquote>
+
+      {/* Attribution */}
+      <div
+        className="flex items-center gap-3 pt-4"
+        style={{ borderTop: '1px solid var(--border-subtle)' }}
+      >
+        <Avatar initials={testimonial.avatarInitials} color={testimonial.avatarColor} />
+        <div className="min-w-0">
+          <div
+            className="font-semibold leading-tight truncate"
+            style={{ color: 'var(--text-primary)', fontSize: 'var(--fs-body)' }}
+          >
+            {testimonial.name}
+          </div>
+          <div
+            className="text-xs mt-0.5 truncate"
+            style={{ color: 'var(--text-muted)' }}
+          >
+            {testimonial.title}, {testimonial.company}
+          </div>
+        </div>
+      </div>
+    </motion.article>
+  );
+}
+
+// ── Trust signals bar ─────────────────────────────────────────────────────
+
+function TrustBar({ inView }: { inView: boolean }) {
+  const signals = [
+    { icon: '🏢', label: '5+ Companies Served' },
+    { icon: '⭐', label: '100% Client Satisfaction' },
+    { icon: '🔄', label: 'Repeat Engagements' },
+    { icon: '🌍', label: 'Global Remote Delivery' },
+  ];
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.6, delay: 0.55 }}
+      className="mt-10 grid grid-cols-2 sm:grid-cols-4 gap-4"
+    >
+      {signals.map((s, i) => (
+        <div
+          key={i}
+          className="liquid-glass rounded-[var(--radius-xl)] px-4 py-3
+                     flex items-center gap-3"
+        >
+          <span className="text-xl" role="img" aria-hidden="true">{s.icon}</span>
+          <span
+            className="font-medium"
+            style={{ color: 'var(--text-secondary)', fontSize: 'var(--fs-caption)' }}
+          >
+            {s.label}
+          </span>
+        </div>
+      ))}
+    </motion.div>
+  );
+}
+
+// ── Main export ───────────────────────────────────────────────────────────
+
+export default function Testimonials() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const inView     = useInView(sectionRef, { once: true, amount: 0.1 });
+
   return (
     <section
       id="testimonials"
       ref={sectionRef}
-      aria-label="Testimonials"
-      className="section-gap max-w-7xl mx-auto px-6 lg:px-12"
+      className="py-[var(--space-section)]"
+      aria-label="Client testimonials"
     >
-      <div className="mb-10">
-        <SectionLabel accent="fintech" className="mb-4">
-          Social Proof
-        </SectionLabel>
-        <h2 className="text-headline font-bold" style={{ color: 'var(--text-primary)' }}>
-          What Collaborators Say
-        </h2>
-      </div>
- 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Featured quote */}
-        <div className="lg:col-span-2">
-          <LiquidGlassCard
-            variant="cyan"
-            className="h-full flex flex-col justify-between"
-            style={{ padding: 'var(--bento-pad)' } as React.CSSProperties}
-          >
-            {/* Quote mark */}
-            <div
-              className="text-6xl font-black leading-none mb-4 select-none"
-              style={{ color: accentVarMap3[current.accent], opacity: 0.4 }}
-              aria-hidden="true"
-            >
-              "
-            </div>
- 
-            <blockquote
-              className="text-lg font-medium leading-relaxed flex-1"
-              style={{ color: 'var(--text-primary)' }}
-            >
-              {current.quote}
-            </blockquote>
- 
-            <div className="flex items-center gap-4 mt-8">
-              {/* Avatar */}
-              <div
-                className="w-12 h-12 rounded-full flex items-center justify-center font-bold text-sm shrink-0"
-                style={{
-                  background: `${accentVarMap3[current.accent]}20`,
-                  color:       accentVarMap3[current.accent],
-                  border:      `1px solid ${accentVarMap3[current.accent]}40`,
-                }}
-                aria-hidden="true"
-              >
-                {current.avatar}
-              </div>
-              <div>
-                <p className="font-semibold text-sm" style={{ color: 'var(--text-primary)' }}>
-                  {current.author}
-                </p>
-                <p className="text-caption" style={{ color: 'var(--text-muted)' }}>
-                  {current.role} · {current.company}
-                </p>
-              </div>
-            </div>
-          </LiquidGlassCard>
-        </div>
- 
-        {/* Testimonial selector list */}
-        <div className="flex flex-col gap-3">
-          {testimonials.map((t, i) => (
-            <button
+      <div className="section-container">
+
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6 }}
+          className="mb-12 text-center"
+        >
+          <div className="section-label">What Clients Say</div>
+          <h2 className="section-title">
+            Real feedback from{' '}
+            <span className="text-gradient-accent">real engineers</span>
+          </h2>
+          <p className="section-subtitle max-w-[500px] mx-auto">
+            Teams I've shipped production ML systems with — their words, not mine.
+          </p>
+        </motion.div>
+
+        {/* Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-[var(--bento-gap)]">
+          {TESTIMONIALS.map((t, i) => (
+            <TestimonialCard
               key={t.id}
-              onClick={() => setActiveIdx(i)}
-              className="text-left p-4 rounded-xl border transition-all duration-200"
-              style={{
-                background:  i === activeIdx ? `${accentVarMap3[t.accent]}0D` : 'var(--bg-surface)',
-                borderColor: i === activeIdx ? `${accentVarMap3[t.accent]}40` : 'var(--border-subtle)',
-              }}
-              aria-pressed={i === activeIdx}
-            >
-              <div className="flex items-center gap-3">
-                <div
-                  className="w-9 h-9 rounded-full flex items-center justify-center font-bold text-xs shrink-0"
-                  style={{
-                    background: `${accentVarMap3[t.accent]}18`,
-                    color:       accentVarMap3[t.accent],
-                  }}
-                  aria-hidden="true"
-                >
-                  {t.avatar}
-                </div>
-                <div>
-                  <p className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>
-                    {t.author}
-                  </p>
-                  <p className="text-caption" style={{ color: 'var(--text-muted)' }}>
-                    {t.company}
-                  </p>
-                </div>
-              </div>
-            </button>
+              testimonial={t}
+              index={i}
+              inView={inView}
+            />
           ))}
         </div>
+
+        {/* Trust signals */}
+        <TrustBar inView={inView} />
+
       </div>
     </section>
-  )
+  );
 }
