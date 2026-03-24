@@ -1,33 +1,27 @@
 "use client";
 
-import { useState } from "react";
+import { type ReactNode, useState } from "react";
 import {
   Activity,
   Blocks,
   ShieldCheck,
   Users,
 } from "lucide-react";
-
 import dynamic from "next/dynamic";
 
-// Existing app/components (all confirmed present)
 import { Hero } from "./components/Hero";
-import { AboutSection } from "./components/AboutSection";
-import { ProjectsSection } from "./components/Projects"; // subdirectory import works
-import { GitHubStats } from "./components/GitHubStats";
-import { PerformanceDashboard } from "./components/PerformanceDashboard";
-import { Testimonials } from "./components/Testimonials";
+import { BentoDenseGrid2026 } from "./components/BentoDenseGrid2026";
 import { ContactForm } from "./components/ContactForm";
 import { ContactModal } from "./components/ContactModal";
 import { ThemeToggle } from "./components/ThemeToggle";
 import { Footer } from "./components/Footer";
-import { AvailabilityBadge } from "./components/AvailabilityBadge";
+import { trackEvent } from "./lib/analytics";
 
-// Merged from page (2) — existing root-level components
-import { ProductionPatternsVisualization } from "@/components/ProductionPatternsVisualization";
 import { LiveBuildFeed } from "@/components/LiveBuildFeed";
+import { Button } from "@/components/ui/button";
+import { LiquidGlassCard } from "@/components/ui/LiquidGlassCard";
+import { cn } from "@/lib/utils";
 
-// Dynamic skills (SSR-safe, replaces old LiquidGlassSkillsMap pattern)
 const DynamicSkillsSection = dynamic(
   () =>
     import("./components/Skills/SkillsSection").then(
@@ -36,22 +30,28 @@ const DynamicSkillsSection = dynamic(
   { ssr: false }
 );
 
-import { CONTACT_OPTIONS } from "./lib/constants";
-import { trackEvent } from "./lib/analytics";
-
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-
-const QUICK_FACTS = [
-  { label: "Production users", value: "350+ active SabiScore users", icon: Users },
-  { label: "Model accuracy", value: "71% ensemble forecast accuracy", icon: Activity },
-  { label: "System uptime", value: "99.9% reliability with monitoring", icon: ShieldCheck },
+const RECRUITER_SIGNALS = [
   {
-    label: "Full-stack ownership",
-    value: "Models, APIs, dashboards, and product UX",
+    label: "Global Impact",
+    value: "Product thinking grounded in real operating contexts and built to travel well across markets.",
+    icon: Users,
+  },
+  {
+    label: "AI Precision",
+    value: "Research-grade intelligence shaped into interfaces that make hard decisions feel calm and clear.",
+    icon: Activity,
+  },
+  {
+    label: "Unwavering Reliability",
+    value: "Systems designed for trust, observability, and graceful behavior when the stakes feel high.",
+    icon: ShieldCheck,
+  },
+  {
+    label: "Built for Scale",
+    value: "Architecture, platform discipline, and UX cohesion that hold together as the surface grows.",
     icon: Blocks,
   },
-];
+] as const;
 
 function SectionHeading({
   kicker,
@@ -77,32 +77,34 @@ function SectionHeading({
   );
 }
 
-// Glassmorphism utility (replaces all missing LiquidGlass* components)
 const GlassCard = ({
   children,
   className = "",
   variant = "default",
 }: {
-  children: React.ReactNode;
+  children: ReactNode;
   className?: string;
   variant?: "default" | "cyan" | "violet" | "float";
 }) => {
   const variantClasses = {
-    cyan: "border-cyan-400/30 shadow-cyan-500/10",
-    violet: "border-violet-400/30 shadow-violet-500/10",
-    float: "shadow-2xl shadow-black/40",
+    cyan: "liquid-glass-cyan",
+    violet: "liquid-glass-violet",
+    float: "liquid-glass-float",
     default: "",
   };
+
   return (
-    <div
+    <LiquidGlassCard
+      variant={variant === "float" ? "default" : variant}
+      refraction
       className={cn(
-        "rounded-3xl border border-white/10 bg-white/[0.03] backdrop-blur-xl p-6 md:p-8",
+        "rounded-[2rem] p-6 md:p-8",
         variantClasses[variant],
         className
       )}
     >
       {children}
-    </div>
+    </LiquidGlassCard>
   );
 };
 
@@ -114,46 +116,38 @@ export default function Home() {
       id="main-content"
       className="relative min-h-screen overflow-hidden bg-gradient-hero text-foreground"
     >
-      {/* Background layers (unchanged) */}
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(0,217,255,0.12),transparent_32%),radial-gradient(circle_at_80%_15%,rgba(123,97,255,0.12),transparent_28%),radial-gradient(circle_at_50%_100%,rgba(16,185,129,0.07),transparent_28%)]" />
       <div className="pointer-events-none absolute inset-0 opacity-[0.08] [background-image:linear-gradient(rgba(255,255,255,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.08)_1px,transparent_1px)] [background-size:72px_72px]" />
 
       <div className="relative mx-auto w-full max-w-7xl px-4 pb-16 pt-4 sm:px-6 lg:px-8">
-        {/* Sticky Header – replaced LiquidGlassCard */}
         <header className="sticky top-4 z-40">
-          <div className="liquid-glass liquid-glass-cyan hero-nav-shell px-4 py-3 md:px-5">
+          <div className="liquid-glass liquid-glass-cyan hero-nav-shell mouse-refraction px-4 py-3 md:px-5">
             <a href="#top" className="group flex items-center gap-3">
-              <div className="hero-nav-mark">
-                OD
-              </div>
+              <div className="hero-nav-mark">OD</div>
               <div className="leading-tight">
-                <div className="text-sm font-semibold">Oscar Ndugbu</div>
+                <div className="text-sm font-semibold">Oscar Dubu</div>
                 <div className="text-xs text-[var(--text-secondary)]">
-                  Full-Stack ML Engineer • Fintech & AI Systems
+                  Full-Stack AI Engineer • Platform Architect
                 </div>
               </div>
             </a>
 
             <nav className="hidden items-center gap-6 text-sm text-[var(--text-secondary)] md:flex">
-              <a href="#projects" className="hero-nav-link">Projects</a>
-              <a href="#skills" className="hero-nav-link">Skills</a>
-              <a href="#experience" className="hero-nav-link">Experience</a>
-              <a href="#contact" className="hero-nav-link">Contact</a>
+              <a href="#projects" className="hero-nav-link">
+                Projects
+              </a>
+              <a href="#skills" className="hero-nav-link">
+                Skills
+              </a>
+              <a href="#experience" className="hero-nav-link">
+                Experience
+              </a>
+              <a href="#contact" className="hero-nav-link">
+                Contact
+              </a>
             </nav>
 
             <div className="flex items-center gap-2">
-              <Button
-                variant="outline"
-                asChild
-                className="hidden min-h-11 rounded-full border-white/10 bg-white/[0.03] px-4 text-sm font-medium text-[var(--text-primary)] hover:border-[var(--accent-primary)]/35 hover:bg-white/[0.06] hover:text-[var(--accent-primary)] lg:inline-flex"
-              >
-                <a
-                  href="mailto:scardubu@gmail.com"
-                  aria-label="Send email to Oscar"
-                >
-                  Email
-                </a>
-              </Button>
               <Button
                 onClick={() => {
                   trackEvent("CTA", "Click", "Top Nav Contact");
@@ -188,28 +182,29 @@ export default function Home() {
           <Hero onOpenContact={() => setIsContactModalOpen(true)} />
         </section>
 
-        {/* Quick Facts Bento – native grid replacing LiquidGlassBento */}
-        <section className="pb-12 md:pb-16">
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
-            {QUICK_FACTS.map((fact, index) => {
-              const Icon = fact.icon;
+        <section className="pb-14 md:pb-20">
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
+            {RECRUITER_SIGNALS.map((signal, index) => {
+              const Icon = signal.icon;
+
               return (
                 <GlassCard
-                  key={fact.label}
+                  key={signal.label}
                   variant={index % 2 === 0 ? "cyan" : "violet"}
+                  className="hero-metric-glass lg:col-span-3"
                 >
                   <div className="flex h-full flex-col justify-between gap-6">
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between gap-4">
                       <span className="rounded-full border border-white/10 bg-white/5 p-2 text-[var(--accent-primary)]">
                         <Icon className="h-4 w-4" />
                       </span>
                       <span className="text-xs uppercase tracking-[0.22em] text-[var(--text-muted)]">
-                        {fact.label}
+                        {signal.label}
                       </span>
                     </div>
-                    <div className="text-lg font-medium tracking-tight md:text-xl">
-                      {fact.value}
-                    </div>
+                    <p className="text-sm leading-7 text-[var(--text-secondary)] md:text-base">
+                      {signal.value}
+                    </p>
                   </div>
                 </GlassCard>
               );
@@ -221,121 +216,68 @@ export default function Home() {
           <div className="mb-6 md:mb-10">
             <SectionHeading
               kicker="Selected work"
-              title="Shipped products with measurable outcomes, not speculative concepts."
-              copy="Each case study shows how Oscar turns ML ideas into production systems with users, monitoring, and business-facing product polish."
+              title="Premium systems that feel like products, not prototypes."
+              copy="These flagship builds make Oscar’s range obvious at a glance: product strategy, platform architecture, ML systems thinking, and the discipline to ship polished experiences recruiters can trust."
             />
           </div>
-
-          <div className="grid gap-6 lg:grid-cols-12">
-            <div className="lg:col-span-8">
-              <ProjectsSection />
-            </div>
-
-            {/* Portfolio positioning sidebar – replaced LiquidGlassCard */}
-            <div className="lg:col-span-4">
-              <GlassCard className="h-full" variant="float">
-                {/* Content unchanged */}
-                <div className="flex h-full flex-col gap-6">
-                  <div>
-                    <p className="text-sm font-medium uppercase tracking-[0.22em] text-[var(--text-secondary)]">
-                      Portfolio positioning
-                    </p>
-                    <h3 className="mt-3 text-2xl font-semibold tracking-tight">
-                      Fast scan, strong proof, clear next step.
-                    </h3>
-                  </div>
-
-                  <div className="space-y-4">
-                    {CONTACT_OPTIONS.slice(0, 3).map((option) => (
-                      <button
-                        key={option.id}
-                        onClick={() => {
-                          trackEvent("Contact", "Click Option", option.id);
-                          setIsContactModalOpen(true);
-                        }}
-                        className="group w-full rounded-2xl border border-white/10 bg-white/[0.03] p-4 text-left transition-all hover:border-[var(--accent-primary)]/35 hover:bg-white/[0.06]"
-                      >
-                        {/* option content unchanged */}
-                      </button>
-                    ))}
-                  </div>
-
-                  <div className="mt-auto rounded-2xl border border-white/10 bg-gradient-to-br from-white/5 to-white/[0.02] p-4">
-                    <div className="flex items-center justify-between gap-4">
-                      <div>
-                        <div className="text-sm font-medium">Availability</div>
-                        <div className="mt-1 text-sm text-[var(--text-secondary)]">
-                          Open to freelance, product, and full-time opportunities.
-                        </div>
-                      </div>
-                      <AvailabilityBadge />
-                    </div>
-                  </div>
-                </div>
-              </GlassCard>
-            </div>
-          </div>
+          <BentoDenseGrid2026 />
         </section>
 
-        <section id="skills" className="pb-16 md:pb-24">
+        <section className="pb-16 md:pb-24">
           <div className="mb-6 md:mb-10">
             <SectionHeading
               kicker="Capabilities"
-              title="A clean split between narrative, technical depth, and credibility signals."
-              copy="This arrangement makes the page feel premium because every section has a job: explain, prove, or convert."
+              title="A deep technical surface with a product architect’s eye."
+              copy="The skills map stays interactive and tactile, but the story remains simple: Oscar moves fluidly from research and backend systems to product polish, communication, and platform resilience."
             />
           </div>
-          <div className="grid gap-6 lg:grid-cols-12">
-            <div className="lg:col-span-5">
-              <AboutSection />
-            </div>
-            <div className="lg:col-span-7">
-              <DynamicSkillsSection />
-            </div>
-          </div>
+          <DynamicSkillsSection />
         </section>
 
         <section id="experience" className="pb-16 md:pb-24">
           <div className="mb-6 md:mb-10">
             <SectionHeading
-              kicker="Credibility"
-              title="Proof of execution, not just claims."
-              copy="Use this lane for GitHub stats, runtime telemetry, testimonials, and the kind of evidence that helps a recruiter move you into the shortlist."
+              kicker="Live signal"
+              title="A portfolio that feels current, active, and worth revisiting."
+              copy="Recruiters should feel the rhythm of ongoing work immediately: recent engineering motion, a strong operational point of view, and an obvious invitation to bookmark the site and come back."
             />
           </div>
           <div className="grid gap-6 lg:grid-cols-12">
-            <div className="lg:col-span-7">
-              <GitHubStats />
-            </div>
-            <div className="lg:col-span-5">
-              <PerformanceDashboard />
-            </div>
-          </div>
-
-          {/* Merged extra sections from page (2) */}
-          <div className="mt-12 grid gap-6 lg:grid-cols-12">
-            <div className="lg:col-span-7">
-              <ProductionPatternsVisualization />
-            </div>
-            <div className="lg:col-span-5">
-              <LiveBuildFeed />
-            </div>
-          </div>
-        </section>
-
-        {/* Testimonials + Contact lane – replaced LiquidGlassCard */}
-        <section className="pb-16 md:pb-24">
-          <div className="grid gap-6 lg:grid-cols-12">
-            <div className="lg:col-span-7">
-              <Testimonials />
-            </div>
             <div className="lg:col-span-5">
               <GlassCard variant="cyan" className="h-full">
-                {/* unchanged contact lane content */}
-                <div className="flex h-full flex-col">
-                  {/* ... Button, email link, location info ... */}
+                <div className="flex h-full flex-col gap-6">
+                  <div className="space-y-3">
+                    <p className="text-sm font-medium uppercase tracking-[0.24em] text-[var(--accent-primary)]">
+                      Recruiter lens
+                    </p>
+                    <h3 className="text-2xl font-semibold tracking-tight text-[var(--text-primary)]">
+                      Clear authority, live motion, immediate next step.
+                    </h3>
+                    <p className="text-sm leading-7 text-[var(--text-secondary)] md:text-base">
+                      This experience is designed to answer the questions strong hiring teams ask in seconds: Can he ship? Can he communicate? Can he turn advanced AI into a product people want to keep using?
+                    </p>
+                  </div>
+
+                  <div className="rounded-[1.5rem] border border-white/10 bg-white/[0.03] p-5">
+                    <p className="text-sm font-medium uppercase tracking-[0.22em] text-[var(--text-muted)]">
+                      Bookmark prompt
+                    </p>
+                    <p className="mt-3 text-sm leading-7 text-[var(--text-secondary)] md:text-base">
+                      Save this portfolio for future openings, consulting conversations, and follow-up loops — it is built to evolve like a living product surface.
+                    </p>
+                  </div>
+
+                  <Button
+                    onClick={() => setIsContactModalOpen(true)}
+                    className="hero-primary-cta self-start rounded-full px-5 py-2.5 font-semibold text-black"
+                  >
+                    Open contact flow
+                  </Button>
                 </div>
               </GlassCard>
+            </div>
+            <div className="lg:col-span-7">
+              <LiveBuildFeed />
             </div>
           </div>
         </section>
@@ -344,8 +286,8 @@ export default function Home() {
           <div className="mb-6 md:mb-10">
             <SectionHeading
               kicker="Contact"
-              title="A concise final block that closes with intent."
-              copy="Keep the form visible, but let the modal and quick actions do the heavy lifting."
+              title="Open to Senior ML / Full-Stack Roles &amp; Consulting"
+              copy="The final interaction stays simple on purpose: a direct way to start the conversation, framed with the same premium product feel as the rest of the page."
             />
           </div>
           <div className="grid gap-6 lg:grid-cols-12">
@@ -353,15 +295,28 @@ export default function Home() {
               <ContactForm />
             </div>
             <div className="lg:col-span-5">
-              <GlassCard variant="violet">
-                <div className="space-y-3">
-                  <h3 className="text-xl font-semibold tracking-tight">
-                    Quick contact options
-                  </h3>
-                  <p className="text-sm text-[var(--text-secondary)]">
-                    Open the contact modal for the fastest route, or use the
-                    form to share project details and timelines.
-                  </p>
+              <GlassCard variant="violet" className="h-full">
+                <div className="flex h-full flex-col gap-5">
+                  <div className="space-y-3">
+                    <h3 className="text-xl font-semibold tracking-tight text-[var(--text-primary)]">
+                      Reach out with intent
+                    </h3>
+                    <p className="text-sm leading-7 text-[var(--text-secondary)]">
+                      Use the form for roles, product partnerships, advisory work, or consulting engagements that need both deep ML judgment and elegant full-stack execution.
+                    </p>
+                  </div>
+
+                  <div className="rounded-[1.5rem] border border-white/10 bg-white/[0.03] p-5">
+                    <p className="text-sm font-medium uppercase tracking-[0.22em] text-[var(--text-muted)]">
+                      Preferred conversations
+                    </p>
+                    <ul className="mt-3 space-y-2 text-sm text-[var(--text-secondary)]">
+                      <li>Senior product and platform roles</li>
+                      <li>Applied AI systems and ML engineering</li>
+                      <li>Consulting, technical partnerships, and high-conviction builds</li>
+                    </ul>
+                  </div>
+
                   <div className="flex flex-col gap-3 sm:flex-row">
                     <Button
                       onClick={() => setIsContactModalOpen(true)}

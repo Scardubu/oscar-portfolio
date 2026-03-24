@@ -1,10 +1,10 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
+import { useMemo, useState } from "react";
+import { motion, useMotionValue, useReducedMotion, useTransform } from "framer-motion";
 import {
   ArrowRight,
-  Download,
-  Layers3,
+  Bookmark,
   Mail,
   MapPin,
   Sparkles,
@@ -21,38 +21,28 @@ interface HeroProps {
 }
 
 const HERO_EASE: [number, number, number, number] = [0.16, 1, 0.3, 1];
-const METRIC_STAGGER_BASE_DELAY = 0.48;
-const METRIC_STAGGER_INCREMENT = 0.08;
 
 const HERO_METRICS = [
   {
-    value: "350+",
-    label: "Production users",
-    detail: "Live predictions flowing through SabiScore weekly.",
+    value: "Worldwide",
+    label: "Global Impact",
+    detail: "Products shaped for teams, operators, and audiences that move across markets with confidence.",
   },
   {
-    value: "71%",
-    label: "Model accuracy",
-    detail: "Backtested confidence bands tuned for real usage.",
+    value: "Signal-Led",
+    label: "AI Precision",
+    detail: "Frontier intelligence translated into clear decisions, legible workflows, and trusted product behavior.",
   },
   {
-    value: "99.9%",
-    label: "System uptime",
-    detail: "Production-ready monitoring, alerts, and recovery loops.",
+    value: "Always-On",
+    label: "Unwavering Reliability",
+    detail: "Operational calm designed into the platform layer so critical moments still feel effortless.",
   },
   {
-    value: "4+",
-    label: "Years shipping",
-    detail: "Full-stack AI, MLOps, and product engineering delivery.",
+    value: "Elastic",
+    label: "Built for Scale",
+    detail: "Architecture, UX, and data systems tuned to expand without losing clarity or momentum.",
   },
-] as const;
-
-const HERO_STACK = [
-  "Python",
-  "TypeScript",
-  "FastAPI",
-  "Next.js",
-  "MLOps",
 ] as const;
 
 function revealTransition(delay: number, duration = 0.7) {
@@ -61,6 +51,23 @@ function revealTransition(delay: number, duration = 0.7) {
 
 export function Hero({ onOpenContact }: HeroProps = {}) {
   const shouldReduceMotion = useReducedMotion();
+  const [bookmarkState, setBookmarkState] = useState<"idle" | "saved">("idle");
+  const mouseX = useMotionValue(50);
+  const mouseY = useMotionValue(44);
+  const rotateX = useTransform(mouseY, [0, 100], [7, -7]);
+  const rotateY = useTransform(mouseX, [0, 100], [-7, 7]);
+  const translateX = useTransform(mouseX, [0, 100], [-12, 12]);
+  const translateY = useTransform(mouseY, [0, 100], [-10, 10]);
+
+  const portraitStyle = useMemo(
+    () => ({
+      rotateX: shouldReduceMotion ? 0 : rotateX,
+      rotateY: shouldReduceMotion ? 0 : rotateY,
+      x: shouldReduceMotion ? 0 : translateX,
+      y: shouldReduceMotion ? 0 : translateY,
+    }),
+    [rotateX, rotateY, shouldReduceMotion, translateX, translateY]
+  );
 
   const scrollToSection = (id: string) => {
     if (typeof document === "undefined") return;
@@ -76,27 +83,41 @@ export function Hero({ onOpenContact }: HeroProps = {}) {
     scrollToSection("contact");
   };
 
+  const handleBookmark = async () => {
+    trackEvent("CTA", "Click", "Bookmark For Updates");
+    try {
+      if (typeof window !== "undefined" && navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(window.location.href);
+      }
+    } catch {
+      // Clipboard access can fail in restricted contexts; keep the UI optimistic.
+    }
+    setBookmarkState("saved");
+  };
+
   return (
     <section
       className="relative mx-auto flex min-h-[calc(100svh-7rem)] w-full max-w-7xl items-center px-4 py-8 md:px-6 md:py-10"
       aria-label="Hero section"
     >
+      <LiquidGlassRefractionSVG filterId="hero-liquid-glass" mode="defs" scale={26} />
+
       <div className="w-full">
         <div className="hero-main-grid">
           <motion.div
             initial={shouldReduceMotion ? false : { opacity: 0, y: 24 }}
             animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
             transition={revealTransition(0, 0.75)}
-            className="space-y-7 lg:max-w-[42rem]"
+            className="space-y-7 lg:max-w-[44rem]"
           >
             <div className="flex flex-wrap items-center gap-3">
-              <span className="hero-location-badge">
+              <span className="hero-location-badge liquid-glass mouse-refraction">
                 <MapPin className="h-4 w-4" />
                 Nigeria NG • Remote-First
               </span>
-              <span className="badge badge-primary">
+              <span className="badge badge-primary liquid-badge-sheen">
                 <Sparkles className="h-3.5 w-3.5" />
-                Open to senior ML + platform roles
+                Open to Senior ML / Full-Stack Roles &amp; Consulting
               </span>
             </div>
 
@@ -105,83 +126,60 @@ export function Hero({ onOpenContact }: HeroProps = {}) {
                 initial={shouldReduceMotion ? false : { opacity: 0, y: 18 }}
                 animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
                 transition={revealTransition(0.1)}
-                className="hero-headline max-w-4xl text-balance font-semibold tracking-tight text-[var(--text-primary)]"
+                className="hero-headline hero-headline-liquid max-w-4xl text-balance font-semibold tracking-tight text-[var(--text-primary)]"
               >
-                Oscar Ndugbu — Full-Stack ML Engineer shipping production AI
-                systems for fintech and product teams.
+                Hey, I&apos;m Oscar 👋
               </motion.h1>
 
               <motion.div
                 initial={shouldReduceMotion ? false : { opacity: 0, y: 18 }}
                 animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
                 transition={revealTransition(0.18)}
-                className="max-w-2xl space-y-4 text-pretty text-base leading-8 text-[var(--text-secondary)] md:text-lg"
+                className="max-w-3xl space-y-4 text-pretty text-base leading-8 text-[var(--text-secondary)] md:text-lg"
               >
                 <p>
-                  I design and ship end-to-end ML products: data pipelines,
-                  predictive models, APIs, and product surfaces that teams can
-                  trust in production.
+                  I architect production AI systems that distill frontier intelligence into elegant, trusted tools people rely on every single day.
                 </p>
                 <p>
-                  <span className="font-semibold text-[var(--text-primary)]">
-                    SabiScore
-                  </span>{" "}
-                  serves 350+ users with ensemble forecasting, transparent
-                  confidence signals, 71% model accuracy, and infrastructure
-                  engineered for 99.9% uptime.
+                  SabiScore, my flagship sports intelligence platform, powers real-time insights that sharpen every decision — engineered for seamless flow and unwavering performance at global scale.
+                </p>
+                <p>
+                  From Nigeria to audiences worldwide, I fuse cutting-edge AI research with intuitive product mastery to create experiences that don&apos;t just work — they captivate, perform, and endure.
                 </p>
               </motion.div>
             </div>
-
-            <motion.div
-              initial={shouldReduceMotion ? false : { opacity: 0, y: 18 }}
-              animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
-              transition={revealTransition(0.22)}
-              className="flex flex-wrap items-center gap-3 text-sm text-[var(--text-secondary)]"
-            >
-              <span className="inline-flex min-h-10 items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-[var(--text-primary)]">
-                <Layers3 className="h-4 w-4 text-[var(--accent-primary)]" />
-                Production stack
-              </span>
-              <span className="text-pretty">
-                {HERO_STACK.join(" • ")}
-              </span>
-            </motion.div>
 
             <motion.article
               initial={shouldReduceMotion ? false : { opacity: 0, y: 24 }}
               animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
               transition={revealTransition(0.24, 0.75)}
-              className="hero-proof-card liquid-glass liquid-glass-cyan"
+              className="hero-proof-card liquid-glass liquid-glass-cyan mouse-refraction chromatic-aberration"
             >
-              <div className="flex items-start justify-between gap-4">
+              <div className="flex flex-col gap-5 md:flex-row md:items-start md:justify-between">
                 <div className="space-y-3">
-                  <p className="hero-proof-kicker">
-                    Production proof
-                  </p>
+                  <p className="hero-proof-kicker">SabiScore flagship platform</p>
                   <h2 className="text-xl font-semibold tracking-tight text-[var(--text-primary)] md:text-2xl">
-                    Built for real traffic, real users, and real business
-                    decisions.
+                    A living sports intelligence surface where research rigor, product feel, and operational trust meet in one seamless experience.
                   </h2>
                 </div>
                 <span className="hero-live-pill">
                   <span className="hero-live-dot" />
-                  Live
+                  Real-time feel
                 </span>
               </div>
 
               <div className="grid gap-3 pt-5 sm:grid-cols-3">
                 <div className="hero-proof-stat">
-                  <span className="hero-proof-value">87ms</span>
-                  <span className="hero-proof-label">Prediction latency</span>
+                  <span className="hero-proof-value">Platform clarity</span>
+                  <span className="hero-proof-label">Decision-first interface</span>
                 </div>
                 <div className="hero-proof-stat">
-                  <span className="hero-proof-value">24/7</span>
-                  <span className="hero-proof-label">Monitoring + alerts</span>
+                  <span className="hero-proof-value">Model trust</span>
+                  <span className="hero-proof-label">Signals that stay legible under pressure</span>
                 </div>
                 <div className="hero-proof-stat">
-                  <span className="hero-proof-value">Global</span>
-                  <span className="hero-proof-label">Remote collaboration</span>
+                  <span className="hero-proof-value">Global posture</span>
+                  <span className="hero-proof-label">Built from Nigeria for audiences everywhere</span>
                 </div>
               </div>
             </motion.article>
@@ -206,23 +204,17 @@ export function Hero({ onOpenContact }: HeroProps = {}) {
                 onClick={() => scrollToSection("projects")}
                 className="hero-secondary-cta min-h-12 rounded-full px-6 text-sm font-semibold md:px-7"
               >
-                Explore shipped work
+                Explore selected systems
                 <ArrowRight className="h-4 w-4" />
               </Button>
               <Button
                 size="lg"
                 variant="ghost"
-                asChild
-                className="hero-download-cta min-h-12 rounded-full px-5 text-sm font-medium"
+                onClick={handleBookmark}
+                className="hero-download-cta bookmark-ripple min-h-12 rounded-full px-5 text-sm font-medium"
               >
-                <a
-                  href="/cv/oscar-ndugbu-cv.pdf"
-                  download="Oscar-Ndugbu-CV.pdf"
-                  onClick={() => trackEvent("CTA", "Download", "CV")}
-                >
-                  <Download className="h-4 w-4" />
-                  Download CV
-                </a>
+                <Bookmark className="h-4 w-4" />
+                {bookmarkState === "saved" ? "Link copied for later" : "Bookmark for updates"}
               </Button>
             </motion.div>
 
@@ -239,7 +231,7 @@ export function Hero({ onOpenContact }: HeroProps = {}) {
               >
                 scardubu@gmail.com
               </a>
-              <span>Open to senior ML, platform, and product engineering roles.</span>
+              <span>Battle-tested Full-Stack AI Engineer &amp; Platform Architect building elegant systems with durable product conviction.</span>
             </motion.div>
           </motion.div>
 
@@ -248,10 +240,27 @@ export function Hero({ onOpenContact }: HeroProps = {}) {
             animate={shouldReduceMotion ? undefined : { opacity: 1, scale: 1 }}
             transition={revealTransition(0.18, 0.85)}
             className="hero-portrait-column"
+            onPointerMove={(event) => {
+              const rect = event.currentTarget.getBoundingClientRect();
+              mouseX.set(((event.clientX - rect.left) / rect.width) * 100);
+              mouseY.set(((event.clientY - rect.top) / rect.height) * 100);
+            }}
+            onPointerLeave={() => {
+              mouseX.set(50);
+              mouseY.set(44);
+            }}
           >
-            <div className="hero-portrait-glow" aria-hidden="true" />
-            <div className="hero-portrait-shell liquid-glass liquid-glass-cyan liquid-glass-float">
-              <LiquidGlassRefractionSVG className="hero-refraction-layer" />
+            <div className="hero-portrait-glow profile-glow-cyan" aria-hidden="true" />
+            <motion.div
+              className="hero-portrait-shell liquid-glass liquid-glass-cyan liquid-glass-float chromatic-aberration"
+              style={portraitStyle}
+            >
+              <LiquidGlassRefractionSVG
+                filterId="hero-liquid-glass"
+                mode="overlay"
+                className="hero-refraction-layer"
+                scale={26}
+              />
               <div className="hero-portrait-core">
                 <Image
                   src="/headshot.webp"
@@ -275,7 +284,7 @@ export function Hero({ onOpenContact }: HeroProps = {}) {
                 className="hero-portrait-pill hero-portrait-pill-top"
               >
                 <span className="hero-live-dot" />
-                Building for real traffic, not demos
+                Production systems with product taste
               </motion.div>
 
               <motion.div
@@ -284,9 +293,9 @@ export function Hero({ onOpenContact }: HeroProps = {}) {
                 transition={revealTransition(0.54, 0.6)}
                 className="hero-portrait-pill hero-portrait-pill-bottom"
               >
-                Nigeria-based • Remote-ready
+                Remote-first • Built from Nigeria
               </motion.div>
-            </div>
+            </motion.div>
           </motion.div>
         </div>
 
@@ -301,11 +310,10 @@ export function Hero({ onOpenContact }: HeroProps = {}) {
               key={metric.label}
               initial={shouldReduceMotion ? false : { opacity: 0, y: 18 }}
               animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
-              transition={revealTransition(
-                METRIC_STAGGER_BASE_DELAY + index * METRIC_STAGGER_INCREMENT,
-                0.6
-              )}
-              className="hero-metric-card liquid-glass liquid-glass-hover"
+              transition={revealTransition(0.48 + index * 0.08, 0.6)}
+              className={`hero-metric-card hero-metric-glass liquid-glass liquid-glass-hover mouse-refraction ${
+                index === HERO_METRICS.length - 1 ? "hero-metric-card-pulse" : ""
+              }`}
             >
               <span className="hero-metric-value">{metric.value}</span>
               <span className="hero-metric-label">{metric.label}</span>
