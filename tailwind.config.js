@@ -1,5 +1,5 @@
 /**
- * tailwind.config.ts
+ * tailwind.config.js
  *
  * Extends Tailwind with CSS custom property references so that
  * component classes resolve to design tokens defined in globals.css.

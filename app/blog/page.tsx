@@ -1,23 +1,6 @@
 import BlogListClient from "./BlogListClient";
-import { getAllPosts, getAllTags } from "@/lib/blog";
-import {
-  normalizePost,
-  type BlogPost as SearchBlogPost,
-  type TagStat,
-} from "@/lib/blog-intelligence";
-
-function toSearchPost(post: ReturnType<typeof getAllPosts>[number]): SearchBlogPost {
-  return normalizePost({
-    slug: post.slug,
-    title: post.title,
-    excerpt: post.description,
-    date: post.date,
-    readMin: Number.parseInt(post.readingTime, 10) || 5,
-    tags: post.tags,
-    featured: false,
-    published: !post.draft,
-  });
-}
+import { getAllPosts, getAllTags, toSearchBlogPost } from "@/lib/blog";
+import { type TagStat } from "@/lib/blog-intelligence";
 
 export default async function BlogPage({
   searchParams,
@@ -25,7 +8,7 @@ export default async function BlogPage({
   searchParams: Promise<{ q?: string; tag?: string }>;
 }) {
   const params = await searchParams;
-  const posts = getAllPosts().map(toSearchPost);
+  const posts = getAllPosts().map(toSearchBlogPost);
   const tagStats: TagStat[] = getAllTags().map(({ tag, count }) => ({
     tag,
     count,

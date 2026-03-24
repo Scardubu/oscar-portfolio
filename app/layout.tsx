@@ -232,8 +232,8 @@ export default function RootLayout({
       className="dark"
       style={
         {
-          "--font-inter": "Inter",
-          "--font-jetbrains-mono": '"JetBrains Mono"',
+          "--font-inter": "ui-sans-serif",
+          "--font-jetbrains-mono": "ui-monospace",
         } as React.CSSProperties
       }
       suppressHydrationWarning

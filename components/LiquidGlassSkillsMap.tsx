@@ -233,7 +233,7 @@ function SkillNode({
   const radius = NODE_R + (node.skill.level / 100) * 14;
 
   // Track drag velocity for spring release
-  const lastPos = useRef({ x: node.x, y: node.y, t: 0 });
+  const lastPos = useRef<{ x: number; y: number; t: number } | null>(null);
 
   return (
     <motion.div
@@ -248,9 +248,9 @@ function SkillNode({
       drag
       dragMomentum={false}
       dragElastic={0}
-      onDragStart={() => {
-        onDragStart(node.id);
-        lastPos.current = { x: node.x, y: node.y, t: Date.now() };
+        onDragStart={() => {
+          onDragStart(node.id);
+          lastPos.current = { x: node.x, y: node.y, t: Date.now() };
       }}
       onDrag={(_, info) => {
         const now = Date.now();

@@ -328,6 +328,17 @@ export default function Home() {
                     Open the contact modal for the fastest route, or use the
                     form to share project details and timelines.
                   </p>
+                  <div className="flex flex-col gap-3 sm:flex-row">
+                    <Button
+                      onClick={() => setIsContactModalOpen(true)}
+                      className="rounded-full bg-gradient-accent px-5 py-2.5 font-semibold text-black"
+                    >
+                      Open contact modal
+                    </Button>
+                    <Button variant="outline" asChild>
+                      <a href="mailto:scardubu@gmail.com">Email directly</a>
+                    </Button>
+                  </div>
                 </div>
               </GlassCard>
             </div>

@@ -13,7 +13,6 @@ interface LiquidGlassCardOwnProps {
   variant?: Variant;
   hover?: boolean;
   depth?: boolean;
-  motion?: boolean;
   className?: string;
   children: ReactNode;
 }
@@ -36,7 +35,6 @@ export function LiquidGlassCard<T extends ElementType = "div">({
   variant = "default",
   hover = true,
   depth = false,
-  motion: _motion = true,
   className,
   children,
   ...rest

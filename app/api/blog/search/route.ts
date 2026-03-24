@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import { getAllPosts } from "@/lib/blog";
+import { getAllPosts, toSearchBlogPost } from "@/lib/blog";
 import {
   buildReason,
   buildSearchDocument,
@@ -21,19 +21,6 @@ type SearchRequestBody = {
   tag?: string | null;
   limit?: number;
 };
-
-function toSearchPost(post: ReturnType<typeof getAllPosts>[number]): RankedBlogPost {
-  return normalizePost({
-    slug: post.slug,
-    title: post.title,
-    excerpt: post.description,
-    date: post.date,
-    readMin: Number.parseInt(post.readingTime, 10) || 5,
-    tags: post.tags,
-    featured: false,
-    published: !post.draft,
-  });
-}
 
 async function fetchEmbeddings(inputs: string[]): Promise<number[][]> {
   const apiKey = process.env.OPENAI_API_KEY;
@@ -115,7 +102,7 @@ export async function POST(request: Request) {
       ? Math.max(1, Math.min(20, Number(body.limit)))
       : 12;
 
-    const rawPosts = getAllPosts().map(toSearchPost);
+    const rawPosts = getAllPosts().map(toSearchBlogPost);
     const published = rawPosts.filter((post) => post.published !== false);
     const posts = sortPosts(published).map((post) => ({
       ...post,
