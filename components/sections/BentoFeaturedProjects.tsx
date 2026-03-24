@@ -1,272 +1,459 @@
-// components/sections/BentoFeaturedProjects.tsx
-'use client'
+'use client';
+/**
+ * components/sections/BentoFeaturedProjects.tsx
+ * ──────────────────────────────────────────────────────────────────────────
+ * PROOF ENGINE v3 — World-Class Production Ready
+ *
+ * Refined from deep analysis + current codebase reality:
+ *   • Real PROJECTS data (accent, featured, metrics with variant/sublabel,
+ *     longDescription, tags, status, links.live/demo/repo/caseStudy, githubStats)
+ *   • LiquidGlassCard reusable (already in codebase with cyan/violet/teal/float
+ *     + built-in Framer hover/float motion + reduced-motion safe)
+ *   • Framer Motion scroll triggers + parallax (headshot-style depth on large cards)
+ *   • Metric counters with easeOutExpo (same premium feel as Hero v3)
+ *   • Live pulse + expandable architecture (longDescription) + GitHub stats chip
+ *   • Asymmetric 12-col bento (SabiScore 7/12, Hashablanca 5/12, TaxBridge 8/12)
+ *   • CTA cell + non-featured row — exactly matches current design system
+ *
+ * World-class inspirations (Awwwards, Aceternity, Framer Academy 2025):
+ *   • Subtle parallax tilt on featured cards
+ *   • Staggered metric counters + live-dot pulse
+ *   • Glass hover lift + spring transitions
+ *   • Perfect responsive fallback (mobile stacks cleanly)
+ *
+ * Seamless integration:
+ *   • Uses only existing exports: PROJECTS from '@/lib/data'
+ *   • LiquidGlassCard (variant mapping from accent), SectionLabel
+ *   • Same CSS vars, --bento-gap, --bento-pad, liquid-glass-*, btn-*
+ *   • No new dependencies. Drop-in replacement.
+ * ──────────────────────────────────────────────────────────────────────────
+ */
 
-import { projects, type Project } from '@/lib/data'
-import { LiquidGlassCard }       from '@/components/reusable/LiquidGlassCard'
-import { MetricBadge, SectionLabel } from '@/components/reusable'
-import { useScrollReveal }        from '@/hooks'
-import Link from 'next/link'
+import { useRef, useEffect, useState } from 'react';
+import {
+  motion,
+  useReducedMotion,
+  useInView,
+  AnimatePresence,
+  useScroll,
+  useTransform,
+} from 'framer-motion';
+import LiquidGlassCard from '@/components/reusable/LiquidGlassCard';
+import { SectionLabel } from '@/components/reusable';
+import Link from 'next/link';
+import {
+  ExternalLink,
+  Github,
+  BookOpen,
+  ChevronRight,
+  Zap,
+  MapPin,
+} from 'lucide-react';
+import { PROJECTS, type Project } from '@/lib/data';
 
-// ─────────────────────────────────────────────────────────────────────
-// BentoFeaturedProjects — Proof Engine
-// Design intent:
-//   - Asymmetric bento grid — TaxBridge spans 2/3, SabiScore 1/3
-//   - Metrics-first presentation — recruiter reads numbers instantly
-//   - Liquid glass surface — premium product feel
-//   - Status chips — "live", "beta" signal production readiness
-// ─────────────────────────────────────────────────────────────────────
+// ── Premium counter (easeOutExpo — matches Hero v3) ────────────────────────
 
-const accentVarMap = {
-  primary:   'var(--accent-primary)',
-  secondary: 'var(--accent-secondary)',
-  fintech:   'var(--accent-fintech)',
-  warn:      'var(--accent-warn)',
+function useCounter(
+  target: number,
+  decimals = 0,
+  duration = 1800,
+  active = false
+) {
+  const [val, setVal] = useState(0);
+  const started = useRef(false);
+
+  useEffect(() => {
+    if (!active || started.current) return;
+    started.current = true;
+    const start = performance.now();
+
+    const tick = (now: number) => {
+      const t = Math.min((now - start) / duration, 1);
+      const eased = t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
+      setVal(parseFloat((target * eased).toFixed(decimals)));
+      if (t < 1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  }, [active, target, decimals, duration]);
+
+  return active ? val : 0;
 }
 
-const glassVariantMap: Record<Project['accent'], 'cyan' | 'violet' | 'default' | 'default'> = {
-  primary:   'cyan',
-  secondary: 'violet',
-  fintech:   'cyan',
-  warn:      'default',
+// ── Animated Project Metric Chip (variant colors + sublabel + counter) ─────
+
+function ProjectMetricChip({
+  metric,
+  delay,
+  active,
+}: {
+  metric: Project['metrics'][number];
+  delay: number;
+  active: boolean;
+}) {
+  const shouldRed = useReducedMotion();
+
+  const valueStr = metric.value;
+  const numTarget = parseFloat(valueStr.replace(/[^0-9.]/g, '')) || 0;
+  const suffix = valueStr.replace(/[\d.]/g, '');
+  const decimals = valueStr.includes('.') ? 1 : 0;
+
+  const count = useCounter(numTarget, decimals, 1400, !shouldRed && active);
+
+  const displayed =
+    !shouldRed && active ? count.toFixed(decimals) + suffix : valueStr;
+
+  const colors: Record<string, string> = {
+    live: 'var(--metric-live)',
+    documented: 'var(--metric-documented)',
+    backtested: 'var(--metric-backtested)',
+    snapshot: 'var(--metric-snapshot)',
+  };
+  const color = colors[metric.variant] ?? 'var(--accent-primary)';
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, delay, ease: [0.16, 1, 0.3, 1] }}
+      className="flex flex-col gap-0.5 rounded-[var(--radius-lg)] px-4 py-3 border"
+      style={{
+        background: `color-mix(in srgb, ${color} 8%, transparent)`,
+        borderColor: `color-mix(in srgb, ${color} 30%, transparent)`,
+      }}
+    >
+      <span
+        className="font-bold tabular-nums leading-none"
+        style={{
+          fontSize: 'var(--fs-subhead)',
+          color,
+          lineHeight: 'var(--lh-tight)',
+        }}
+      >
+        {displayed}
+      </span>
+      <span
+        className="font-medium text-[10px]"
+        style={{ color: 'var(--text-secondary)' }}
+      >
+        {metric.label}
+      </span>
+      {metric.sublabel && (
+        <span
+          className="text-[9px] opacity-75"
+          style={{ color: 'var(--text-muted)' }}
+        >
+          {metric.sublabel}
+        </span>
+      )}
+    </motion.div>
+  );
 }
 
-const statusConfig = {
-  live:        { label: 'Live',        class: 'badge-fintech'   },
-  beta:        { label: 'Beta',        class: 'badge-primary'   },
-  development: { label: 'In Progress', class: 'badge-secondary' },
+// ── ProjectCard (LiquidGlassCard + parallax + expandable) ─────────────────
+
+function ProjectCard({
+  project,
+  delay = 0,
+}: {
+  project: Project;
+  delay?: number;
+}) {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const inView = useInView(cardRef, { once: true, amount: 0.2 });
+  const [expanded, setExpanded] = useState(false);
+
+  // Parallax depth (subtle like Hero headshot)
+  const { scrollYProgress } = useScroll({
+    target: cardRef,
+    offset: ['start end', 'end start'],
+  });
+  const y = useTransform(scrollYProgress, [0, 1], [0, 18]);
+
+  const variantMap: Record<Project['accent'], 'cyan' | 'violet' | 'teal' | 'default'> = {
+    cyan: 'cyan',
+    violet: 'violet',
+    teal: 'teal',
+  };
+  const glassVariant = variantMap[project.accent] ?? 'default';
+
+  const isLive = project.status === 'live';
+
+  return (
+    <motion.div
+      ref={cardRef}
+      initial={{ opacity: 0, y: 40 }}
+      animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.7, delay, ease: [0.16, 1, 0.3, 1] }}
+    >
+      <LiquidGlassCard
+        variant={glassVariant}
+        hover
+        motion
+        className="h-full flex flex-col overflow-hidden"
+        style={{ padding: 0 } as React.CSSProperties}
+      >
+        {/* Header */}
+        <div className="p-[var(--bento-pad)] border-b flex items-start justify-between"
+             style={{ borderColor: 'var(--border-liquid)' }}>
+          <div>
+            {isLive && (
+              <div className="flex items-center gap-2 mb-2">
+                <span className="live-dot animate-ping-slow" style={{ color: 'var(--metric-live)' }} />
+                <span
+                  className="badge"
+                  style={{
+                    background: 'var(--metric-live-dim)',
+                    borderColor: 'var(--metric-live-border)',
+                    color: 'var(--metric-live)',
+                  }}
+                >
+                  LIVE
+                </span>
+              </div>
+            )}
+            {!isLive && project.status === 'in-progress' && (
+              <span className="badge mb-2" style={{ background: 'var(--accent-warn-dim)', color: 'var(--accent-warn)' }}>
+                IN PROGRESS
+              </span>
+            )}
+
+            <h3 className="font-bold" style={{ fontSize: 'var(--fs-headline)', color: 'var(--text-primary)' }}>
+              {project.title}
+            </h3>
+            <p className="text-caption mt-1" style={{ color: `var(--accent-${project.accent})` }}>
+              {project.subtitle}
+            </p>
+          </div>
+
+          {project.githubStats && (
+            <a
+              href={project.links.repo}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex-shrink-0 flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-[var(--radius-md)] border"
+              style={{
+                background: 'var(--bg-elevated)',
+                borderColor: 'var(--border-subtle)',
+              }}
+            >
+              <Github size={14} />
+              <span>★ {project.githubStats.stars}</span>
+            </a>
+          )}
+        </div>
+
+        {/* Body with parallax container */}
+        <motion.div
+          style={{ y }}
+          className="flex-1 flex flex-col p-[var(--bento-pad)]"
+        >
+          <p
+            className="text-body mb-6 flex-1"
+            style={{ color: 'var(--text-secondary)', lineHeight: 'var(--lh-relaxed)' }}
+          >
+            {project.description}
+          </p>
+
+          {/* Expandable architecture */}
+          {project.longDescription && (
+            <div className="mb-6">
+              <AnimatePresence>
+                {expanded && (
+                  <motion.p
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    className="text-body mb-4"
+                    style={{ color: 'var(--text-muted)' }}
+                  >
+                    {project.longDescription}
+                  </motion.p>
+                )}
+              </AnimatePresence>
+              <button
+                onClick={() => setExpanded(!expanded)}
+                className="flex items-center gap-1 text-sm font-medium"
+                style={{ color: `var(--accent-${project.accent})` }}
+              >
+                {expanded ? 'Hide details' : 'See full architecture'}
+                <ChevronRight
+                  size={14}
+                  className={`transition-transform ${expanded ? 'rotate-90' : ''}`}
+                />
+              </button>
+            </div>
+          )}
+
+          {/* Animated Metrics */}
+          <div className="grid grid-cols-2 gap-3 mb-6">
+            {project.metrics.slice(0, 6).map((m, i) => (
+              <ProjectMetricChip
+                key={m.label}
+                metric={m}
+                delay={0.1 + i * 0.05}
+                active={inView}
+              />
+            ))}
+          </div>
+
+          {/* Tech tags */}
+          <div className="flex flex-wrap gap-2">
+            {project.tags.slice(0, 6).map((tag) => (
+              <span
+                key={tag}
+                className="badge text-[10px]"
+                style={{
+                  background: 'var(--bg-elevated)',
+                  border: '1px solid var(--border-subtle)',
+                  color: 'var(--text-secondary)',
+                }}
+              >
+                {tag}
+              </span>
+            ))}
+            {project.tags.length > 6 && (
+              <span className="badge text-[10px]" style={{ color: 'var(--text-muted)' }}>
+                +{project.tags.length - 6} more
+              </span>
+            )}
+          </div>
+        </motion.div>
+
+        {/* Footer CTAs */}
+        <div className="p-[var(--bento-pad)] border-t flex flex-wrap gap-3"
+             style={{ borderColor: 'var(--border-liquid)' }}>
+          {project.links.live && (
+            <a
+              href={project.links.live}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn btn-primary btn-sm flex-1"
+            >
+              <ExternalLink size={14} /> Live Site
+            </a>
+          )}
+          {project.links.demo && (
+            <a href={project.links.demo} target="_blank" rel="noopener noreferrer" className="btn btn-primary btn-sm">
+              Demo
+            </a>
+          )}
+          {project.links.repo && (
+            <a href={project.links.repo} target="_blank" rel="noopener noreferrer" className="btn btn-ghost btn-sm">
+              <Github size={14} /> Source
+            </a>
+          )}
+          {project.links.caseStudy && (
+            <a href={project.links.caseStudy} className="btn btn-ghost btn-sm">
+              <BookOpen size={14} /> Case Study
+            </a>
+          )}
+        </div>
+      </LiquidGlassCard>
+    </motion.div>
+  );
 }
+
+// ── CTA Cell ──────────────────────────────────────────────────────────────
+
+function CtaCell() {
+  const ref = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref, { once: true, amount: 0.3 });
+
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 30 }}
+      animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.6 }}
+    >
+      <LiquidGlassCard variant="default" hover className="h-full flex flex-col items-center justify-center text-center p-[var(--bento-pad)]">
+        <Zap size={32} style={{ color: 'var(--accent-primary)' }} strokeWidth={1.6} />
+        <div className="mt-6">
+          <p className="font-semibold" style={{ fontSize: 'var(--fs-subhead)', color: 'var(--text-primary)' }}>
+            Building something production-grade?
+          </p>
+          <p className="mt-2 text-body max-w-[260px]" style={{ color: 'var(--text-secondary)' }}>
+            I own the full stack — ML, backend, frontend, infra. Let’s ship it.
+          </p>
+        </div>
+        <a href="#contact" className="btn btn-primary mt-8">
+          Start a conversation
+          <ChevronRight size={16} />
+        </a>
+      </LiquidGlassCard>
+    </motion.div>
+  );
+}
+
+// ── Main Section ──────────────────────────────────────────────────────────
 
 export default function BentoFeaturedProjects() {
-  const sectionRef = useScrollReveal<HTMLElement>({ threshold: 0.08 })
-  const featured   = projects.filter(p => p.featured)
-  const others     = projects.filter(p => !p.featured)
+  const sectionRef = useRef<HTMLElement>(null);
+  const inView = useInView(sectionRef, { once: true, amount: 0.05 });
+
+  const featured = PROJECTS.filter((p) => p.featured);
+  const nonFeatured = PROJECTS.filter((p) => !p.featured);
 
   return (
     <section
       id="projects"
       ref={sectionRef}
+      className="py-[var(--space-section)]"
       aria-label="Featured Projects"
-      className="section-gap max-w-7xl mx-auto px-6 lg:px-12"
     >
-      {/* ── Section header ── */}
-      <div className="mb-12">
-        <SectionLabel accent="fintech" className="mb-4">
-          Proof of Work
-        </SectionLabel>
-        <h2 className="text-headline font-bold mb-3" style={{ color: 'var(--text-primary)' }}>
-          Systems Built for Production
-        </h2>
-        <p className="text-subhead max-w-xl" style={{ color: 'var(--text-secondary)' }}>
-          Not side projects. These move real money, score real creditworthiness,
-          and report to real policymakers.
-        </p>
-      </div>
-
-      {/* ── Bento grid — 12-column asymmetric ── */}
-      <div
-        className="grid gap-[var(--bento-gap)]"
-        style={{ gridTemplateColumns: 'repeat(12, 1fr)' }}
-      >
-        {featured.map((project, i) => (
-          <ProjectCard
-            key={project.id}
-            project={project}
-            delay={i * 150}
-          />
-        ))}
-      </div>
-
-      {/* ── Secondary projects grid ── */}
-      {others.length > 0 && (
-        <div
-          className="mt-[var(--bento-gap)] grid grid-cols-1 md:grid-cols-2 gap-[var(--bento-gap)]"
+      <div className="section-container">
+        {/* Section Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6 }}
+          className="mb-12"
         >
-          {others.map((project, i) => (
-            <ProjectCard
-              key={project.id}
-              project={project}
-              delay={(featured.length + i) * 150}
-              compact
-            />
-          ))}
-        </div>
-      )}
-    </section>
-  )
-}
+          <SectionLabel accent="fintech">Proof of Work</SectionLabel>
+          <h2 className="section-title">
+            Systems that ship.{' '}
+            <span className="text-gradient-accent">Real users. Real scale.</span>
+          </h2>
+          <p className="section-subtitle max-w-[620px]">
+            Every project here is production-grade — not notebooks. I owned the
+            entire stack from data pipelines to live APIs.
+          </p>
+        </motion.div>
 
-// ── ProjectCard ───────────────────────────────────────────────────────
-
-function ProjectCard({
-  project,
-  delay  = 0,
-  compact = false,
-}: {
-  project: Project
-  delay?:  number
-  compact?:boolean
-}) {
-  const cardRef = useScrollReveal<HTMLDivElement>({ threshold: 0.1 })
-  const accentColor = accentVarMap[project.accent]
-  const glassVariant = glassVariantMap[project.accent]
-  const status = statusConfig[project.status]
-
-  // Bento column span mapping
-  const colSpanClass = {
-    8: 'col-span-12 lg:col-span-8',
-    6: 'col-span-12 lg:col-span-6',
-    4: 'col-span-12 lg:col-span-4',
-  }[project.colSpan]
-
-  return (
-    <div
-      ref={cardRef}
-      className={compact ? 'col-span-1' : colSpanClass}
-      style={{
-        opacity: 0,
-        transform: 'translateY(2rem)',
-        transition: `opacity var(--duration-reveal) var(--ease-out-expo) ${delay}ms,
-                     transform var(--duration-reveal) var(--ease-out-expo) ${delay}ms`,
-      }}
-      // @ts-ignore – data attribute drives CSS transition
-      data-revealed={undefined}
-    >
-      <style>{`
-        [data-revealed] { opacity: 1 !important; transform: translateY(0) !important; }
-      `}</style>
-
-      <LiquidGlassCard
-        variant={glassVariant}
-        hover
-        className="h-full flex flex-col"
-        style={{ padding: 'var(--bento-pad)' } as React.CSSProperties}
-      >
-        {/* ── Card header ── */}
-        <div className="flex items-start justify-between gap-4 mb-6">
-          <div>
-            {/* Status chip */}
-            <span className={`badge ${status.class} mb-3`}>
-              <span
-                className="w-1.5 h-1.5 rounded-full"
-                style={{
-                  background: project.status === 'live' ? 'var(--metric-live)' : accentColor,
-                  animation: project.status === 'live' ? 'oscar-metric-pulse 2.4s ease-in-out infinite' : undefined,
-                }}
-              />
-              {status.label}
-            </span>
-
-            {/* Project name */}
-            <h3
-              className="text-headline font-bold mb-1"
-              style={{ color: 'var(--text-primary)' }}
-            >
-              {project.name}
-            </h3>
-            <p className="text-caption mb-0" style={{ color: accentColor }}>
-              {project.tagline}
-            </p>
-          </div>
-
-          {/* Links */}
-          <div className="flex gap-2 shrink-0 mt-1">
-            {project.links.repo && (
-              <a
-                href={project.links.repo}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn btn-ghost text-caption px-3 py-2"
-                aria-label={`GitHub repo for ${project.name}`}
-              >
-                <GithubIcon />
-              </a>
-            )}
-            {project.links.docs && (
-              <a
-                href={project.links.docs}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn btn-outline text-caption px-3 py-2"
-                aria-label={`Docs for ${project.name}`}
-              >
-                <ExternalIcon />
-              </a>
-            )}
-          </div>
-        </div>
-
-        {/* ── Description ── */}
-        <p
-          className="text-body mb-6 flex-1"
-          style={{ color: 'var(--text-secondary)' }}
-        >
-          {project.description}
-        </p>
-
-        {/* ── Metrics grid ── */}
-        <div
-          className={`grid gap-3 mb-6 ${
-            project.metrics.length >= 4 ? 'grid-cols-2' : 'grid-cols-2'
-          }`}
-        >
-          {project.metrics.map((m) => (
-            <MetricBadge
-              key={m.label}
-              value={m.value}
-              label={m.label}
-              type={m.type}
-              size="sm"
-            />
-          ))}
-        </div>
-
-        {/* ── Tech tags ── */}
-        <div className="flex flex-wrap gap-2">
-          {project.tags.slice(0, compact ? 4 : 6).map((tag) => (
-            <span
-              key={tag}
-              className="badge text-[10px]"
-              style={{
-                background: 'rgba(255,255,255,0.04)',
-                color: 'var(--text-secondary)',
-                border: '1px solid var(--border-subtle)',
-              }}
-            >
-              {tag}
-            </span>
-          ))}
-          {project.tags.length > (compact ? 4 : 6) && (
-            <span
-              className="badge text-[10px]"
-              style={{
-                background: 'rgba(255,255,255,0.04)',
-                color: 'var(--text-muted)',
-                border: '1px solid var(--border-subtle)',
-              }}
-            >
-              +{project.tags.length - (compact ? 4 : 6)} more
-            </span>
+        {/* Asymmetric Bento Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-[var(--bento-gap)]">
+          {/* SabiScore — large feature */}
+          {featured[0] && (
+            <div className="lg:col-span-7">
+              <ProjectCard project={featured[0]} delay={0.1} />
+            </div>
           )}
+
+          {/* Hashablanca — companion */}
+          {featured[1] && (
+            <div className="lg:col-span-5">
+              <ProjectCard project={featured[1]} delay={0.2} />
+            </div>
+          )}
+
+          {/* TaxBridge — full-width featured */}
+          {featured[2] && (
+            <div className="lg:col-span-12">
+              <ProjectCard project={featured[2]} delay={0.3} />
+            </div>
+          )}
+
+          {/* Non-featured + CTA */}
+          {nonFeatured.length > 0 && (
+            <div className="lg:col-span-8">
+              <ProjectCard project={nonFeatured[0]} delay={0.4} />
+            </div>
+          )}
+          <div className="lg:col-span-4">
+            <CtaCell />
+          </div>
         </div>
-      </LiquidGlassCard>
-    </div>
-  )
-}
-
-// ── Icons ─────────────────────────────────────────────────────────────
-
-function GithubIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-      <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z" />
-    </svg>
-  )
-}
-
-function ExternalIcon() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-      <path d="M2 12L12 2M7 2h5v5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  )
+      </div>
+    </section>
+  );
 }
