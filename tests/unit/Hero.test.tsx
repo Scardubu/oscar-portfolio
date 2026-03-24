@@ -8,10 +8,12 @@ describe("Hero Component", () => {
     render(<Hero />);
 
     expect(
-      screen.getByRole("heading", { name: "Hey, I'm Oscar 👋" })
+      screen.getByRole("heading", {
+        name: /Oscar Ndugbu — Full-Stack ML Engineer shipping production AI systems/i,
+      })
     ).toBeInTheDocument();
     expect(
-      screen.getByText(/production AI systems, full-stack product experiences/i)
+      screen.getByText(/I design and ship end-to-end ML products/i)
     ).toBeInTheDocument();
   });
 
@@ -27,7 +29,7 @@ describe("Hero Component", () => {
   it("renders CTA buttons with correct text", () => {
     render(<Hero />);
 
-    expect(screen.getByText("View Projects")).toBeInTheDocument();
+    expect(screen.getByText("Explore shipped work")).toBeInTheDocument();
     expect(screen.getByText("Let's Talk")).toBeInTheDocument();
     expect(screen.getByText("Download CV")).toBeInTheDocument();
   });
@@ -53,6 +55,9 @@ describe("Hero Component", () => {
 
     expect(screen.getByText("Nigeria NG • Remote-First")).toBeInTheDocument();
     expect(screen.getByText(/SabiScore/i)).toBeInTheDocument();
-    expect(screen.getByText(/Live proof from the field/i)).toBeInTheDocument();
+    expect(screen.getByText(/Production proof/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/Python • TypeScript • FastAPI • Next\.js • MLOps/i)
+    ).toBeInTheDocument();
   });
 });

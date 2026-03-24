@@ -4,6 +4,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import {
   ArrowRight,
   Download,
+  Layers3,
   Mail,
   MapPin,
   Sparkles,
@@ -44,6 +45,14 @@ const HERO_METRICS = [
     label: "Years shipping",
     detail: "Full-stack AI, MLOps, and product engineering delivery.",
   },
+] as const;
+
+const HERO_STACK = [
+  "Python",
+  "TypeScript",
+  "FastAPI",
+  "Next.js",
+  "MLOps",
 ] as const;
 
 function revealTransition(delay: number, duration = 0.7) {
@@ -98,14 +107,8 @@ export function Hero({ onOpenContact }: HeroProps = {}) {
                 transition={revealTransition(0.1)}
                 className="hero-headline max-w-4xl text-balance font-semibold tracking-tight text-[var(--text-primary)]"
               >
-                Hey, I&apos;m Oscar{" "}
-                <span
-                  aria-label="waving hand"
-                  role="img"
-                  className="inline-block origin-[70%_70%] motion-safe:animate-[oscar-wave_3.6s_ease-in-out_infinite]"
-                >
-                  👋
-                </span>
+                Oscar Ndugbu — Full-Stack ML Engineer shipping production AI
+                systems for fintech and product teams.
               </motion.h1>
 
               <motion.div
@@ -115,20 +118,35 @@ export function Hero({ onOpenContact }: HeroProps = {}) {
                 className="max-w-2xl space-y-4 text-pretty text-base leading-8 text-[var(--text-secondary)] md:text-lg"
               >
                 <p>
-                  I build production AI systems, full-stack product experiences,
-                  and resilient backend workflows that feel polished to users
-                  and dependable to teams.
+                  I design and ship end-to-end ML products: data pipelines,
+                  predictive models, APIs, and product surfaces that teams can
+                  trust in production.
                 </p>
                 <p>
                   <span className="font-semibold text-[var(--text-primary)]">
                     SabiScore
                   </span>{" "}
-                  helps 350+ users make sharper decisions with ensemble ML,
-                  transparent confidence signals, and infrastructure engineered
-                  for everyday usage.
+                  serves 350+ users with ensemble forecasting, transparent
+                  confidence signals, 71% model accuracy, and infrastructure
+                  engineered for 99.9% uptime.
                 </p>
               </motion.div>
             </div>
+
+            <motion.div
+              initial={shouldReduceMotion ? false : { opacity: 0, y: 18 }}
+              animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
+              transition={revealTransition(0.22)}
+              className="flex flex-wrap items-center gap-3 text-sm text-[var(--text-secondary)]"
+            >
+              <span className="inline-flex min-h-10 items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-[var(--text-primary)]">
+                <Layers3 className="h-4 w-4 text-[var(--accent-primary)]" />
+                Production stack
+              </span>
+              <span className="text-pretty">
+                {HERO_STACK.join(" • ")}
+              </span>
+            </motion.div>
 
             <motion.article
               initial={shouldReduceMotion ? false : { opacity: 0, y: 24 }}
@@ -139,10 +157,11 @@ export function Hero({ onOpenContact }: HeroProps = {}) {
               <div className="flex items-start justify-between gap-4">
                 <div className="space-y-3">
                   <p className="hero-proof-kicker">
-                    Live proof from the field
+                    Production proof
                   </p>
                   <h2 className="text-xl font-semibold tracking-tight text-[var(--text-primary)] md:text-2xl">
-                    Product-minded ML execution that recruiters can scan in seconds.
+                    Built for real traffic, real users, and real business
+                    decisions.
                   </h2>
                 </div>
                 <span className="hero-live-pill">
@@ -187,7 +206,7 @@ export function Hero({ onOpenContact }: HeroProps = {}) {
                 onClick={() => scrollToSection("projects")}
                 className="hero-secondary-cta min-h-12 rounded-full px-6 text-sm font-semibold md:px-7"
               >
-                View Projects
+                Explore shipped work
                 <ArrowRight className="h-4 w-4" />
               </Button>
               <Button
@@ -205,6 +224,21 @@ export function Hero({ onOpenContact }: HeroProps = {}) {
                   Download CV
                 </a>
               </Button>
+            </motion.div>
+
+            <motion.div
+              initial={shouldReduceMotion ? false : { opacity: 0, y: 16 }}
+              animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
+              transition={revealTransition(0.36)}
+              className="flex flex-wrap items-center gap-3 text-sm text-[var(--text-secondary)]"
+            >
+              <a
+                href="mailto:scardubu@gmail.com"
+                className="inline-flex min-h-10 items-center rounded-full border border-white/10 bg-white/[0.03] px-4 py-2 font-medium text-[var(--text-primary)] transition-colors hover:border-[var(--accent-primary)]/35 hover:text-[var(--accent-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-base)]"
+              >
+                scardubu@gmail.com
+              </a>
+              <span>Open to senior ML, platform, and product engineering roles.</span>
             </motion.div>
           </motion.div>
 

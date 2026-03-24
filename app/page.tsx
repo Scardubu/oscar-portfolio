@@ -2,10 +2,10 @@
 
 import { useState } from "react";
 import {
-  Clock3,
-  Mail,
-  MapPin,
-  Sparkles,
+  Activity,
+  Blocks,
+  ShieldCheck,
+  Users,
 } from "lucide-react";
 
 import dynamic from "next/dynamic";
@@ -43,10 +43,14 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 const QUICK_FACTS = [
-  { label: "Location", value: "Nigeria • Remote-first", icon: MapPin },
-  { label: "Response time", value: "Typically under 24 hours", icon: Clock3 },
-  { label: "Focus", value: "Fintech, AI, and product UX", icon: Sparkles },
-  { label: "Direct contact", value: "Fastest via email or modal", icon: Mail },
+  { label: "Production users", value: "350+ active SabiScore users", icon: Users },
+  { label: "Model accuracy", value: "71% ensemble forecast accuracy", icon: Activity },
+  { label: "System uptime", value: "99.9% reliability with monitoring", icon: ShieldCheck },
+  {
+    label: "Full-stack ownership",
+    value: "Models, APIs, dashboards, and product UX",
+    icon: Blocks,
+  },
 ];
 
 function SectionHeading({
@@ -106,7 +110,10 @@ export default function Home() {
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-gradient-hero text-foreground">
+    <main
+      id="main-content"
+      className="relative min-h-screen overflow-hidden bg-gradient-hero text-foreground"
+    >
       {/* Background layers (unchanged) */}
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(0,217,255,0.12),transparent_32%),radial-gradient(circle_at_80%_15%,rgba(123,97,255,0.12),transparent_28%),radial-gradient(circle_at_50%_100%,rgba(16,185,129,0.07),transparent_28%)]" />
       <div className="pointer-events-none absolute inset-0 opacity-[0.08] [background-image:linear-gradient(rgba(255,255,255,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.08)_1px,transparent_1px)] [background-size:72px_72px]" />
@@ -122,7 +129,7 @@ export default function Home() {
               <div className="leading-tight">
                 <div className="text-sm font-semibold">Oscar Dubu</div>
                 <div className="text-xs text-[var(--text-secondary)]">
-                  ML Engineer • Product-focused
+                  Full-Stack ML Engineer • Fintech & AI Systems
                 </div>
               </div>
             </a>
@@ -135,6 +142,13 @@ export default function Home() {
             </nav>
 
             <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                asChild
+                className="hidden min-h-11 rounded-full border-white/10 bg-white/[0.03] px-4 text-sm font-medium text-[var(--text-primary)] hover:border-[var(--accent-primary)]/35 hover:bg-white/[0.06] hover:text-[var(--accent-primary)] lg:inline-flex"
+              >
+                <a href="mailto:scardubu@gmail.com">Email</a>
+              </Button>
               <Button
                 onClick={() => {
                   trackEvent("CTA", "Click", "Top Nav Contact");
@@ -202,8 +216,8 @@ export default function Home() {
           <div className="mb-6 md:mb-10">
             <SectionHeading
               kicker="Selected work"
-              title="A portfolio that reads like a product narrative, not a list of screenshots."
-              copy="The page flow below prioritizes clarity, proof, and momentum. It gives recruiters a fast scan path while still rewarding deeper review."
+              title="Shipped products with measurable outcomes, not speculative concepts."
+              copy="Each case study shows how Oscar turns ML ideas into production systems with users, monitoring, and business-facing product polish."
             />
           </div>
 
