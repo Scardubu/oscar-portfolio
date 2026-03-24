@@ -31,7 +31,6 @@ export default async function BlogPage({
 
       <BlogListClient
         posts={posts}
-        tags={tagStats.map((stat) => stat.tag)}
         tagStats={tagStats}
         initialQuery={params.q?.trim() ?? ""}
         initialTag={params.tag?.trim() || null}

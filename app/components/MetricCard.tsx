@@ -19,7 +19,8 @@ export function MetricCard({ value, suffix = "+", label, duration = 1500 }: Metr
 
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting) {
+        const [entry] = entries;
+        if (entry?.isIntersecting) {
           setHasAnimated(true);
 
           const startTime = Date.now();

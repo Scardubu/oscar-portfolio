@@ -11,7 +11,7 @@
  *   foundational — used in a project; understand it well enough to extend
  */
 
-import type { SkillNode, SkillPillar, SkillLevel } from '@/lib/types'
+import type { SkillNode, SkillPillar } from '@/lib/types'
 
 // ─── Skill data ───────────────────────────────────────────────────────────────
 

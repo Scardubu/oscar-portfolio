@@ -18,3 +18,11 @@ export function formatRelativeTime(dateOrString: Date | string): string {
   if (days === 1) return "yesterday";
   return `${days}d ago`;
 }
+
+export function formatDate(dateString: string): string {
+  return new Date(dateString).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+}

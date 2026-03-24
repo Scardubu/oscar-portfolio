@@ -4,7 +4,6 @@ import * as React from "react";
 import { useMemo, useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { blogUrl } from "@/lib/config";
-import { FeaturedArticle } from "@/components/blog/FeaturedArticle";
 
 // ─────────────────────────────────────────
 // Types
@@ -73,6 +72,7 @@ export default function BlogListClient({
   const tier1 = filtered.filter((p) => p.tier === 1);
   const tier2 = filtered.filter((p) => p.tier === 2);
   const tier3 = filtered.filter((p) => p.tier === 3);
+  const firstFiltered = filtered[0];
 
   // ─────────────────────────────────────────
   // Analytics Hook (extend later)
@@ -120,9 +120,25 @@ export default function BlogListClient({
           <h2 className="font-bold mb-4">Implementation Deep Dives</h2>
           <div className="grid md:grid-cols-2 gap-4">
             {tier1.map((p) => (
-              <div key={p.slug} onClick={() => trackClick(p.slug)}>
-                <FeaturedArticle post={p} />
-              </div>
+              <a
+                key={p.slug}
+                href={blogUrl(p.slug)}
+                onClick={() => trackClick(p.slug)}
+                className="rounded-xl border border-[color:var(--border-default)] bg-[color:var(--bg-surface)] p-5 transition-colors hover:border-[color:var(--accent-primary)]"
+              >
+                <div className="mb-2 text-[10px] font-semibold uppercase tracking-[0.24em] text-[color:var(--accent-primary)]">
+                  Deep Dive
+                </div>
+                <h3 className="text-base font-semibold text-[color:var(--text-primary)]">
+                  {p.title}
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-[color:var(--text-secondary)]">
+                  {p.excerpt}
+                </p>
+                <div className="mt-4 text-xs text-[color:var(--text-muted)]">
+                  {p.readMin} min read
+                </div>
+              </a>
             ))}
           </div>
         </section>
@@ -157,10 +173,10 @@ export default function BlogListClient({
       )}
 
       {/* Related (context-aware suggestion) */}
-      {filtered.length === 1 && (
+      {firstFiltered && filtered.length === 1 && (
         <div className="mt-16">
           <h3 className="font-semibold mb-3">Related Articles</h3>
-          {relatedMap[filtered[0].slug]?.map((p) => (
+          {relatedMap[firstFiltered.slug]?.map((p) => (
             <a key={p.slug} href={blogUrl(p.slug)}>
               {p.title}
             </a>

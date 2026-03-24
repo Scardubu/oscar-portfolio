@@ -31,6 +31,7 @@ function StarRating({ rating }: { rating: number }) {
 export function Testimonials() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+  const currentTestimonial = TESTIMONIALS[currentIndex] ?? TESTIMONIALS[0];
 
   // Auto-rotate testimonials every 6 seconds
   useEffect(() => {
@@ -118,7 +119,7 @@ export function Testimonials() {
 
                 {/* Quote text */}
                 <blockquote className="mb-8 text-xl leading-relaxed text-gray-200 lg:text-2xl">
-                  &ldquo;{TESTIMONIALS[currentIndex].quote}&rdquo;
+                  &ldquo;{currentTestimonial?.quote}&rdquo;
                 </blockquote>
 
                 {/* Author info */}
@@ -126,8 +127,8 @@ export function Testimonials() {
                   {/* Avatar */}
                   <div className="relative h-14 w-14 overflow-hidden rounded-full border-2 border-accent-primary/30">
                     <Image
-                      src={getAvatarUrl(TESTIMONIALS[currentIndex].author)}
-                      alt={TESTIMONIALS[currentIndex].author}
+                      src={getAvatarUrl(currentTestimonial?.author ?? "Oscar collaborator")}
+                      alt={currentTestimonial?.author ?? "Oscar collaborator"}
                       width={56}
                       height={56}
                       className="h-full w-full object-cover"
@@ -136,19 +137,19 @@ export function Testimonials() {
                   </div>
 
                   {/* Name and title */}
-                  <div className="flex-1">
-                    <div className="font-semibold text-white">
-                      {TESTIMONIALS[currentIndex].author}
+                    <div className="flex-1">
+                      <div className="font-semibold text-white">
+                        {currentTestimonial?.author}
+                      </div>
+                      <div className="text-sm text-gray-400">
+                        {currentTestimonial?.title},{" "}
+                        {currentTestimonial?.company}
+                      </div>
                     </div>
-                    <div className="text-sm text-gray-400">
-                      {TESTIMONIALS[currentIndex].title},{" "}
-                      {TESTIMONIALS[currentIndex].company}
-                    </div>
-                  </div>
 
-                  {/* Rating */}
-                  <StarRating rating={TESTIMONIALS[currentIndex].rating} />
-                </div>
+                    {/* Rating */}
+                    <StarRating rating={currentTestimonial?.rating ?? 5} />
+                  </div>
               </motion.div>
             </AnimatePresence>
           </div>
