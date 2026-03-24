@@ -1,11 +1,7 @@
 {
   "compilerOptions": {
-    "target": "ES2017",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "target": "ES2022",
+    "lib": ["dom", "dom.iterable", "ES2022"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -15,49 +11,20 @@
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "react-jsx",
+    "jsx": "preserve",
     "incremental": true,
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ],
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "plugins": [{ "name": "next" }],
     "paths": {
-      "@/*": [
-        "./*"
-      ]
+      "@/*": ["./src/*"],
+      "@/components/*": ["./src/components/*"],
+      "@/lib/*": ["./src/lib/*"],
+      "@/hooks/*": ["./src/hooks/*"],
+      "@/data/*": ["./src/data/*"],
+      "@/types/*": ["./src/types/*"]
     }
   },
-  "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    "**/*.mts",
-    ".next/types/**/*.ts",
-    ".next/dev/types/**/*.ts"
-  ],
-  "exclude": [
-    "node_modules",
-    "playwright.config.ts",
-    "vitest.config.ts",
-    "tests/e2e",
-    "tests/unit",
-    "tests/**",
-    "app/blog/BlogPostAnalytics.tsx",
-    "components/BentoFeaturedProjects.tsx",
-    "components/ContactSection.tsx",
-    "components/Footer.tsx",
-    "components/Hero.tsx",
-    "components/LiveActivity.tsx",
-    "components/PageWrapper.tsx",
-    "components/ProductionPatterns.tsx",
-    "components/blog/**",
-    "components/github/**",
-    "components/hero/**",
-    "components/projects/**",
-    "components/reusable/**",
-    "components/sections/**",
-    "components/skills/**",
-    "hooks/useInView.ts"
-  ]
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "exclude": ["node_modules"]
 }
