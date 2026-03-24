@@ -279,12 +279,12 @@ export default function Hero() {
               variants={fadeUp}
               transition={{ ...springs.default, delay: 0.35 }}
             >
-              I build AI systems that ship to real users — not just notebooks.{" "}
+              I architect production AI systems that distill frontier intelligence into elegant, trusted tools people rely on every single day.{" "}
               <strong className="text-[var(--text-primary)] font-semibold">
                 SabiScore
               </strong>{" "}
-              serves 350+ users with 71% prediction accuracy, 24/7, 99.9% uptime.
-              Self-taught from Nigeria, working globally.
+              powers real-time insights that sharpen every decision — engineered for seamless flow and unwavering performance at global scale.
+              From Nigeria to audiences worldwide, I fuse cutting-edge AI research with intuitive product mastery.
             </motion.p>
 
             {/* CTAs */}
@@ -378,9 +378,9 @@ export default function Hero() {
                     }
               }
             >
-              <p className="text-caption text-muted">System Uptime</p>
+              <p className="text-caption text-muted">Reliability</p>
               <p className="text-metric text-gradient-fintech font-mono">
-                99.9%
+                Always-On
               </p>
             </motion.div>
 
@@ -397,7 +397,7 @@ export default function Hero() {
                   <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[var(--metric-live)]" />
                 </span>
                 <p className="text-caption text-[var(--metric-live)]">
-                  350+ active users
+                  Global Impact
                 </p>
               </div>
             </motion.div>

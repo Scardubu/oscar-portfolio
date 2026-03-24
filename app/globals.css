@@ -56,6 +56,41 @@
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
+   2026 LIQUID GLASS META-MATERIAL & BENTO 2.0 ACTIVE GRID
+   ─────────────────────────────────────────────────────────────────────
+   Apple WWDC 2025-inspired liquid glass physics:
+     • Dynamic thickness — animatable glass depth for hover/scale states
+     • Refraction scale — displacement map intensity control
+     • Shimmer sweep — specular highlight sweep across glass surfaces
+     • Chromatic aberration — subtle color fringing on large panels
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ── Dynamic glass thickness — deepens on hover/scale/mouse movement ── */
+@property --glass-thickness {
+  syntax:        '<number>';
+  initial-value: 1;
+  inherits:      false;
+}
+/* ── Refraction displacement intensity — tied to mouse proximity ── */
+@property --refraction-scale {
+  syntax:        '<number>';
+  initial-value: 18;
+  inherits:      false;
+}
+/* ── Shimmer sweep position — animated specular highlight ── */
+@property --shimmer-sweep {
+  syntax:        '<percentage>';
+  initial-value: -100%;
+  inherits:      false;
+}
+/* ── Shadow liquid dynamic — depth-responsive shadow ── */
+@property --shadow-liquid-dynamic {
+  syntax:        '<length>';
+  initial-value: 0px;
+  inherits:      false;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
    1. DESIGN TOKEN SYSTEM — :root
    All values must live here. Components reference tokens, never literals.
    ═══════════════════════════════════════════════════════════════════════ */
@@ -2518,5 +2553,65 @@
     .bento-dense-2026 {
       grid-template-columns: repeat(12, minmax(0, 1fr));
     }
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   // 2026 LIQUID GLASS META-MATERIAL & BENTO 2.0 ACTIVE GRID
+   ─────────────────────────────────────────────────────────────────────
+   Extended utility classes for liquid glass shimmer sweep and
+   bento 2.0 dense auto-flow grid.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+@layer components {
+  /* ── Shimmer sweep — animated specular highlight across glass ── */
+  .liquid-glass-shimmer {
+    position: relative;
+    overflow: hidden;
+  }
+  .liquid-glass-shimmer::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      105deg,
+      transparent 20%,
+      rgba(255, 255, 255, 0.04) 40%,
+      rgba(255, 255, 255, 0.08) 50%,
+      rgba(255, 255, 255, 0.04) 60%,
+      transparent 80%
+    );
+    transform: translateX(var(--shimmer-sweep, -100%));
+    pointer-events: none;
+    z-index: 2;
+    border-radius: inherit;
+  }
+  .liquid-glass-shimmer:hover::after {
+    animation: shimmer-sweep-anim 1.2s ease-out forwards;
+  }
+}
+
+@layer utilities {
+  /* ── Shimmer sweep keyframes ── */
+  @keyframes shimmer-sweep-anim {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
+
+  /* ── Bento 2.0 Active Grid — dense auto-flow with tactile density ── */
+  .bento-2026-active {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    grid-auto-flow: dense;
+    gap: var(--bento-gap, 1.25rem);
+  }
+
+  /* ── Liquid glass depth layer — dynamic thickness transitions ── */
+  .liquid-depth-dynamic {
+    --glass-thickness: 1;
+    transition: --glass-thickness 0.35s ease;
+  }
+  .liquid-depth-dynamic:hover {
+    --glass-thickness: 1.15;
   }
 }

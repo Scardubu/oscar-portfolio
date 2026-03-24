@@ -74,7 +74,7 @@ export function generatePersonSchema() {
     alternateName: "scardubu",
     jobTitle: "Full-Stack ML Engineer",
     description:
-      "Production ML Engineer building AI systems that serve 350+ users with 71% accuracy and 99.9% uptime. Based in Nigeria, working globally.",
+      "Production ML Engineer architecting AI systems that distill frontier intelligence into elegant, trusted tools. Based in Nigeria, building for audiences worldwide.",
     url: "https://www.scardubu.dev",
     image: "https://www.scardubu.dev/headshot.webp",
     sameAs: [
