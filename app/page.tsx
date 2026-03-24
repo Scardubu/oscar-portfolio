@@ -1,9 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { motion } from "framer-motion";
 import {
-  ArrowRight,
   Clock3,
   Mail,
   MapPin,
@@ -26,12 +24,15 @@ import { Footer } from "./components/Footer";
 import { AvailabilityBadge } from "./components/AvailabilityBadge";
 
 // Merged from page (2) — existing root-level components
-import ProductionPatternsVisualization from "@/components/ProductionPatternsVisualization";
-import LiveBuildFeed from "@/components/LiveBuildFeed";
+import { ProductionPatternsVisualization } from "@/components/ProductionPatternsVisualization";
+import { LiveBuildFeed } from "@/components/LiveBuildFeed";
 
 // Dynamic skills (SSR-safe, replaces old LiquidGlassSkillsMap pattern)
 const DynamicSkillsSection = dynamic(
-  () => import("./components/SkillsSection"),
+  () =>
+    import("./components/Skills/SkillsSection").then(
+      (mod) => mod.SkillsSection
+    ),
   { ssr: false }
 );
 
@@ -319,7 +320,26 @@ export default function Home() {
             </div>
             <div className="lg:col-span-5">
               <GlassCard variant="violet">
-                {/* Quick contact options unchanged */}
+                <div className="space-y-3">
+                  <h3 className="text-xl font-semibold tracking-tight">
+                    Quick contact options
+                  </h3>
+                  <p className="text-sm text-[var(--text-secondary)]">
+                    Open the contact modal for the fastest route, or use the
+                    form to share project details and timelines.
+                  </p>
+                  <div className="flex flex-col gap-3 sm:flex-row">
+                    <Button
+                      onClick={() => setIsContactModalOpen(true)}
+                      className="rounded-full bg-gradient-accent px-5 py-2.5 font-semibold text-black"
+                    >
+                      Open contact modal
+                    </Button>
+                    <Button variant="outline" asChild>
+                      <a href="mailto:scardubu@gmail.com">Email directly</a>
+                    </Button>
+                  </div>
+                </div>
               </GlassCard>
             </div>
           </div>

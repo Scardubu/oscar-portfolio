@@ -1,8 +1,14 @@
 // ═══════════════════════════════════════════════════════════════════════
 // ContactForm.tsx
 // ═══════════════════════════════════════════════════════════════════════
- 
-import { contact, openSource } from '@/lib/data'
+
+"use client";
+
+import * as React from "react";
+import { useState } from "react";
+import { LiquidGlassCard, SectionLabel } from "@/components/reusable";
+import { useScrollReveal } from "@/hooks";
+import { contact, openSource } from "@/lib/data";
  
 export function ContactForm() {
   const sectionRef = useScrollReveal<HTMLElement>({ threshold: 0.05 })
@@ -32,7 +38,7 @@ export function ContactForm() {
             Get In Touch
           </SectionLabel>
           <h2 className="text-headline font-bold mb-4" style={{ color: 'var(--text-primary)' }}>
-            Let's Build Something
+            Let&apos;s Build Something
             <br />
             <span className="text-gradient-accent">Worth Building</span>
           </h2>
@@ -131,7 +137,7 @@ export function ContactForm() {
                   Message Sent
                 </h3>
                 <p className="text-body" style={{ color: 'var(--text-secondary)' }}>
-                  I'll get back to you within 24 hours.
+                  I&apos;ll get back to you within 24 hours.
                 </p>
               </div>
             ) : (

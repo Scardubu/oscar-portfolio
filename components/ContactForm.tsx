@@ -266,16 +266,16 @@ export default function ContactForm() {
     >
       {/* Header */}
       <div className="mb-12 text-center" data-reveal>
-        <p className="text-caption text-muted mb-2">Let's Work Together</p>
+        <p className="text-caption text-muted mb-2">Let&apos;s Work Together</p>
         <h2
           id="contact-heading"
           className="text-headline text-gradient-kinetic"
         >
-          Let's Build Something Exceptional
+          Let&apos;s Build Something Exceptional
         </h2>
         <p className="text-subhead text-secondary mt-3 max-w-2xl mx-auto">
           Whether you need a production ML system, consulting on AI strategy, or
-          a technical co-founder — let's talk.
+          a technical co-founder — let&apos;s talk.
         </p>
 
         {/* Availability signal */}

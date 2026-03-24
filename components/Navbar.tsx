@@ -78,6 +78,15 @@ export default function Navbar() {
   const bgOpacity = useTransform(scrollY, [0, 80], [0, 0.88]);
   const blurAmount = useTransform(scrollY, [0, 80], [0, 24]);
   const borderOpacity = useTransform(scrollY, [0, 80], [0, 0.08]);
+  const backgroundColor = useTransform(bgOpacity, (v) => `rgba(5,5,7,${v})`);
+  const backdropFilter = useTransform(
+    blurAmount,
+    (v) => `blur(${v}px) saturate(1.8)`
+  );
+  const borderBottom = useTransform(
+    borderOpacity,
+    (v) => `1px solid rgba(255,255,255,${v})`
+  );
 
   // Section tracking via IntersectionObserver
   useEffect(() => {
@@ -133,22 +142,10 @@ export default function Navbar() {
         prefersReduced
           ? undefined
           : {
-              backgroundColor: useTransform(
-                bgOpacity,
-                (v) => `rgba(5,5,7,${v})`
-              ),
-              backdropFilter: useTransform(
-                blurAmount,
-                (v) => `blur(${v}px) saturate(1.8)`
-              ),
-              WebkitBackdropFilter: useTransform(
-                blurAmount,
-                (v) => `blur(${v}px) saturate(1.8)`
-              ),
-              borderBottom: useTransform(
-                borderOpacity,
-                (v) => `1px solid rgba(255,255,255,${v})`
-              ),
+              backgroundColor,
+              backdropFilter,
+              WebkitBackdropFilter: backdropFilter,
+              borderBottom,
             }
       }
       role="banner"
@@ -272,13 +269,13 @@ export default function Navbar() {
                 </motion.li>
               ))}
               <motion.li variants={mobileMenuItem} className="pt-2">
-                <a
+                <Link
                   href="/#contact"
                   onClick={() => setMenuOpen(false)}
                   className="btn btn-primary w-full justify-center"
                 >
                   Hire Me
-                </a>
+                </Link>
               </motion.li>
             </motion.ul>
           </motion.div>

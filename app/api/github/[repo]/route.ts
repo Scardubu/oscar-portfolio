@@ -37,10 +37,10 @@ interface GitHubApiResponse {
 // ─── Handler ──────────────────────────────────────────────────────────────────
 
 export async function GET(
-  _req:     NextRequest,
-  { params }: { params: { repo: string } },
+  _req: NextRequest,
+  { params }: { params: Promise<{ repo: string }> },
 ): Promise<NextResponse> {
-  const { repo } = params
+  const { repo } = await params
 
   // SSRF prevention — validate repo format before using it in a URL
   if (!REPO_PATTERN.test(repo)) {

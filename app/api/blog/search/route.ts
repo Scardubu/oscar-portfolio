@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import { getAllPosts } from "@/lib/blog";
+import { getAllPosts, toSearchBlogPost } from "@/lib/blog";
 import {
   buildReason,
   buildSearchDocument,
@@ -8,6 +8,7 @@ import {
   keywordScore,
   normalizePost,
   sortPosts,
+  type BlogTier,
   type BlogPost,
   type RankedBlogPost,
 } from "@/lib/blog-intelligence";
@@ -54,7 +55,11 @@ async function fetchEmbeddings(inputs: string[]): Promise<number[][]> {
   return json.data.map((item) => item.embedding);
 }
 
-function buildKeywordFallback(posts: BlogPost[], query: string, tag: string | null): RankedBlogPost[] {
+function buildKeywordFallback(
+  posts: RankedBlogPost[],
+  query: string,
+  tag: string | null
+): RankedBlogPost[] {
   return posts
     .filter((post) => (tag ? post.tags.includes(tag) : true))
     .map((post) => {
@@ -69,6 +74,7 @@ function buildKeywordFallback(posts: BlogPost[], query: string, tag: string | nu
 
       return {
         ...post,
+        tier: post.tier,
         score,
         lexicalScore,
         reason: buildReason(query, post, 0, lexicalScore),
@@ -96,9 +102,12 @@ export async function POST(request: Request) {
       ? Math.max(1, Math.min(20, Number(body.limit)))
       : 12;
 
-    const rawPosts = getAllPosts() as BlogPost[];
+    const rawPosts = getAllPosts().map(toSearchBlogPost);
     const published = rawPosts.filter((post) => post.published !== false);
-    const posts = sortPosts(published.map((post) => normalizePost(post)));
+    const posts = sortPosts(published).map((post) => ({
+      ...post,
+      tier: post.tier as BlogTier,
+    }));
 
     if (!query) {
       const local = buildKeywordFallback(posts, query, tag).slice(0, limit);
@@ -148,6 +157,7 @@ export async function POST(request: Request) {
 
         return {
           ...post,
+          tier: post.tier,
           score,
           semanticScore,
           lexicalScore,

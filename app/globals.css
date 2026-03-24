@@ -405,7 +405,7 @@
 @layer base {
   /* shadcn/ui border propagation + universal box-sizing                  */
   *, *::before, *::after {
-    @apply border-border;
+    border-color: var(--border-default);
     box-sizing: border-box;
   }
 

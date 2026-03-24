@@ -3,7 +3,6 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import { getAllPostSlugs, getPostBySlug } from "@/lib/blog";
-import { formatDate } from "@/lib/utils";
 import BlogPostClient from "./BlogPostClient";
 import remarkGfm from "remark-gfm";
 import rehypePrettyCode from "rehype-pretty-code";

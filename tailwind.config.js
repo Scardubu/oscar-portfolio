@@ -1,7 +1,5 @@
-import type { Config } from 'tailwindcss'
-
 /**
- * tailwind.config.ts
+ * tailwind.config.js
  *
  * Extends Tailwind with CSS custom property references so that
  * component classes resolve to design tokens defined in globals.css.
@@ -13,7 +11,7 @@ import type { Config } from 'tailwindcss'
  * Never hardcode hex values in component files — use Tailwind classes.
  */
 
-const config: Config = {
+const config = {
   content: [
     './app/**/*.{ts,tsx}',
     './components/**/*.{ts,tsx}',

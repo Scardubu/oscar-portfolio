@@ -9,6 +9,7 @@ import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
 import readingTime from "reading-time";
+import { normalizePost, type BlogPost as SearchBlogPost } from "@/lib/blog-intelligence";
 
 const POSTS_DIR = path.join(process.cwd(), "content/blog");
 
@@ -121,4 +122,17 @@ export function getAllTags(): { tag: string; count: number }[] {
   return Array.from(tagMap.entries())
     .map(([tag, count]) => ({ tag, count }))
     .sort((a, b) => b.count - a.count);
+}
+
+export function toSearchBlogPost(post: BlogPostMeta): SearchBlogPost {
+  return normalizePost({
+    slug: post.slug,
+    title: post.title,
+    excerpt: post.description,
+    date: post.date,
+    readMin: Number.parseInt(post.readingTime, 10) || 5,
+    tags: post.tags,
+    featured: false,
+    published: !post.draft,
+  });
 }

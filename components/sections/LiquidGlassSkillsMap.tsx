@@ -248,7 +248,11 @@ export default function LiquidGlassSkillsMap() {
             {(['All', ...Object.keys(CATEGORY_COLORS)] as const).map((cat) => (
               <button
                 key={cat}
-                onClick={() => setActiveCategory(cat as any)}
+                onClick={() =>
+                  setActiveCategory(
+                    cat === 'All' ? 'All' : (cat as Skill['category'])
+                  )
+                }
                 className={`btn btn-sm transition-all ${
                   activeCategory === cat ? 'btn-primary' : 'btn-ghost'
                 }`}
