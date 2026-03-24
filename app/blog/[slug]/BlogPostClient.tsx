@@ -11,7 +11,6 @@ import { motion, useScroll, useSpring, useReducedMotion } from "framer-motion";
 import Link from "next/link";
 import { formatDate } from "@/lib/utils";
 import { staggerContainer, fadeUp, springs } from "@/lib/motion";
-import { cn } from "@/lib/utils";
 
 interface BlogPostClientProps {
   title:       string;

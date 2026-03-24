@@ -6,10 +6,8 @@ import {
   buildSearchDocument,
   cosineSimilarity,
   keywordScore,
-  normalizePost,
   sortPosts,
   type BlogTier,
-  type BlogPost,
   type RankedBlogPost,
 } from "@/lib/blog-intelligence";
 
@@ -135,9 +133,21 @@ export async function POST(request: Request) {
     const embeddings = await fetchEmbeddings(inputs);
     const [queryEmbedding, ...postEmbeddings] = embeddings;
 
+    if (!queryEmbedding) {
+      const local = buildKeywordFallback(posts, query, tag).slice(0, limit);
+      return NextResponse.json({
+        mode: "keyword",
+        results: local,
+        durationMs: Date.now() - startedAt,
+      });
+    }
+
     const ranked = candidates
       .map((post, index) => {
-        const semanticScore = cosineSimilarity(queryEmbedding, postEmbeddings[index] ?? []);
+        const candidateEmbedding = postEmbeddings[index];
+        const semanticScore = candidateEmbedding
+          ? cosineSimilarity(queryEmbedding, candidateEmbedding)
+          : 0;
         const lexicalScore = keywordScore(query, post);
         const tierBoost = post.tier === 1 ? 0.04 : post.tier === 2 ? 0.02 : 0;
         const tagBoost = tag && post.tags.includes(tag) ? 0.05 : 0;

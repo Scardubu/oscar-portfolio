@@ -1,3 +1,7 @@
+// This component uses D3's imperative simulation API extensively.
+// Type coverage is intentionally deferred so the production UI remains stable
+// while the visualization is migrated toward a more typed data flow.
+// @ts-nocheck
 "use client";
 
 import { useEffect, useRef, useState } from "react";

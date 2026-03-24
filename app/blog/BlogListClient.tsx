@@ -318,13 +318,11 @@ function BlogCard({
 
 export default function BlogListClient({
   posts,
-  tags,
   tagStats,
   initialQuery,
   initialTag,
 }: {
   posts: BlogPost[];
-  tags: string[];
   tagStats: TagStat[];
   initialQuery: string;
   initialTag: string | null;
@@ -457,7 +455,7 @@ export default function BlogListClient({
           resultCount: results.length,
           durationMs: data.durationMs ?? Math.round(performance.now() - startedAt),
         });
-      } catch (error) {
+      } catch {
         if (controller.signal.aborted) return;
         if (!alive) return;
 

@@ -69,7 +69,7 @@ export function getAllPosts(): BlogPostMeta[] {
       const slug = filename.replace(/\.mdx?$/, "");
       const raw  = fs.readFileSync(path.join(POSTS_DIR, filename), "utf-8");
       const post = parseFrontmatter(raw, slug);
-      const { content: _content, ...meta } = post;
+      const meta: BlogPostMeta = post;
       return meta;
     })
     .filter((p) => !p.draft || process.env.NODE_ENV === "development")

@@ -5,7 +5,7 @@ import { MDXRemote } from "next-mdx-remote/rsc";
 import { getAllPostSlugs, getPostBySlug } from "@/lib/blog";
 import BlogPostClient from "./BlogPostClient";
 import remarkGfm from "remark-gfm";
-import rehypePrettyCode from "rehype-pretty-code";
+import rehypePrettyCodePlugin from "rehype-pretty-code";
 
 // ── Static generation ─────────────────────────────────────────────────────────
 
@@ -56,17 +56,33 @@ export async function generateMetadata({
 
 const components = {
   // Custom component overrides for MDX
-  h1: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
-    <h1 className="text-display mt-8 mb-4 text-gradient-kinetic" {...props} />
+  h1: ({
+    children,
+    ...props
+  }: React.HTMLAttributes<HTMLHeadingElement>) => (
+    <h1 className="text-display mt-8 mb-4 text-gradient-kinetic" {...props}>
+      {children}
+    </h1>
   ),
-  h2: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
-    <h2 className="text-headline mt-8 mb-3" {...props} />
+  h2: ({
+    children,
+    ...props
+  }: React.HTMLAttributes<HTMLHeadingElement>) => (
+    <h2 className="text-headline mt-8 mb-3" {...props}>
+      {children}
+    </h2>
   ),
-  h3: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
-    <h3 className="font-semibold text-xl mt-6 mb-2 text-primary" {...props} />
+  h3: ({
+    children,
+    ...props
+  }: React.HTMLAttributes<HTMLHeadingElement>) => (
+    <h3 className="font-semibold text-xl mt-6 mb-2 text-primary" {...props}>
+      {children}
+    </h3>
   ),
   a: ({
     href,
+    children,
     ...props
   }: React.AnchorHTMLAttributes<HTMLAnchorElement>) => (
     <a
@@ -74,7 +90,9 @@ const components = {
       target={href?.startsWith("http") ? "_blank" : undefined}
       rel={href?.startsWith("http") ? "noopener noreferrer" : undefined}
       {...props}
-    />
+    >
+      {children}
+    </a>
   ),
   // Code blocks styled by rehype-pretty-code
 };
@@ -130,7 +148,7 @@ export default async function BlogPostPage({
               remarkPlugins: [remarkGfm],
               rehypePlugins: [
                 [
-                  rehypePrettyCode as never,
+                  rehypePrettyCodePlugin as never,
                   {
                     theme: "one-dark-pro",
                     keepBackground: false,

@@ -13,13 +13,19 @@ export function useTypewriter(phrases: readonly string[], speed = 60) {
   const [deleting,    setDeleting]    = useState(false)
  
   useEff(() => {
-    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    if (prefersReduced) {
-      setDisplayText(phrases[0])
+    const initialPhrase = phrases[0] ?? ''
+    const currentPhrase = phrases[phraseIdx] ?? initialPhrase
+
+    if (!phrases.length) {
+      setDisplayText('')
       return
     }
- 
-    const currentPhrase = phrases[phraseIdx]
+
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (prefersReduced) {
+      setDisplayText(initialPhrase)
+      return
+    }
  
     const timeout = setTimeout(() => {
       if (!deleting) {
