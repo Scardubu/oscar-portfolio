@@ -1,20 +1,15 @@
-"use client";
+'use client';
 
-import { useMemo, useState } from "react";
-import { motion, useMotionValue, useReducedMotion, useTransform } from "framer-motion";
-import {
-  ArrowRight,
-  Bookmark,
-  Mail,
-  MapPin,
-  Sparkles,
-} from "lucide-react";
-import Image from "next/image";
+import { useMemo } from 'react';
+import { motion, useMotionValue, useReducedMotion, useTransform } from 'framer-motion';
+import { ArrowRight, MapPin, MoveRight } from 'lucide-react';
+import Image from 'next/image';
 
-import { trackEvent } from "@/app/lib/analytics";
-import { Button } from "@/components/ui/button";
+import { heroCopy, heroMetrics } from '@/app/lib/homepage';
+import { trackEvent } from '@/app/lib/analytics';
+import { Button } from '@/components/ui/button';
 
-import { LiquidGlassRefractionSVG } from "./LiquidGlassRefractionSVG";
+import { LiquidGlassRefractionSVG } from './LiquidGlassRefractionSVG';
 
 interface HeroProps {
   onOpenContact?: () => void;
@@ -22,36 +17,36 @@ interface HeroProps {
 
 const HERO_EASE: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
-const HERO_METRICS = [
-  {
-    value: "Worldwide",
-    label: "Global Impact",
-    detail: "Products shaped for teams, operators, and audiences that move across markets with confidence.",
-  },
-  {
-    value: "Signal-Led",
-    label: "AI Precision",
-    detail: "Frontier intelligence translated into clear decisions, legible workflows, and trusted product behavior.",
-  },
-  {
-    value: "Always-On",
-    label: "Unwavering Reliability",
-    detail: "Operational calm designed into the platform layer so critical moments still feel effortless.",
-  },
-  {
-    value: "Elastic",
-    label: "Built for Scale",
-    detail: "Architecture, UX, and data systems tuned to expand without losing clarity or momentum.",
-  },
-] as const;
-
 function revealTransition(delay: number, duration = 0.7) {
   return { duration, delay, ease: HERO_EASE };
 }
 
+function KineticHeadline({ text }: { text: string }) {
+  const reduceMotion = useReducedMotion();
+
+  if (reduceMotion) {
+    return <span>{text}</span>;
+  }
+
+  return (
+    <span aria-label={text} className="kinetic-headline">
+      {Array.from(text).map((character, index) => (
+        <motion.span
+          key={`${character}-${index}`}
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.45, delay: index * 0.03, ease: HERO_EASE }}
+          className="inline-block whitespace-pre"
+        >
+          {character}
+        </motion.span>
+      ))}
+    </span>
+  );
+}
+
 export function Hero({ onOpenContact }: HeroProps = {}) {
   const shouldReduceMotion = useReducedMotion();
-  const [bookmarkState, setBookmarkState] = useState<"idle" | "saved">("idle");
   const mouseX = useMotionValue(50);
   const mouseY = useMotionValue(44);
   const rotateX = useTransform(mouseY, [0, 100], [7, -7]);
@@ -70,54 +65,38 @@ export function Hero({ onOpenContact }: HeroProps = {}) {
   );
 
   const scrollToSection = (id: string) => {
-    if (typeof document === "undefined") return;
-    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+    if (typeof document === 'undefined') return;
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
   };
 
   const handleContact = () => {
-    trackEvent("CTA", "Click", "Hero Contact");
+    trackEvent('CTA', 'Click', 'Hero Contact');
     if (onOpenContact) {
       onOpenContact();
       return;
     }
-    scrollToSection("contact");
-  };
-
-  const handleBookmark = async () => {
-    trackEvent("CTA", "Click", "Bookmark For Updates");
-    try {
-      if (typeof window !== "undefined" && navigator.clipboard?.writeText) {
-        await navigator.clipboard.writeText(window.location.href);
-      }
-    } catch {
-      // Clipboard access can fail in restricted contexts; keep the UI optimistic.
-    }
-    setBookmarkState("saved");
+    scrollToSection('contact');
   };
 
   return (
     <section
-      className="relative mx-auto flex min-h-[calc(100svh-7rem)] w-full max-w-7xl items-center px-4 py-8 md:px-6 md:py-10"
+      className="relative mx-auto flex min-h-[calc(100svh-7.5rem)] w-full max-w-7xl items-center px-0 py-8 md:py-10"
       aria-label="Hero section"
     >
       <LiquidGlassRefractionSVG filterId="hero-liquid-glass" mode="defs" scale={26} />
 
-      <div className="w-full">
-        <div className="hero-main-grid">
+      <div className="w-full space-y-8 md:space-y-10">
+        <div className="grid gap-8 lg:grid-cols-[minmax(0,1.25fr)_minmax(320px,0.8fr)] lg:items-center">
           <motion.div
             initial={shouldReduceMotion ? false : { opacity: 0, y: 24 }}
             animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
             transition={revealTransition(0, 0.75)}
-            className="space-y-7 lg:max-w-[44rem]"
+            className="space-y-7 lg:max-w-[46rem]"
           >
             <div className="flex flex-wrap items-center gap-3">
-              <span className="hero-location-badge liquid-glass mouse-refraction">
-                <MapPin className="h-4 w-4" />
-                Nigeria NG • Remote-First
-              </span>
-              <span className="badge badge-primary liquid-badge-sheen">
-                <Sparkles className="h-3.5 w-3.5" />
-                Open to senior roles and high-impact work
+              <span className="location-badge glass-surface glass-surface-light inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm text-[var(--text-primary)]">
+                <MapPin className="h-4 w-4 text-[var(--accent-primary)]" />
+                {heroCopy.badge}
               </span>
             </div>
 
@@ -126,109 +105,96 @@ export function Hero({ onOpenContact }: HeroProps = {}) {
                 initial={shouldReduceMotion ? false : { opacity: 0, y: 18 }}
                 animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
                 transition={revealTransition(0.1)}
-                className="hero-headline hero-headline-liquid max-w-4xl text-balance font-semibold tracking-tight text-[var(--text-primary)]"
+                className="max-w-4xl text-5xl font-semibold tracking-tight text-balance text-[var(--text-primary)] md:text-7xl"
               >
-                Full-Stack AI Engineer for reliable AI products and platform systems.
+                <KineticHeadline text={heroCopy.headline} />
               </motion.h1>
 
-              <motion.div
+              <motion.p
                 initial={shouldReduceMotion ? false : { opacity: 0, y: 18 }}
                 animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
                 transition={revealTransition(0.18)}
-                className="max-w-3xl space-y-4 text-pretty text-base leading-8 text-[var(--text-secondary)] md:text-lg"
+                className="max-w-3xl text-xl leading-8 text-balance text-[var(--text-primary)] md:text-3xl md:leading-[1.25]"
               >
-                <p>
-                  I design and ship AI products, platform workflows, and full-stack systems that stay clear under real operating pressure.
-                </p>
-                <p>
-                  My edge is the combination: applied ML depth, product judgment, and the discipline to turn complex behavior into interfaces teams can trust.
-                </p>
-              </motion.div>
+                {heroCopy.position}
+              </motion.p>
+
+              <motion.p
+                initial={shouldReduceMotion ? false : { opacity: 0, y: 18 }}
+                animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
+                transition={revealTransition(0.24)}
+                className="max-w-3xl text-base leading-8 text-pretty text-[var(--text-secondary)] md:text-lg"
+              >
+                {heroCopy.bio}
+              </motion.p>
             </div>
 
             <motion.article
               initial={shouldReduceMotion ? false : { opacity: 0, y: 24 }}
               animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
-              transition={revealTransition(0.24, 0.75)}
-              className="hero-proof-card liquid-glass liquid-glass-cyan mouse-refraction chromatic-aberration"
+              transition={revealTransition(0.32, 0.75)}
+              className="glass-surface glass-surface-heavy rounded-[1.75rem] p-5 md:p-6"
             >
-              <div className="flex flex-col gap-5 md:flex-row md:items-start md:justify-between">
+              <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
                 <div className="space-y-3">
-                  <p className="hero-proof-kicker">How I work</p>
+                  <p className="text-xs tracking-[0.24em] text-[var(--accent-primary)] uppercase">
+                    Positioning
+                  </p>
                   <h2 className="text-xl font-semibold tracking-tight text-[var(--text-primary)] md:text-2xl">
-                    Senior ownership across product, platform, and model behavior.
+                    {heroCopy.proofTitle}
                   </h2>
                 </div>
-                <span className="hero-live-pill">
-                  <span className="hero-live-dot" />
-                  Built for real use
+                <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-2 text-xs text-[var(--text-secondary)]">
+                  <span className="live-dot" />
+                  Evidence before claim
                 </span>
               </div>
-
-              <div className="grid gap-3 pt-5 sm:grid-cols-3">
-                <div className="hero-proof-stat">
-                  <span className="hero-proof-value">Problem framing</span>
-                  <span className="hero-proof-label">Start with user decisions, not model demos</span>
-                </div>
-                <div className="hero-proof-stat">
-                  <span className="hero-proof-value">System design</span>
-                  <span className="hero-proof-label">Build for reliability, observability, and handoff</span>
-                </div>
-                <div className="hero-proof-stat">
-                  <span className="hero-proof-value">Product finish</span>
-                  <span className="hero-proof-label">Keep interfaces calm, legible, and fast</span>
-                </div>
-              </div>
+              <p className="mt-4 text-sm leading-7 text-[var(--text-secondary)] md:text-base">
+                {heroCopy.proofBody}
+              </p>
             </motion.article>
 
             <motion.div
               initial={shouldReduceMotion ? false : { opacity: 0, y: 20 }}
               animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
-              transition={revealTransition(0.32)}
-              className="hero-cta-row"
+              transition={revealTransition(0.38)}
+              className="flex flex-col gap-3 sm:flex-row"
             >
               <Button
                 size="lg"
-                onClick={handleContact}
-                className="hero-primary-cta min-h-12 rounded-full px-6 text-sm font-semibold md:px-7"
+                onClick={() => scrollToSection('work')}
+                className="min-h-12 rounded-full bg-[var(--accent-primary)] px-6 text-sm font-semibold text-black hover:-translate-y-0.5 md:px-7"
               >
-                <Mail className="h-4 w-4" />
-                Start a conversation
+                {heroCopy.ctaPrimary}
               </Button>
               <Button
                 size="lg"
                 variant="outline"
-                onClick={() => scrollToSection("projects")}
-                className="hero-secondary-cta min-h-12 rounded-full px-6 text-sm font-semibold md:px-7"
+                onClick={handleContact}
+                className="focus-ring-branded min-h-12 rounded-full border-white/12 bg-white/[0.03] px-6 text-sm font-semibold text-[var(--text-primary)] md:px-7"
               >
-                Review selected work
+                {heroCopy.ctaSecondary}
                 <ArrowRight className="h-4 w-4" />
-              </Button>
-              <Button
-                size="lg"
-                variant="ghost"
-                onClick={handleBookmark}
-                className="hero-download-cta bookmark-ripple min-h-12 rounded-full px-5 text-sm font-medium"
-              >
-                <Bookmark className="h-4 w-4" />
-                {bookmarkState === "saved" ? "Portfolio link copied" : "Save portfolio link"}
               </Button>
             </motion.div>
 
             <motion.div
               initial={shouldReduceMotion ? false : { opacity: 0, y: 16 }}
               animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
-              transition={revealTransition(0.36)}
+              transition={revealTransition(0.44)}
               className="flex flex-wrap items-center gap-3 text-sm text-[var(--text-secondary)]"
             >
               <a
-                href="mailto:scardubu@gmail.com"
+                href={`mailto:${heroCopy.contactEmail}`}
                 aria-label="Contact Oscar via email"
-                className="inline-flex min-h-10 items-center rounded-full border border-white/10 bg-white/[0.03] px-4 py-2 font-medium text-[var(--text-primary)] transition-colors hover:border-[var(--accent-primary)]/35 hover:text-[var(--accent-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-base)]"
+                className="focus-ring-branded inline-flex min-h-10 items-center rounded-full border border-white/10 bg-white/[0.03] px-4 py-2 font-medium text-[var(--text-primary)] transition-colors hover:border-[var(--accent-primary)]/35 hover:text-[var(--accent-primary)]"
               >
-                scardubu@gmail.com
+                {heroCopy.contactEmail}
               </a>
-              <span>Full-Stack AI Engineer &amp; Platform Architect focused on production systems, clear communication, and durable execution.</span>
+              <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-4 py-2 text-[var(--text-secondary)]">
+                Built from Nigeria for global product teams
+                <MoveRight className="h-4 w-4 text-[var(--accent-primary)]" />
+              </span>
             </motion.div>
           </motion.div>
 
@@ -247,18 +213,18 @@ export function Hero({ onOpenContact }: HeroProps = {}) {
               mouseY.set(44);
             }}
           >
-            <div className="hero-portrait-glow profile-glow-cyan" aria-hidden="true" />
+            <div className="profile-glow-cyan" aria-hidden="true" />
             <motion.div
-              className="hero-portrait-shell liquid-glass liquid-glass-cyan liquid-glass-float chromatic-aberration"
+              className="glass-surface glass-surface-heavy chromatic-aberration relative overflow-hidden rounded-[2rem]"
               style={portraitStyle}
             >
               <LiquidGlassRefractionSVG
                 filterId="hero-liquid-glass"
                 mode="overlay"
-                className="hero-refraction-layer"
+                className="glass-refraction-layer"
                 scale={26}
               />
-              <div className="hero-portrait-core">
+              <div className="relative aspect-[0.92/1.08] overflow-hidden rounded-[1.65rem]">
                 <Image
                   src="/headshot.webp"
                   alt="Oscar Ndugbu - Full-Stack ML Engineer"
@@ -274,24 +240,15 @@ export function Hero({ onOpenContact }: HeroProps = {}) {
                 />
               </div>
 
-              <motion.div
-                initial={shouldReduceMotion ? false : { opacity: 0, y: 16 }}
-                animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
-                transition={revealTransition(0.46, 0.6)}
-                className="hero-portrait-pill hero-portrait-pill-top"
-              >
-                <span className="hero-live-dot" />
-                Reliable systems, clear interfaces
-              </motion.div>
-
-              <motion.div
-                initial={shouldReduceMotion ? false : { opacity: 0, y: 16 }}
-                animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
-                transition={revealTransition(0.54, 0.6)}
-                className="hero-portrait-pill hero-portrait-pill-bottom"
-              >
-                Remote-first • Built from Nigeria
-              </motion.div>
+              <div className="absolute inset-x-5 bottom-5 flex flex-wrap gap-3">
+                <span className="glass-surface glass-surface-light inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm text-[var(--text-primary)]">
+                  <span className="live-dot" />
+                  Production AI systems
+                </span>
+                <span className="glass-surface glass-surface-light inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm text-[var(--text-primary)]">
+                  Remote-first · Nigeria
+                </span>
+              </div>
             </motion.div>
           </motion.div>
         </div>
@@ -299,22 +256,24 @@ export function Hero({ onOpenContact }: HeroProps = {}) {
         <motion.div
           initial={shouldReduceMotion ? false : { opacity: 0, y: 24 }}
           animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
-          transition={revealTransition(0.4, 0.75)}
-          className="hero-metrics-grid pt-10 md:pt-12"
+          transition={revealTransition(0.5, 0.75)}
+          className="grid gap-[var(--bento-gap)] md:grid-cols-2 xl:grid-cols-4"
         >
-          {HERO_METRICS.map((metric, index) => (
+          {heroMetrics.map((metric, index) => (
             <motion.article
-              key={metric.label}
+              key={metric.title}
               initial={shouldReduceMotion ? false : { opacity: 0, y: 18 }}
               animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
-              transition={revealTransition(0.48 + index * 0.08, 0.6)}
-              className={`hero-metric-card hero-metric-glass liquid-glass liquid-glass-hover mouse-refraction ${
-                index === HERO_METRICS.length - 1 ? "hero-metric-card-pulse" : ""
-              }`}
+              transition={revealTransition(0.56 + index * 0.08, 0.6)}
+              className={`metric-card-glass glass-surface glass-surface-light rounded-[1.5rem] p-5 ${metric.pulse ? 'hero-metric-card-pulse' : ''}`}
             >
-              <span className="hero-metric-value">{metric.value}</span>
-              <span className="hero-metric-label">{metric.label}</span>
-              <p className="hero-metric-detail">{metric.detail}</p>
+              <span className="block text-sm font-semibold tracking-[0.2em] text-[var(--accent-primary)] uppercase">
+                {metric.value}
+              </span>
+              <span className="mt-3 block text-lg font-semibold tracking-tight text-[var(--text-primary)] md:text-xl">
+                {metric.title}
+              </span>
+              <p className="mt-3 text-sm leading-7 text-[var(--text-secondary)]">{metric.detail}</p>
             </motion.article>
           ))}
         </motion.div>

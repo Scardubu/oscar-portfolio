@@ -1,22 +1,22 @@
-"use client";
+'use client';
 
-import { cn } from "@/lib/utils";
+import { cn } from '@/lib/utils';
 
 interface LiquidGlassRefractionSVGProps {
   className?: string;
   filterId?: string;
-  mode?: "defs" | "overlay" | "both";
+  mode?: 'defs' | 'overlay' | 'both';
   scale?: number;
 }
 
 export function LiquidGlassRefractionSVG({
   className,
-  filterId = "liquid-glass-refraction-filter",
-  mode = "both",
+  filterId = 'liquid-glass-refraction-filter',
+  mode = 'both',
   scale = 24,
 }: LiquidGlassRefractionSVGProps) {
-  const shouldRenderDefs = mode === "defs" || mode === "both";
-  const shouldRenderOverlay = mode === "overlay" || mode === "both";
+  const shouldRenderDefs = mode === 'defs' || mode === 'both';
+  const shouldRenderOverlay = mode === 'overlay' || mode === 'both';
   const displacementMapId = `${filterId}-map`;
   const specularLightId = `${filterId}-specular`;
 
@@ -41,9 +41,9 @@ export function LiquidGlassRefractionSVG({
             >
               <feTurbulence
                 type="fractalNoise"
-                baseFrequency="0.006 0.018"
-                numOctaves="3"
-                seed="11"
+                baseFrequency="0.008"
+                numOctaves="2"
+                seed="92"
                 result={displacementMapId}
               />
               <feColorMatrix
@@ -63,7 +63,7 @@ export function LiquidGlassRefractionSVG({
                 in2="softVectors"
                 scale={scale}
                 xChannelSelector="R"
-                yChannelSelector="B"
+                yChannelSelector="G"
                 result="refracted"
               />
               <feSpecularLighting
@@ -92,7 +92,7 @@ export function LiquidGlassRefractionSVG({
         <svg
           aria-hidden="true"
           viewBox="0 0 640 640"
-          className={cn("pointer-events-none absolute inset-0 h-full w-full", className)}
+          className={cn('pointer-events-none absolute inset-0 h-full w-full', className)}
           fill="none"
         >
           <defs>
