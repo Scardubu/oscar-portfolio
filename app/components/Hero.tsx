@@ -1,260 +1,305 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { MetricCard } from "./MetricCard";
-import { ArrowRight, Mail, Download, MapPin } from "lucide-react";
+import { motion, useReducedMotion } from "framer-motion";
+import {
+  ArrowRight,
+  Download,
+  Mail,
+  MapPin,
+  Sparkles,
+} from "lucide-react";
 import Image from "next/image";
-import dynamic from "next/dynamic";
-import { Button } from "@/components/ui/button";
+
 import { trackEvent } from "@/app/lib/analytics";
+import { Button } from "@/components/ui/button";
 
-// Dynamic import for ParticleBackground to improve initial load
-const ParticleBackground = dynamic(
-  () => import("./ParticleBackground").then((mod) => mod.ParticleBackground),
-  {
-    ssr: false,
-    loading: () => null,
-  }
-);
+import { LiquidGlassRefractionSVG } from "./LiquidGlassRefractionSVG";
 
-// PRD Feature 1: Hero Section - "First Impression Credibility Builder"
-
-interface Metric {
-  value: number;
-  suffix: string;
-  label: string;
-  decimals?: number;
-}
-
-const HERO_METRICS: Metric[] = [
-  { value: 350, suffix: "+", label: "Production Users", decimals: 0 },
-  { value: 71, suffix: "%", label: "ML Accuracy", decimals: 0 },
-  { value: 99.9, suffix: "%", label: "System Uptime", decimals: 1 },
-  { value: 4, suffix: "+", label: "Years Experience", decimals: 0 },
-];
-
-
-// PRD Hero-001 to Hero-006: Main Hero component
 interface HeroProps {
   onOpenContact?: () => void;
 }
 
-export function Hero({ onOpenContact }: HeroProps = {}) {
+const HERO_METRICS = [
+  {
+    value: "350+",
+    label: "Production users",
+    detail: "Live predictions flowing through SabiScore weekly.",
+  },
+  {
+    value: "71%",
+    label: "Model accuracy",
+    detail: "Backtested confidence bands tuned for real usage.",
+  },
+  {
+    value: "99.9%",
+    label: "System uptime",
+    detail: "Production-ready monitoring, alerts, and recovery loops.",
+  },
+  {
+    value: "4+",
+    label: "Years shipping",
+    detail: "Full-stack AI, MLOps, and product engineering delivery.",
+  },
+] as const;
 
-  // PRD Hero-004: Smooth scroll to sections
+export function Hero({ onOpenContact }: HeroProps = {}) {
+  const shouldReduceMotion = useReducedMotion();
+
   const scrollToSection = (id: string) => {
-    const element = document.getElementById(id);
-    element?.scrollIntoView({ behavior: "smooth" });
+    if (typeof document === "undefined") return;
+    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const handleContact = () => {
+    trackEvent("CTA", "Click", "Hero Contact");
+    if (onOpenContact) {
+      onOpenContact();
+      return;
+    }
+    scrollToSection("contact");
   };
 
   return (
     <section
-      className="bg-gradient-hero relative flex min-h-screen items-center overflow-hidden px-4 py-20 md:px-8 lg:px-16"
+      className="relative mx-auto flex min-h-[calc(100svh-7rem)] w-full max-w-7xl items-center px-4 py-8 md:px-6 md:py-10"
       aria-label="Hero section"
     >
-      {/* Particle Background Animation */}
-      <ParticleBackground />
-      {/* PRD: Split screen layout - text left 60%, visual right 40% on desktop */}
-      <div className="mx-auto grid w-full max-w-7xl gap-12 lg:grid-cols-[60%_40%] lg:gap-16">
-        {/* Left: Text content */}
-        <motion.div
-          initial={{ opacity: 0, x: -50 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          className="flex flex-col justify-center space-y-8"
-        >
-          {/* Location Badge */}
+      <div className="w-full">
+        <div className="hero-main-grid">
           <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1, duration: 0.5 }}
-            className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-4 py-2 backdrop-blur-sm"
+            initial={shouldReduceMotion ? false : { opacity: 0, y: 24 }}
+            animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
+            transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
+            className="space-y-7 lg:max-w-[42rem]"
           >
-            <MapPin className="h-4 w-4 text-green-400" />
-            <span className="text-sm font-medium text-gray-300">
-              Nigeria 🇳🇬 • Remote-First
-            </span>
-          </motion.div>
+            <div className="flex flex-wrap items-center gap-3">
+              <span className="hero-location-badge">
+                <MapPin className="h-4 w-4" />
+                Nigeria NG • Remote-First
+              </span>
+              <span className="badge badge-primary">
+                <Sparkles className="h-3.5 w-3.5" />
+                Open to senior ML + platform roles
+              </span>
+            </div>
 
-          {/* Conversational Headline */}
-          <div className="space-y-4">
-            <motion.h1
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2, duration: 0.6 }}
-              className="text-5xl font-bold leading-tight tracking-tight text-gradient-accent md:text-6xl lg:text-7xl"
-            >
-              Hey, I&apos;m Oscar 👋
-            </motion.h1>
-
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4, duration: 0.6 }}
-              className="max-w-2xl text-xl leading-relaxed text-gray-200 md:text-2xl lg:text-3xl"
-            >
-              I build{" "}
-              <span className="font-semibold text-cyan-400">
-                AI that solves real problems
-              </span>{" "}
-              for real people—not just in theory, but in daily use.
-            </motion.p>
-
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6, duration: 0.6 }}
-              className="max-w-2xl text-lg leading-relaxed text-gray-300 md:text-xl"
-            >
-              My sports prediction platform,{" "}
-              <strong className="text-white">SabiScore</strong>, helps{" "}
-              <span className="text-green-400">350+ users</span> make smarter
-              decisions with AI-powered insights that prove accurate{" "}
-              <span className="text-green-400">7 out of 10 times</span>, running
-              reliably <span className="text-green-400">24/7</span>.
-            </motion.p>
-
-            {/* Origin Story Teaser */}
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.8, duration: 0.6 }}
-              className="max-w-xl text-base italic text-gray-500"
-            >
-              Self-taught from Nigeria, I now create AI solutions that transform
-              how businesses and individuals make decisions worldwide. I turn
-              complex technology into tools that simply work.
-            </motion.p>
-          </div>
-
-          {/* PRD Hero-002: Metrics grid with count-up animation */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.8, duration: 0.6 }}
-            className="grid grid-cols-2 gap-6 rounded-lg border border-[var(--border)] bg-[var(--bg-secondary)] p-6 md:grid-cols-4 md:gap-8 md:p-8"
-          >
-            {HERO_METRICS.map((metric, idx) => (
-              <MetricCard key={idx} value={metric.value} suffix={metric.suffix} label={metric.label} />
-            ))}
-          </motion.div>
-
-          {/* Enhanced CTAs with CV Download */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.0, duration: 0.6 }}
-            className="flex flex-col gap-4 sm:flex-row sm:flex-wrap"
-          >
-            <Button
-              size="lg"
-              onClick={() => {
-                trackEvent("CTA", "Click", "Hero Contact");
-                if (onOpenContact) {
-                  onOpenContact();
-                } else {
-                  scrollToSection("contact");
-                }
-              }}
-              className="group bg-gradient-to-r from-blue-500 to-cyan-500 px-8 py-6 text-base font-semibold text-white shadow-lg shadow-blue-500/25 transition-all hover:scale-105 hover:shadow-xl hover:shadow-blue-500/40"
-            >
-              <Mail className="mr-2 h-5 w-5" />
-              Let&apos;s Talk 💬
-            </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              asChild
-              className="border-2 border-gray-700 bg-gray-800 px-8 py-6 text-base font-semibold text-gray-200 transition-all hover:border-gray-600 hover:bg-gray-700"
-            >
-              <a
-                href="/cv/oscar-ndugbu-cv.pdf"
-                download="Oscar-Ndugbu-CV.pdf"
-                onClick={() => {
-                  trackEvent("CTA", "Download", "CV");
-                  // Track CV download with Vercel Analytics
-                  if (typeof window !== "undefined") {
-                    const win = window as Window & { va?: (cmd: string, event: string) => void };
-                    if (win.va) win.va("track", "CV Downloaded");
-                  }
+            <div className="space-y-5">
+              <motion.h1
+                initial={shouldReduceMotion ? false : { opacity: 0, y: 18 }}
+                animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
+                transition={{
+                  duration: 0.7,
+                  delay: 0.1,
+                  ease: [0.16, 1, 0.3, 1],
                 }}
+                className="hero-headline max-w-4xl text-balance font-semibold tracking-tight text-[var(--text-primary)]"
               >
-                <Download className="mr-2 h-5 w-5" />
-                Download CV
-              </a>
-            </Button>
-            <Button
-              size="lg"
-              variant="ghost"
-              onClick={() => scrollToSection("projects")}
-              className="px-8 py-6 text-base font-semibold text-gray-400 underline-offset-4 hover:text-cyan-400 hover:underline"
+                Hey, I&apos;m Oscar{" "}
+                <span className="inline-block origin-[70%_70%] motion-safe:animate-[oscar-wave_3.6s_ease-in-out_infinite]">
+                  👋
+                </span>
+              </motion.h1>
+
+              <motion.div
+                initial={shouldReduceMotion ? false : { opacity: 0, y: 18 }}
+                animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
+                transition={{
+                  duration: 0.7,
+                  delay: 0.18,
+                  ease: [0.16, 1, 0.3, 1],
+                }}
+                className="max-w-2xl space-y-4 text-pretty text-base leading-8 text-[var(--text-secondary)] md:text-lg"
+              >
+                <p>
+                  I build production AI systems, full-stack product experiences,
+                  and resilient backend workflows that feel polished to users
+                  and dependable to teams.
+                </p>
+                <p>
+                  <span className="font-semibold text-[var(--text-primary)]">
+                    SabiScore
+                  </span>{" "}
+                  helps 350+ users make sharper decisions with ensemble ML,
+                  transparent confidence signals, and infrastructure engineered
+                  for everyday usage.
+                </p>
+              </motion.div>
+            </div>
+
+            <motion.article
+              initial={shouldReduceMotion ? false : { opacity: 0, y: 24 }}
+              animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
+              transition={{
+                duration: 0.75,
+                delay: 0.24,
+                ease: [0.16, 1, 0.3, 1],
+              }}
+              className="hero-proof-card liquid-glass liquid-glass-cyan"
             >
-              View My Work
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </Button>
+              <div className="flex items-start justify-between gap-4">
+                <div className="space-y-3">
+                  <p className="hero-proof-kicker">
+                    Live proof from the field
+                  </p>
+                  <h2 className="text-xl font-semibold tracking-tight text-[var(--text-primary)] md:text-2xl">
+                    Product-minded ML execution recruiters can scan in seconds.
+                  </h2>
+                </div>
+                <span className="hero-live-pill">
+                  <span className="hero-live-dot" />
+                  Live
+                </span>
+              </div>
+
+              <div className="grid gap-3 pt-5 sm:grid-cols-3">
+                <div className="hero-proof-stat">
+                  <span className="hero-proof-value">87ms</span>
+                  <span className="hero-proof-label">Prediction latency</span>
+                </div>
+                <div className="hero-proof-stat">
+                  <span className="hero-proof-value">24/7</span>
+                  <span className="hero-proof-label">Monitoring + alerts</span>
+                </div>
+                <div className="hero-proof-stat">
+                  <span className="hero-proof-value">Global</span>
+                  <span className="hero-proof-label">Remote collaboration</span>
+                </div>
+              </div>
+            </motion.article>
+
+            <motion.div
+              initial={shouldReduceMotion ? false : { opacity: 0, y: 20 }}
+              animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
+              transition={{
+                duration: 0.7,
+                delay: 0.32,
+                ease: [0.16, 1, 0.3, 1],
+              }}
+              className="hero-cta-row"
+            >
+              <Button
+                size="lg"
+                onClick={handleContact}
+                className="hero-primary-cta min-h-12 rounded-full px-6 text-sm font-semibold md:px-7"
+              >
+                <Mail className="h-4 w-4" />
+                Let&apos;s Talk
+              </Button>
+              <Button
+                size="lg"
+                variant="outline"
+                onClick={() => scrollToSection("projects")}
+                className="hero-secondary-cta min-h-12 rounded-full px-6 text-sm font-semibold md:px-7"
+              >
+                View Projects
+                <ArrowRight className="h-4 w-4" />
+              </Button>
+              <Button
+                size="lg"
+                variant="ghost"
+                asChild
+                className="hero-download-cta min-h-12 rounded-full px-5 text-sm font-medium"
+              >
+                <a
+                  href="/cv/oscar-ndugbu-cv.pdf"
+                  download="Oscar-Ndugbu-CV.pdf"
+                  onClick={() => trackEvent("CTA", "Download", "CV")}
+                >
+                  <Download className="h-4 w-4" />
+                  Download CV
+                </a>
+              </Button>
+            </motion.div>
           </motion.div>
 
-          {/* Subtle link to Skills section */}
-          <motion.button
-            type="button"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.2, duration: 0.5 }}
-            onClick={() => scrollToSection("skills")}
-            className="self-start text-sm text-[var(--text-secondary)] underline-offset-4 hover:text-[var(--accent-primary)] hover:underline"
+          <motion.div
+            initial={shouldReduceMotion ? false : { opacity: 0, scale: 0.94 }}
+            animate={shouldReduceMotion ? undefined : { opacity: 1, scale: 1 }}
+            transition={{
+              duration: 0.85,
+              delay: 0.18,
+              ease: [0.16, 1, 0.3, 1],
+            }}
+            className="hero-portrait-column"
           >
-            Explore full skills map
-          </motion.button>
-        </motion.div>
+            <div className="hero-portrait-glow" aria-hidden="true" />
+            <div className="hero-portrait-shell liquid-glass liquid-glass-cyan liquid-glass-float">
+              <LiquidGlassRefractionSVG className="hero-refraction-layer" />
+              <div className="hero-portrait-core">
+                <Image
+                  src="/headshot.webp"
+                  alt="Oscar Ndugbu - Full-Stack ML Engineer"
+                  fill
+                  priority
+                  fetchPriority="high"
+                  loading="eager"
+                  quality={90}
+                  className="object-cover object-top"
+                  sizes="(max-width: 768px) 300px, (max-width: 1280px) 420px, 480px"
+                  placeholder="blur"
+                  blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDgwIiBoZWlnaHQ9IjQ4MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMDUwNTA3Ii8+PGNpcmNsZSBjeD0iMjQwIiBjeT0iMjQwIiByPSIxNzAiIGZpbGw9IiMwZjE4MjgiLz48L3N2Zz4="
+                />
+              </div>
 
-        {/* Right: Professional headshot */}
-        {/* PRD Hero-006: Headshot with hover effect, optimized <50KB WebP */}
+              <motion.div
+                initial={shouldReduceMotion ? false : { opacity: 0, y: 16 }}
+                animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
+                transition={{
+                  duration: 0.6,
+                  delay: 0.46,
+                  ease: [0.16, 1, 0.3, 1],
+                }}
+                className="hero-portrait-pill hero-portrait-pill-top"
+              >
+                <span className="hero-live-dot" />
+                Building for real traffic, not demos
+              </motion.div>
+
+              <motion.div
+                initial={shouldReduceMotion ? false : { opacity: 0, y: 16 }}
+                animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
+                transition={{
+                  duration: 0.6,
+                  delay: 0.54,
+                  ease: [0.16, 1, 0.3, 1],
+                }}
+                className="hero-portrait-pill hero-portrait-pill-bottom"
+              >
+                Nigeria-based • Remote-ready
+              </motion.div>
+            </div>
+          </motion.div>
+        </div>
+
         <motion.div
-          initial={{ opacity: 0, x: 50 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut", delay: 0.3 }}
-          className="relative flex items-center justify-center"
+          initial={shouldReduceMotion ? false : { opacity: 0, y: 24 }}
+          animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
+          transition={{
+            duration: 0.75,
+            delay: 0.4,
+            ease: [0.16, 1, 0.3, 1],
+          }}
+          className="hero-metrics-grid pt-10 md:pt-12"
         >
-          <div className="relative h-[300px] w-[300px] overflow-hidden rounded-full border-4 border-[var(--accent-primary)] shadow-2xl shadow-[var(--accent-primary)]/20 transition-transform duration-300 hover:scale-105 md:h-[400px] md:w-[400px] lg:h-[500px] lg:w-[500px]">
-            <Image
-              src="/headshot.webp"
-              alt="Oscar Ndugbu - Full-Stack ML Engineer"
-              fill
-              priority
-              fetchPriority="high"
-              loading="eager"
-              quality={85}
-              className="object-cover"
-              sizes="(max-width: 768px) 300px, (max-width: 1024px) 400px, 500px"
-              placeholder="blur"
-              blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTAwIiBoZWlnaHQ9IjUwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMWExYTJlIi8+PGNpcmNsZSBjeD0iMjUwIiBjeT0iMjUwIiByPSIyMDAiIGZpbGw9IiMyMDIwMzAiLz48L3N2Zz4="
-            />
-          </div>
-
-          {/* Decorative gradient blur */}
-          <div className="absolute -z-10 h-[400px] w-[400px] rounded-full bg-gradient-accent opacity-20 blur-3xl" />
+          {HERO_METRICS.map((metric, index) => (
+            <motion.article
+              key={metric.label}
+              initial={shouldReduceMotion ? false : { opacity: 0, y: 18 }}
+              animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
+              transition={{
+                duration: 0.6,
+                delay: 0.48 + index * 0.08,
+                ease: [0.16, 1, 0.3, 1],
+              }}
+              className="hero-metric-card liquid-glass liquid-glass-hover"
+            >
+              <span className="hero-metric-value">{metric.value}</span>
+              <span className="hero-metric-label">{metric.label}</span>
+              <p className="hero-metric-detail">{metric.detail}</p>
+            </motion.article>
+          ))}
         </motion.div>
       </div>
-
-      {/* Scroll indicator */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.5, duration: 1 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2"
-      >
-        <motion.div
-          animate={{ y: [0, 10, 0] }}
-          transition={{ repeat: Infinity, duration: 1.5 }}
-          className="h-8 w-5 rounded-full border-2 border-[var(--accent-primary)]"
-        >
-          <motion.div
-            animate={{ y: [0, 12, 0] }}
-            transition={{ repeat: Infinity, duration: 1.5 }}
-            className="mx-auto mt-1 h-2 w-1 rounded-full bg-[var(--accent-primary)]"
-          />
-        </motion.div>
-      </motion.div>
     </section>
   );
 }

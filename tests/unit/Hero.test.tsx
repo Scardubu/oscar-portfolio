@@ -11,24 +11,24 @@ describe("Hero Component", () => {
       screen.getByRole("heading", { name: "Hey, I'm Oscar 👋" })
     ).toBeInTheDocument();
     expect(
-      screen.getByText("AI that solves real problems")
+      screen.getByText(/production AI systems, full-stack product experiences/i)
     ).toBeInTheDocument();
   });
 
   it("renders all 4 hero metrics", () => {
     render(<Hero />);
 
-    expect(screen.getByText("Production Users")).toBeInTheDocument();
-    expect(screen.getByText("ML Accuracy")).toBeInTheDocument();
-    expect(screen.getByText("System Uptime")).toBeInTheDocument();
-    expect(screen.getByText("Years Experience")).toBeInTheDocument();
+    expect(screen.getByText("Production users")).toBeInTheDocument();
+    expect(screen.getByText("Model accuracy")).toBeInTheDocument();
+    expect(screen.getByText("System uptime")).toBeInTheDocument();
+    expect(screen.getByText("Years shipping")).toBeInTheDocument();
   });
 
   it("renders CTA buttons with correct text", () => {
     render(<Hero />);
 
-    expect(screen.getByText("View My Work")).toBeInTheDocument();
-    expect(screen.getByText("Let's Talk 💬")).toBeInTheDocument();
+    expect(screen.getByText("View Projects")).toBeInTheDocument();
+    expect(screen.getByText("Let's Talk")).toBeInTheDocument();
     expect(screen.getByText("Download CV")).toBeInTheDocument();
   });
 
@@ -46,5 +46,13 @@ describe("Hero Component", () => {
     // Check for semantic section element
     const section = container.querySelector('section[aria-label="Hero section"]');
     expect(section).toBeInTheDocument();
+  });
+
+  it("renders the location badge and SabiScore proof callout", () => {
+    render(<Hero />);
+
+    expect(screen.getByText("Nigeria NG • Remote-First")).toBeInTheDocument();
+    expect(screen.getByText(/SabiScore/i)).toBeInTheDocument();
+    expect(screen.getByText(/Live proof from the field/i)).toBeInTheDocument();
   });
 });

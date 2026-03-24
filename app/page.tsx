@@ -114,43 +114,58 @@ export default function Home() {
       <div className="relative mx-auto w-full max-w-7xl px-4 pb-16 pt-4 sm:px-6 lg:px-8">
         {/* Sticky Header – replaced LiquidGlassCard */}
         <header className="sticky top-4 z-40">
-          <GlassCard className="flex items-center justify-between gap-4 px-4 py-3 md:px-5">
-            {/* Logo + nav unchanged */}
+          <div className="liquid-glass liquid-glass-cyan hero-nav-shell px-4 py-3 md:px-5">
             <a href="#top" className="group flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-accent text-sm font-semibold text-black shadow-lg shadow-cyan-500/15">
+              <div className="hero-nav-mark">
                 OD
               </div>
               <div className="leading-tight">
                 <div className="text-sm font-semibold">Oscar Dubu</div>
                 <div className="text-xs text-[var(--text-secondary)]">
-                  Portfolio • Product-minded engineer
+                  ML Engineer • Product systems
                 </div>
               </div>
             </a>
 
             <nav className="hidden items-center gap-6 text-sm text-[var(--text-secondary)] md:flex">
-              <a href="#projects" className="transition-colors hover:text-foreground">Projects</a>
-              <a href="#skills" className="transition-colors hover:text-foreground">Skills</a>
-              <a href="#experience" className="transition-colors hover:text-foreground">Experience</a>
-              <a href="#contact" className="transition-colors hover:text-foreground">Contact</a>
+              <a href="#projects" className="hero-nav-link">Projects</a>
+              <a href="#skills" className="hero-nav-link">Skills</a>
+              <a href="#experience" className="hero-nav-link">Experience</a>
+              <a href="#contact" className="hero-nav-link">Contact</a>
             </nav>
 
             <div className="flex items-center gap-2">
-              <ThemeToggle />
               <Button
                 onClick={() => {
                   trackEvent("CTA", "Click", "Top Nav Contact");
                   setIsContactModalOpen(true);
                 }}
-                className="hidden rounded-full bg-gradient-accent px-5 py-2.5 font-semibold text-black shadow-lg shadow-cyan-500/20 transition-transform hover:scale-[1.02] md:inline-flex"
+                className="hero-nav-cta hero-nav-cta-desktop min-h-11 rounded-full px-5 font-semibold text-black shadow-lg shadow-cyan-500/20 transition-transform hover:scale-[1.02]"
               >
-                Let’s talk
+                Let&apos;s Talk
+              </Button>
+              <ThemeToggle variant="inline" />
+              <Button
+                onClick={() => {
+                  trackEvent("CTA", "Click", "Top Nav Contact");
+                  setIsContactModalOpen(true);
+                }}
+                className="hero-nav-cta hero-nav-cta-mobile min-h-11 rounded-full px-4 font-semibold text-black shadow-lg shadow-cyan-500/20"
+              >
+                Talk
               </Button>
             </div>
-          </GlassCard>
+          </div>
         </header>
 
-        <section id="top" className="pb-14 pt-8 md:pb-20 md:pt-12">
+        <section
+          id="top"
+          className="hero-stage relative isolate overflow-hidden pb-14 pt-4 md:pb-20 md:pt-6"
+        >
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_18%_18%,rgba(0,217,255,0.16),transparent_26%),radial-gradient(circle_at_84%_18%,rgba(123,97,255,0.16),transparent_24%),radial-gradient(circle_at_54%_100%,rgba(7,179,129,0.1),transparent_28%)]" />
+          <div className="pointer-events-none absolute inset-0 retro-grid opacity-50" />
+          <div className="pointer-events-none absolute inset-x-0 bottom-[-14%] h-[52%] retro-grid-perspective opacity-50" />
+          <div className="pointer-events-none absolute inset-0 noise-overlay opacity-70" />
           <Hero onOpenContact={() => setIsContactModalOpen(true)} />
         </section>
 
