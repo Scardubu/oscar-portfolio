@@ -233,7 +233,7 @@ function SkillNode({
   const radius = NODE_R + (node.skill.level / 100) * 14;
 
   // Track drag velocity for spring release
-  const lastPos = useRef({ x: node.x, y: node.y, t: Date.now() });
+  const lastPos = useRef({ x: node.x, y: node.y, t: 0 });
 
   return (
     <motion.div

@@ -1,5 +1,3 @@
-import type { Config } from 'tailwindcss'
-
 /**
  * tailwind.config.ts
  *
@@ -13,7 +11,7 @@ import type { Config } from 'tailwindcss'
  * Never hardcode hex values in component files — use Tailwind classes.
  */
 
-const config: Config = {
+const config = {
   content: [
     './app/**/*.{ts,tsx}',
     './components/**/*.{ts,tsx}',

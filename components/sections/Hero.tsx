@@ -257,9 +257,9 @@ export default function Hero() {
               <KineticHeadline
                 text="Oscar Ndugbu"
                 as="h1"
-                gradient={true}           {/* World-class pop — uses --gradient-accent-text */}
+                gradient
                 delay={0.15}
-                stagger={0.028}           {/* Matches KineticHeadline default spring feel */}
+                stagger={0.028}
                 className="font-black tracking-tight"
               />
 
@@ -381,10 +381,9 @@ export default function Hero() {
 
               {/* Floating uptime pill — parallax */}
               <motion.div
-                style={{ y: pillYTop }}
+                style={{ y: pillYTop, boxShadow: 'var(--shadow-liquid-3d)' }}
                 className="absolute -top-4 -right-4 liquid-glass rounded-[var(--radius-xl)]
                            px-4 py-2 flex items-center gap-2"
-                style={{ boxShadow: 'var(--shadow-liquid-3d)' }}
               >
                 <span
                   className="live-dot animate-ping-slow"
@@ -397,10 +396,9 @@ export default function Hero() {
 
               {/* Floating accuracy pill — parallax */}
               <motion.div
-                style={{ y: pillYBottom }}
+                style={{ y: pillYBottom, boxShadow: 'var(--shadow-liquid-3d)' }}
                 className="absolute -bottom-4 -left-4 liquid-glass rounded-[var(--radius-xl)]
                            px-4 py-2"
-                style={{ boxShadow: 'var(--shadow-liquid-3d)' }}
               >
                 <div className="text-xs" style={{ color: 'var(--text-muted)' }}>ML Accuracy</div>
                 <div className="text-sm font-bold" style={{ color: 'var(--accent-primary)' }}>

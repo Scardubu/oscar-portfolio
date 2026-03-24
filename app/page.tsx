@@ -1,9 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { motion } from "framer-motion";
 import {
-  ArrowRight,
   Clock3,
   Mail,
   MapPin,
@@ -26,12 +24,15 @@ import { Footer } from "./components/Footer";
 import { AvailabilityBadge } from "./components/AvailabilityBadge";
 
 // Merged from page (2) — existing root-level components
-import ProductionPatternsVisualization from "@/components/ProductionPatternsVisualization";
-import LiveBuildFeed from "@/components/LiveBuildFeed";
+import { ProductionPatternsVisualization } from "@/components/ProductionPatternsVisualization";
+import { LiveBuildFeed } from "@/components/LiveBuildFeed";
 
 // Dynamic skills (SSR-safe, replaces old LiquidGlassSkillsMap pattern)
 const DynamicSkillsSection = dynamic(
-  () => import("./components/SkillsSection"),
+  () =>
+    import("./components/Skills/SkillsSection").then(
+      (mod) => mod.SkillsSection
+    ),
   { ssr: false }
 );
 
@@ -319,7 +320,15 @@ export default function Home() {
             </div>
             <div className="lg:col-span-5">
               <GlassCard variant="violet">
-                {/* Quick contact options unchanged */}
+                <div className="space-y-3">
+                  <h3 className="text-xl font-semibold tracking-tight">
+                    Quick contact options
+                  </h3>
+                  <p className="text-sm text-[var(--text-secondary)]">
+                    Open the contact modal for the fastest route, or use the
+                    form to share project details and timelines.
+                  </p>
+                </div>
               </GlassCard>
             </div>
           </div>

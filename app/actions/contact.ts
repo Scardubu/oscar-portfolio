@@ -16,7 +16,7 @@ const ContactSchema = z.object({
   company: z.string().max(100).optional(),
   type:    z.enum(
     ["Job opportunity", "Consulting / ML project", "Collaboration", "Other"],
-    { errorMap: () => ({ message: "Please select an inquiry type" }) }
+    { message: "Please select an inquiry type" }
   ),
   message: z
     .string()

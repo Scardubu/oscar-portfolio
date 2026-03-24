@@ -8,6 +8,7 @@ import {
   keywordScore,
   normalizePost,
   sortPosts,
+  type BlogTier,
   type BlogPost,
   type RankedBlogPost,
 } from "@/lib/blog-intelligence";
@@ -20,6 +21,19 @@ type SearchRequestBody = {
   tag?: string | null;
   limit?: number;
 };
+
+function toSearchPost(post: ReturnType<typeof getAllPosts>[number]): RankedBlogPost {
+  return normalizePost({
+    slug: post.slug,
+    title: post.title,
+    excerpt: post.description,
+    date: post.date,
+    readMin: Number.parseInt(post.readingTime, 10) || 5,
+    tags: post.tags,
+    featured: false,
+    published: !post.draft,
+  });
+}
 
 async function fetchEmbeddings(inputs: string[]): Promise<number[][]> {
   const apiKey = process.env.OPENAI_API_KEY;
@@ -54,7 +68,11 @@ async function fetchEmbeddings(inputs: string[]): Promise<number[][]> {
   return json.data.map((item) => item.embedding);
 }
 
-function buildKeywordFallback(posts: BlogPost[], query: string, tag: string | null): RankedBlogPost[] {
+function buildKeywordFallback(
+  posts: RankedBlogPost[],
+  query: string,
+  tag: string | null
+): RankedBlogPost[] {
   return posts
     .filter((post) => (tag ? post.tags.includes(tag) : true))
     .map((post) => {
@@ -69,6 +87,7 @@ function buildKeywordFallback(posts: BlogPost[], query: string, tag: string | nu
 
       return {
         ...post,
+        tier: post.tier,
         score,
         lexicalScore,
         reason: buildReason(query, post, 0, lexicalScore),
@@ -96,9 +115,12 @@ export async function POST(request: Request) {
       ? Math.max(1, Math.min(20, Number(body.limit)))
       : 12;
 
-    const rawPosts = getAllPosts() as BlogPost[];
+    const rawPosts = getAllPosts().map(toSearchPost);
     const published = rawPosts.filter((post) => post.published !== false);
-    const posts = sortPosts(published.map((post) => normalizePost(post)));
+    const posts = sortPosts(published).map((post) => ({
+      ...post,
+      tier: post.tier as BlogTier,
+    }));
 
     if (!query) {
       const local = buildKeywordFallback(posts, query, tag).slice(0, limit);
@@ -148,6 +170,7 @@ export async function POST(request: Request) {
 
         return {
           ...post,
+          tier: post.tier,
           score,
           semanticScore,
           lexicalScore,

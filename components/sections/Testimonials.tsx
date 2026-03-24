@@ -100,7 +100,7 @@ function TestimonialCard({
           fontStyle:  'italic',
         }}
       >
-        "{testimonial.quote}"
+        &ldquo;{testimonial.quote}&rdquo;
       </blockquote>
 
       {/* Attribution */}
@@ -192,7 +192,7 @@ export default function Testimonials() {
             <span className="text-gradient-accent">real engineers</span>
           </h2>
           <p className="section-subtitle max-w-[500px] mx-auto">
-            Teams I've shipped production ML systems with — their words, not mine.
+            Teams I&apos;ve shipped production ML systems with — their words, not mine.
           </p>
         </motion.div>
 

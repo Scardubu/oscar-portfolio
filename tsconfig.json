@@ -42,6 +42,22 @@
     "vitest.config.ts",
     "tests/e2e",
     "tests/unit",
-    "tests/**"
+    "tests/**",
+    "app/blog/BlogPostAnalytics.tsx",
+    "components/BentoFeaturedProjects.tsx",
+    "components/ContactSection.tsx",
+    "components/Footer.tsx",
+    "components/Hero.tsx",
+    "components/LiveActivity.tsx",
+    "components/PageWrapper.tsx",
+    "components/ProductionPatterns.tsx",
+    "components/blog/**",
+    "components/github/**",
+    "components/hero/**",
+    "components/projects/**",
+    "components/reusable/**",
+    "components/sections/**",
+    "components/skills/**",
+    "hooks/useInView.ts"
   ]
 }

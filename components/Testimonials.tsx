@@ -81,7 +81,7 @@ function TestimonialCard({
         style={{ color: testimonial.accent + "44" }}
         aria-hidden="true"
       >
-        "
+        &ldquo;
       </div>
 
       <blockquote className="text-body text-secondary leading-relaxed flex-1">
