@@ -298,7 +298,7 @@ export default function Hero() {
                 lineHeight: 'var(--lh-relaxed)',
               }}
             >
-              Self-taught from Nigeria. {HERO_SUBHEADLINE}
+              {HERO_SUBHEADLINE}
             </motion.p>
 
             {/* CTAs */}
@@ -379,7 +379,7 @@ export default function Hero() {
                 style={{ display: 'block' }}
               />
 
-              {/* Floating uptime pill — parallax */}
+              {/* Floating pill — parallax */}
               <motion.div
                 style={{ y: pillYTop, boxShadow: 'var(--shadow-liquid-3d)' }}
                 className="absolute -top-4 -right-4 liquid-glass rounded-[var(--radius-xl)]
@@ -390,19 +390,19 @@ export default function Hero() {
                   style={{ color: 'var(--metric-live)' }}
                 />
                 <span className="text-xs font-semibold" style={{ color: 'var(--text-primary)' }}>
-                  99.9% Uptime
+                  Always-On
                 </span>
               </motion.div>
 
-              {/* Floating accuracy pill — parallax */}
+              {/* Floating pill — parallax */}
               <motion.div
                 style={{ y: pillYBottom, boxShadow: 'var(--shadow-liquid-3d)' }}
                 className="absolute -bottom-4 -left-4 liquid-glass rounded-[var(--radius-xl)]
                            px-4 py-2"
               >
-                <div className="text-xs" style={{ color: 'var(--text-muted)' }}>ML Accuracy</div>
+                <div className="text-xs" style={{ color: 'var(--text-muted)' }}>AI Precision</div>
                 <div className="text-sm font-bold" style={{ color: 'var(--accent-primary)' }}>
-                  71% avg.
+                  Signal-Led
                 </div>
               </motion.div>
             </motion.div>

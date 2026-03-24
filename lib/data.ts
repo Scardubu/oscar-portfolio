@@ -105,7 +105,7 @@ export interface Certification {
 
 export const HERO_HEADLINE_WORDS = ["Production", "ML", "Engineer."];
 export const HERO_SUBHEADLINE =
-  "Building AI that ships—not just runs in a notebook. From ensemble models to real-time APIs, I own the full stack.";
+  "Architecting production AI systems that distill frontier intelligence into elegant, trusted tools people rely on every single day.";
 
 export const HERO_ROLE_TAGS = [
   "Full-Stack ML Engineer",
@@ -122,21 +122,21 @@ export const HERO_CTA_SECONDARY = {
 export const HERO_CTA_TERTIARY = { label: "View Work", href: "#projects" };
 
 export const HERO_AVAILABILITY =
-  "Open to Senior ML / Backend Roles & Consulting";
+  "Open to Senior ML / Full-Stack Roles & Consulting";
 
 export const HERO_METRICS: HeroMetric[] = [
-  { value: "350+", label: "Production Users", sublabel: "Across live systems" },
+  { value: "Worldwide", label: "Global Impact", sublabel: "From Nigeria to audiences everywhere" },
   {
-    value: "71%",
-    label: "ML Accuracy",
-    sublabel: "Avg. prediction rate",
+    value: "Signal-Led",
+    label: "AI Precision",
+    sublabel: "Research-grade intelligence in production",
   },
   {
-    value: "99.9%",
-    label: "System Uptime",
-    sublabel: "HA cluster reliability",
+    value: "Always-On",
+    label: "Unwavering Reliability",
+    sublabel: "Operational calm under pressure",
   },
-  { value: "4+", label: "Years Shipping", sublabel: "Production ML/AI" },
+  { value: "Elastic", label: "Built for Scale", sublabel: "Architecture that holds as the surface grows" },
 ];
 
 // ─── Projects ────────────────────────────────────────────────────────────────

@@ -13,9 +13,9 @@ export const HERO = {
   name:        "Oscar Ndugbu",
   title:       "Full-Stack ML Engineer",
   subtitle:    "I build AI systems that ship to real users — not just notebooks.",
-  description: `My sports prediction platform <strong>SabiScore</strong> serves 350+ users with 71% prediction accuracy, running 24/7 with 99.9% uptime. Self-taught from Nigeria, working globally.`,
+  description: `My flagship sports intelligence platform <strong>SabiScore</strong> powers real-time insights that sharpen every decision — engineered for seamless flow and unwavering performance at global scale. From Nigeria to audiences worldwide, I fuse cutting-edge AI research with intuitive product mastery.`,
   location:    "Nigeria 🇳🇬 · Remote-First",
-  availability: "Open to Senior ML / Backend Roles & Consulting",
+  availability: "Open to Senior ML / Full-Stack Roles & Consulting",
   cta: {
     primary:   { label: "Let's Talk 💬", href: "#contact" },
     secondary: { label: "Download CV",   href: "/cv/oscar-ndugbu-cv.pdf" },
@@ -26,10 +26,10 @@ export const HERO = {
 // ── Hero Metrics ──────────────────────────────────────────────────────────────
 
 export const HERO_METRICS = [
-  { value: 350,   suffix: "+",  label: "Production Users",  type: "live"       as const },
-  { value: 71,    suffix: "%",  label: "ML Accuracy",       type: "live"       as const },
-  { value: 99.9,  suffix: "%",  label: "System Uptime",     type: "documented" as const },
-  { value: 4,     suffix: "+",  label: "Years Experience",  type: "snapshot"   as const },
+  { value: 0,   suffix: "",  label: "Global Impact",          type: "live"       as const },
+  { value: 0,   suffix: "",  label: "AI Precision",           type: "live"       as const },
+  { value: 0,   suffix: "",  label: "Unwavering Reliability", type: "documented" as const },
+  { value: 0,   suffix: "",  label: "Built for Scale",        type: "snapshot"   as const },
 ] as const;
 
 // ── Projects ─────────────────────────────────────────────────────────────────

@@ -27,17 +27,17 @@ export const hero = {
   greeting: "Hey, I'm Oscar",
   rotatingWords: ["AI systems", "real products", "ML pipelines", "smart tools"],
   tagline: "that ship to production.",
-  bio: "My sports intelligence platform, SabiScore, predicts match outcomes with 7-out-of-10 accuracy — built end-to-end, running 24/7, used by real people making real decisions.",
+  bio: "My flagship sports intelligence platform, SabiScore, powers real-time insights that sharpen every decision — engineered for seamless flow and unwavering performance at global scale.",
   manifesto:
-    "Forged in Lagos, refined by shipping. I don't prototype AI — I take it from research to revenue, owning the infra, models, and interfaces that make it work at scale.",
+    "From Nigeria to audiences worldwide, I fuse cutting-edge AI research with intuitive product mastery to create experiences that don't just work — they captivate, perform, and endure.",
   metrics: [
-    { value: "4+",     label: "Years shipping AI/ML in production" },
-    { value: "7/10",   label: "SabiScore prediction rate" },
-    { value: "24/7",   label: "Always-on platform uptime" },
+    { value: "Worldwide", label: "Global impact — from Nigeria to audiences everywhere" },
+    { value: "Signal-Led", label: "Research-grade AI in production" },
+    { value: "Always-On", label: "Operational calm under pressure" },
     { value: "Full",   label: "Stack ownership — infra to UI" },
   ],
   floatingCards: [
-    { label: "Experience",  value: "4+ Years · AI/ML" },
+    { label: "Posture",     value: "Battle-Tested" },
     { label: "SabiScore",   value: "Live in Production", accent: true },
   ],
   techStack: [
