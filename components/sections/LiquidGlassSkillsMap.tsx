@@ -1,425 +1,519 @@
-// components/sections/LiquidGlassSkillsMap.tsx
-'use client'
+'use client';
+/**
+ * components/sections/LiquidGlassSkillsMap.tsx
+ * ──────────────────────────────────────────────────────────────────────────
+ * SIGNATURE MAP v3 — World-Class Production Ready
+ *
+ * Merged & refined from both versions + current codebase reality:
+ *   • Tactile momentum physics canvas drag (premium feel from v1 — zero D3)
+ *   • Data-driven connections via shared `usedIn` (current SKILLS + PROJECTS)
+ *   • Liquid-glass nodes with emoji icons, level progress, active pulse
+ *   • Category filter buttons + live connection highlighting
+ *   • Framer Motion: useInView, AnimatePresence detail panel, spring scale
+ *   • Certifications grid (from v2) with hover lift
+ *   • No external dependencies (pure SVG + pointer events + RAF momentum)
+ *
+ * World-class inspirations:
+ *   • Aceternity / Hover.dev interactive maps
+ *   • Awwwards tactile skill canvases
+ *   • Framer Academy scroll + spring polish
+ *
+ * Seamless integration:
+ *   • 100% uses existing SKILLS + PROJECTS from '@/lib/data'
+ *   • Same CSS vars, liquid-glass, badge, section-label, --bento-pad
+ *   • Matches Hero & Bento patterns (useInView, AnimatePresence, reduced-motion)
+ *   • Drop-in replacement — no breakage, no new packages
+ * ──────────────────────────────────────────────────────────────────────────
+ */
 
-import { useRef, useState, useEffect, useCallback } from 'react'
-import { skills, type Skill }                        from '@/lib/data'
-import { SectionLabel }                               from '@/components/reusable'
-import { useScrollReveal }                            from '@/hooks'
+import { useRef, useState, useEffect, useCallback } from 'react';
+import {
+  motion,
+  useInView,
+  AnimatePresence,
+  useReducedMotion,
+} from 'framer-motion';
+import { SectionLabel } from '@/components/reusable';
+import { SKILLS, PROJECTS, type Skill } from '@/lib/data';
 
-// ─────────────────────────────────────────────────────────────────────
-// LiquidGlassSkillsMap — Signature Element
-// Design intent:
-//   - Draggable canvas of skill nodes — tactile, memorable
-//   - SVG connection lines — shows architectural thinking
-//   - Momentum physics on release — premium feel
-//   - Liquid glass per node — consistent identity system
-//   - Color-coded by category — instant domain legibility
-// ─────────────────────────────────────────────────────────────────────
-
-// Fixed positions — deterministic layout, no random flicker on SSR
-const NODE_POSITIONS: Record<string, { x: number; y: number }> = {
-  // Backend cluster — left
-  node:       { x:  80, y: 280 },
-  fastify:    { x: 210, y: 200 },
-  typescript: { x: 340, y: 130 },
-  java:       { x:  80, y: 440 },
-  python:     { x: 210, y: 380 },
-  fastapi:    { x: 340, y: 300 },
-  // Infra cluster — center
-  postgres:   { x: 520, y: 200 },
-  redis:      { x: 520, y: 340 },
-  bullmq:     { x: 650, y: 260 },
-  prisma:     { x: 650, y: 140 },
-  docker:     { x: 520, y: 480 },
-  // ML cluster — top-right
-  xgboost:    { x: 820, y: 100 },
-  lgbm:       { x: 940, y: 180 },
-  catboost:   { x: 820, y: 240 },
-  sklearn:    { x: 940, y: 300 },
-  pandas:     { x: 820, y: 360 },
-  // Blockchain cluster — bottom-right
-  solidity:   { x: 950, y: 440 },
-  ethers:     { x: 820, y: 500 },
-  ipfs:       { x: 950, y: 560 },
-  // Frontend / Data — scattered
-  react:      { x: 140, y: 580 },
-  powerbi:    { x: 300, y: 520 },
-}
+// ── Category config (synced to current data.ts) ───────────────────────────
 
 const CATEGORY_COLORS: Record<Skill['category'], string> = {
-  backend:    'var(--accent-fintech)',
-  ml:         'var(--accent-secondary)',
+  ml: 'var(--accent-secondary)',
+  backend: 'var(--accent-fintech)',
+  frontend: 'var(--accent-primary)',
+  devops: 'var(--accent-warn)',
   blockchain: 'var(--accent-secondary)',
-  infra:      'var(--accent-primary)',
-  data:       'var(--accent-warn)',
-  frontend:   'var(--accent-primary)',
-}
+};
 
 const CATEGORY_LABELS: Record<Skill['category'], string> = {
-  backend:    'Backend',
-  ml:         'Machine Learning',
+  ml: 'Machine Learning',
+  backend: 'Backend',
+  frontend: 'Frontend',
+  devops: 'DevOps',
   blockchain: 'Blockchain',
-  infra:      'Infrastructure',
-  data:       'Data / BI',
-  frontend:   'Frontend',
-}
+};
 
-export default function LiquidGlassSkillsMap() {
-  const sectionRef = useScrollReveal<HTMLElement>({ threshold: 0.05 })
-  const canvasRef  = useRef<HTMLDivElement>(null)
-  const wrapRef    = useRef<HTMLDivElement>(null)
-  const [activeSkill, setActiveSkill] = useState<string | null>(null)
+// ── Deterministic node positions (clustered, SSR-safe) ─────────────────────
 
-  // ── Draggable pan logic ──────────────────────────────────────────
-  const stateRef  = useRef({ x: 0, y: 0, vx: 0, vy: 0 })
-  const dragging  = useRef(false)
-  const lastPos   = useRef({ x: 0, y: 0, t: 0 })
-  const rafId     = useRef(0)
+const NODE_POSITIONS: Record<string, { x: number; y: number }> = {
+  // ML cluster — top right
+  xgboost: { x: 820, y: 120 },
+  pytorch: { x: 950, y: 80 },
+  scikit: { x: 820, y: 220 },
+  langchain: { x: 950, y: 200 },
+  mlflow: { x: 820, y: 320 },
+  // Backend cluster — left
+  fastapi: { x: 180, y: 180 },
+  fastify: { x: 80, y: 280 },
+  postgresql: { x: 280, y: 340 },
+  redis: { x: 180, y: 420 },
+  python: { x: 80, y: 100 },
+  // Frontend cluster — bottom left
+  nextjs: { x: 320, y: 520 },
+  'react-native': { x: 180, y: 580 },
+  typescript: { x: 420, y: 480 },
+  // DevOps cluster — center
+  docker: { x: 520, y: 420 },
+  'github-actions': { x: 620, y: 320 },
+  prisma: { x: 520, y: 180 },
+  // Blockchain cluster — bottom right
+  web3py: { x: 950, y: 420 },
+  circom: { x: 820, y: 520 },
+};
 
-  const applyTransform = useCallback(() => {
-    if (!canvasRef.current) return
-    canvasRef.current.style.transform =
-      `translate(${stateRef.current.x}px, ${stateRef.current.y}px)`
-  }, [])
+// ── Build links from shared usedIn (current data model) ────────────────────
 
-  useEffect(() => {
-    const wrap = wrapRef.current
-    if (!wrap) return
+function buildLinks(skills: Skill[]) {
+  const links: { source: string; target: string }[] = [];
+  const seen = new Set<string>();
 
-    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-
-    const onPointerDown = (e: PointerEvent) => {
-      e.preventDefault()
-      dragging.current = true
-      wrap.setPointerCapture(e.pointerId)
-      lastPos.current = { x: e.clientX, y: e.clientY, t: Date.now() }
-      cancelAnimationFrame(rafId.current)
-      stateRef.current.vx = 0
-      stateRef.current.vy = 0
-    }
-
-    const onPointerMove = (e: PointerEvent) => {
-      if (!dragging.current) return
-      const dx = e.clientX - lastPos.current.x
-      const dy = e.clientY - lastPos.current.y
-      const dt = Math.max(Date.now() - lastPos.current.t, 1)
-
-      if (!prefersReduced) {
-        stateRef.current.vx = dx / dt * 16
-        stateRef.current.vy = dy / dt * 16
-      }
-      stateRef.current.x += dx
-      stateRef.current.y += dy
-      applyTransform()
-      lastPos.current = { x: e.clientX, y: e.clientY, t: Date.now() }
-    }
-
-    const onPointerUp = () => {
-      dragging.current = false
-      if (prefersReduced) return
-      const momentum = () => {
-        stateRef.current.vx *= 0.91
-        stateRef.current.vy *= 0.91
-        stateRef.current.x  += stateRef.current.vx
-        stateRef.current.y  += stateRef.current.vy
-        applyTransform()
-        if (
-          Math.abs(stateRef.current.vx) > 0.1 ||
-          Math.abs(stateRef.current.vy) > 0.1
-        ) {
-          rafId.current = requestAnimationFrame(momentum)
+  for (let i = 0; i < skills.length; i++) {
+    for (let j = i + 1; j < skills.length; j++) {
+      const a = skills[i];
+      const b = skills[j];
+      const shared = a.usedIn?.some((p) => b.usedIn?.includes(p)) ?? false;
+      if (shared) {
+        const key = `${a.id}-${b.id}`;
+        if (!seen.has(key)) {
+          seen.add(key);
+          links.push({ source: a.id, target: b.id });
         }
       }
-      rafId.current = requestAnimationFrame(momentum)
     }
+  }
+  return links;
+}
 
-    wrap.addEventListener('pointerdown',   onPointerDown)
-    wrap.addEventListener('pointermove',   onPointerMove)
-    wrap.addEventListener('pointerup',     onPointerUp)
-    wrap.addEventListener('pointercancel', onPointerUp)
+// ── Main component ─────────────────────────────────────────────────────────
 
-    return () => {
-      wrap.removeEventListener('pointerdown',   onPointerDown)
-      wrap.removeEventListener('pointermove',   onPointerMove)
-      wrap.removeEventListener('pointerup',     onPointerUp)
-      wrap.removeEventListener('pointercancel', onPointerUp)
-      cancelAnimationFrame(rafId.current)
-    }
-  }, [applyTransform])
+export default function LiquidGlassSkillsMap() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const canvasRef = useRef<HTMLDivElement>(null);
+  const wrapRef = useRef<HTMLDivElement>(null);
 
-  // ── Active connections ──────────────────────────────────────────
+  const inView = useInView(sectionRef, { once: true, amount: 0.1 });
+  const shouldRed = useReducedMotion();
+
+  const [activeSkill, setActiveSkill] = useState<string | null>(null);
+  const [activeCategory, setActiveCategory] = useState<Skill['category'] | 'All'>('All');
+
+  // ── Pre-computed connections ─────────────────────────────────────────────
+  const allLinks = buildLinks(SKILLS);
+
+  const visibleSkills = activeCategory === 'All'
+    ? SKILLS
+    : SKILLS.filter((s) => s.category === activeCategory);
+
+  const visibleIds = new Set(visibleSkills.map((s) => s.id));
+
+  const visibleLinks = allLinks.filter(
+    (l) => visibleIds.has(l.source) && visibleIds.has(l.target)
+  );
+
   const activeSkillData = activeSkill
-    ? skills.find(s => s.id === activeSkill)
-    : null
+    ? SKILLS.find((s) => s.id === activeSkill)
+    : null;
 
   const activeConnectionIds = activeSkillData
-    ? new Set([activeSkill, ...activeSkillData.connections])
-    : new Set<string>()
+    ? new Set([
+        activeSkill,
+        ...visibleLinks
+          .filter((l) => l.source === activeSkill || l.target === activeSkill)
+          .flatMap((l) => [l.source, l.target]),
+      ])
+    : new Set<string>();
 
-  // ── SVG canvas dimensions ───────────────────────────────────────
-  const SVG_W = 1100
-  const SVG_H = 660
+  // ── Canvas momentum drag (premium tactile physics) ───────────────────────
+  const stateRef = useRef({ x: 0, y: 0, vx: 0, vy: 0 });
+  const dragging = useRef(false);
+  const lastPos = useRef({ x: 0, y: 0, t: 0 });
+  const rafId = useRef(0);
+
+  const applyTransform = useCallback(() => {
+    if (!canvasRef.current) return;
+    canvasRef.current.style.transform = `translate(${stateRef.current.x}px, ${stateRef.current.y}px)`;
+  }, []);
+
+  useEffect(() => {
+    const wrap = wrapRef.current;
+    if (!wrap) return;
+
+    const onPointerDown = (e: PointerEvent) => {
+      dragging.current = true;
+      wrap.setPointerCapture(e.pointerId);
+      lastPos.current = { x: e.clientX, y: e.clientY, t: Date.now() };
+      cancelAnimationFrame(rafId.current);
+      stateRef.current.vx = 0;
+      stateRef.current.vy = 0;
+    };
+
+    const onPointerMove = (e: PointerEvent) => {
+      if (!dragging.current) return;
+      const dx = e.clientX - lastPos.current.x;
+      const dy = e.clientY - lastPos.current.y;
+      const dt = Math.max(Date.now() - lastPos.current.t, 1);
+
+      stateRef.current.x += dx;
+      stateRef.current.y += dy;
+      if (!shouldRed) {
+        stateRef.current.vx = (dx / dt) * 16;
+        stateRef.current.vy = (dy / dt) * 16;
+      }
+      applyTransform();
+      lastPos.current = { x: e.clientX, y: e.clientY, t: Date.now() };
+    };
+
+    const onPointerUp = () => {
+      dragging.current = false;
+      if (shouldRed) return;
+
+      const momentum = () => {
+        stateRef.current.vx *= 0.91;
+        stateRef.current.vy *= 0.91;
+        stateRef.current.x += stateRef.current.vx;
+        stateRef.current.y += stateRef.current.vy;
+        applyTransform();
+
+        if (Math.abs(stateRef.current.vx) > 0.15 || Math.abs(stateRef.current.vy) > 0.15) {
+          rafId.current = requestAnimationFrame(momentum);
+        }
+      };
+      rafId.current = requestAnimationFrame(momentum);
+    };
+
+    wrap.addEventListener('pointerdown', onPointerDown);
+    wrap.addEventListener('pointermove', onPointerMove);
+    wrap.addEventListener('pointerup', onPointerUp);
+    wrap.addEventListener('pointercancel', onPointerUp);
+
+    return () => {
+      wrap.removeEventListener('pointerdown', onPointerDown);
+      wrap.removeEventListener('pointermove', onPointerMove);
+      wrap.removeEventListener('pointerup', onPointerUp);
+      wrap.removeEventListener('pointercancel', onPointerUp);
+      cancelAnimationFrame(rafId.current);
+    };
+  }, [applyTransform, shouldRed]);
+
+  // SVG dimensions
+  const SVG_W = 1100;
+  const SVG_H = 660;
 
   return (
     <section
       id="skills"
       ref={sectionRef}
-      aria-label="Skills Map"
-      className="section-gap"
+      className="py-[var(--space-section)]"
+      aria-label="Skills Architecture Map"
     >
-      <div className="max-w-7xl mx-auto px-6 lg:px-12">
-        <div className="mb-10">
-          <SectionLabel accent="primary" className="mb-4">
-            Skills Architecture
-          </SectionLabel>
-          <h2 className="text-headline font-bold mb-3" style={{ color: 'var(--text-primary)' }}>
-            The Toolbox
+      <div className="section-container">
+        {/* Header + filters */}
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6 }}
+          className="mb-10"
+        >
+          <SectionLabel accent="primary">Skills Architecture</SectionLabel>
+          <h2 className="section-title">
+            The Toolbox That Ships
           </h2>
-          <p className="text-body max-w-xl mb-2" style={{ color: 'var(--text-secondary)' }}>
-            Drag to explore. Click a node to see connections.
+          <p className="section-subtitle max-w-xl">
+            Drag the canvas. Click nodes to see connections. Built from real production usage.
           </p>
-          {/* Category legend */}
-          <div className="flex flex-wrap gap-3 mt-4">
-            {(Object.entries(CATEGORY_LABELS) as [Skill['category'], string][]).map(([cat, label]) => (
-              <span
+
+          {/* Category filters */}
+          <div className="flex flex-wrap gap-2 mt-8" role="group">
+            {(['All', ...Object.keys(CATEGORY_COLORS)] as const).map((cat) => (
+              <button
                 key={cat}
-                className="flex items-center gap-1.5 text-caption"
-                style={{ color: 'var(--text-muted)' }}
+                onClick={() => setActiveCategory(cat as any)}
+                className={`btn btn-sm transition-all ${
+                  activeCategory === cat ? 'btn-primary' : 'btn-ghost'
+                }`}
               >
-                <span
-                  className="w-2 h-2 rounded-full"
-                  style={{ background: CATEGORY_COLORS[cat] }}
-                />
-                {label}
-              </span>
+                {cat === 'All' ? 'All' : CATEGORY_LABELS[cat as Skill['category']]}
+              </button>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* Interactive Map */}
+        <div
+          ref={wrapRef}
+          className="relative mx-auto overflow-hidden rounded-[var(--radius-2xl)] border border-[var(--border-subtle)]"
+          style={{
+            width: '100%',
+            maxWidth: '100vw',
+            height: 'clamp(420px, 55vw, 660px)',
+            background: 'var(--bg-surface)',
+            cursor: 'grab',
+            userSelect: 'none',
+          }}
+        >
+          {/* Dopamine + noise overlay */}
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0"
+            style={{ background: 'var(--gradient-dopamine-full)', opacity: 0.45 }}
+          />
+
+          {/* Draggable canvas */}
+          <div
+            ref={canvasRef}
+            className="absolute left-1/2 top-1/2"
+            style={{
+              width: SVG_W,
+              height: SVG_H,
+              transformOrigin: 'top left',
+              marginLeft: -(SVG_W / 2),
+              marginTop: -(SVG_H / 2),
+              willChange: 'transform',
+            }}
+          >
+            {/* Connection lines */}
+            <svg
+              width={SVG_W}
+              height={SVG_H}
+              className="absolute inset-0 pointer-events-none"
+              aria-hidden="true"
+            >
+              {visibleLinks.map((link, i) => {
+                const a = NODE_POSITIONS[link.source];
+                const b = NODE_POSITIONS[link.target];
+                if (!a || !b) return null;
+
+                const isActive = activeSkill && activeConnectionIds.has(link.source) && activeConnectionIds.has(link.target);
+                const color = isActive
+                  ? CATEGORY_COLORS[SKILLS.find((s) => s.id === link.source)?.category ?? 'ml']
+                  : 'rgba(255,255,255,0.25)';
+
+                return (
+                  <line
+                    key={i}
+                    x1={a.x + 42}
+                    y1={a.y + 42}
+                    x2={b.x + 42}
+                    y2={b.y + 42}
+                    stroke={color}
+                    strokeWidth={isActive ? 2.5 : 1}
+                    strokeDasharray={isActive ? undefined : '3 3'}
+                    opacity={isActive ? 0.85 : 0.22}
+                    style={{ transition: 'all 0.2s ease' }}
+                  />
+                );
+              })}
+            </svg>
+
+            {/* Skill nodes */}
+            {visibleSkills.map((skill) => {
+              const pos = NODE_POSITIONS[skill.id];
+              if (!pos) return null;
+
+              const color = CATEGORY_COLORS[skill.category];
+              const isActive = activeSkill === skill.id;
+              const isRelated = activeConnectionIds.has(skill.id);
+              const isDimmed = activeSkill && !isRelated;
+
+              return (
+                <motion.button
+                  key={skill.id}
+                  onClick={() => setActiveSkill((prev) => (prev === skill.id ? null : skill.id))}
+                  className="absolute flex flex-col items-center gap-1.5 group"
+                  style={{
+                    left: pos.x,
+                    top: pos.y,
+                    width: 88,
+                    opacity: isDimmed ? 0.28 : 1,
+                  }}
+                  whileTap={{ scale: 0.92 }}
+                  animate={isActive ? { scale: 1.15 } : { scale: 1 }}
+                  transition={{ type: 'spring', stiffness: 280, damping: 18 }}
+                  aria-pressed={isActive}
+                  aria-label={`${skill.name} — ${CATEGORY_LABELS[skill.category]} — level ${skill.level}/5`}
+                >
+                  {/* Liquid glass node */}
+                  <div
+                    className="relative w-20 h-20 rounded-3xl border flex items-center justify-center transition-all duration-300 backdrop-blur-xl"
+                    style={{
+                      background: isActive ? `${color}15` : 'rgba(19,19,24,0.75)',
+                      borderColor: isActive ? color : isRelated ? `${color}60` : 'rgba(255,255,255,0.1)',
+                      boxShadow: isActive
+                        ? `0 0 28px -6px ${color}70, 0 8px 16px rgba(0,0,0,0.5)`
+                        : '0 4px 14px rgba(0,0,0,0.4)',
+                    }}
+                  >
+                    {/* Emoji icon */}
+                    <span className="text-3xl drop-shadow-sm">{skill.icon}</span>
+
+                    {/* Level progress */}
+                    <div className="absolute bottom-2 left-3 right-3 h-1 rounded-full bg-white/10 overflow-hidden">
+                      <div
+                        className="h-full rounded-full transition-all"
+                        style={{
+                          width: `${(skill.level / 5) * 100}%`,
+                          background: color,
+                        }}
+                      />
+                    </div>
+
+                    {/* Active ring */}
+                    {isActive && (
+                      <span
+                        className="absolute inset-0 rounded-3xl border border-current animate-ping"
+                        style={{ color, animationDuration: '1.6s' }}
+                      />
+                    )}
+                  </div>
+
+                  {/* Label */}
+                  <span
+                    className="text-[10px] font-medium tracking-tight"
+                    style={{ color: isActive ? color : 'var(--text-muted)' }}
+                  >
+                    {skill.name}
+                  </span>
+                </motion.button>
+              );
+            })}
+          </div>
+
+          {/* Active detail panel */}
+          <AnimatePresence>
+            {activeSkillData && (
+              <motion.div
+                initial={{ opacity: 0, y: 20, scale: 0.96 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 12, scale: 0.97 }}
+                className="absolute bottom-6 right-6 liquid-glass p-6 rounded-3xl max-w-xs shadow-[var(--shadow-liquid-3d)]"
+              >
+                <div className="flex justify-between items-start mb-4">
+                  <div>
+                    <div className="flex items-center gap-3">
+                      <span className="text-4xl">{activeSkillData.icon}</span>
+                      <div>
+                        <p className="font-bold text-lg" style={{ color: 'var(--text-primary)' }}>
+                          {activeSkillData.name}
+                        </p>
+                        <p className="text-xs uppercase tracking-[0.08em]" style={{ color: CATEGORY_COLORS[activeSkillData.category] }}>
+                          {CATEGORY_LABELS[activeSkillData.category]}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => setActiveSkill(null)}
+                    className="text-2xl leading-none text-[var(--text-muted)] hover:text-white transition-colors"
+                  >
+                    ×
+                  </button>
+                </div>
+
+                <p className="text-sm leading-relaxed mb-5" style={{ color: 'var(--text-secondary)' }}>
+                  {activeSkillData.description}
+                </p>
+
+                <div className="flex flex-wrap gap-1.5">
+                  {activeSkillData.usedIn?.map((pid) => {
+                    const proj = PROJECTS.find((p) => p.id === pid);
+                    return proj ? (
+                      <span
+                        key={pid}
+                        className="badge text-xs px-3 py-1"
+                        style={{
+                          background: 'var(--bg-elevated)',
+                          borderColor: 'var(--border-subtle)',
+                        }}
+                      >
+                        {proj.title}
+                      </span>
+                    ) : null;
+                  })}
+                  <span className="badge text-xs px-3 py-1" style={{ background: 'var(--bg-elevated)', borderColor: 'var(--border-subtle)' }}>
+                    Level {activeSkillData.level}/5
+                  </span>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Drag hint */}
+          <div
+            className="absolute bottom-6 left-6 flex items-center gap-2 text-xs pointer-events-none"
+            style={{ color: 'var(--text-muted)' }}
+          >
+            <span>↔︎ Drag canvas to explore</span>
+          </div>
+        </div>
+
+        {/* Certifications */}
+        <div className="mt-16">
+          <h3 className="mb-6 text-caption uppercase tracking-widest" style={{ color: 'var(--text-secondary)' }}>
+            Certifications & Continuous Learning
+          </h3>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-[var(--bento-gap)]">
+            {[
+              {
+                title: '17 Kaggle Micro-Courses',
+                org: 'Kaggle',
+                year: '2023',
+                url: 'https://www.kaggle.com/scardubu',
+              },
+              {
+                title: 'Machine Learning Crash Course',
+                org: 'Google',
+                year: '2022',
+                url: 'https://developers.google.com/machine-learning/crash-course',
+              },
+              {
+                title: 'Machine Learning Specialization',
+                org: 'Coursera • Andrew Ng',
+                year: '2022',
+                url: 'https://www.coursera.org/specializations/machine-learning',
+              },
+            ].map((cert, i) => (
+              <motion.a
+                key={i}
+                href={cert.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                initial={{ opacity: 0, y: 20 }}
+                animate={inView ? { opacity: 1, y: 0 } : {}}
+                transition={{ delay: 0.1 + i * 0.1 }}
+                className="liquid-glass rounded-[var(--radius-2xl)] p-6 group hover:shadow-[var(--shadow-liquid-3d-hover)] transition-all"
+              >
+                <p className="font-semibold group-hover:text-[var(--accent-primary)] transition-colors" style={{ color: 'var(--text-primary)' }}>
+                  {cert.title}
+                </p>
+                <p className="text-xs mt-2" style={{ color: 'var(--text-muted)' }}>
+                  {cert.org} • {cert.year}
+                </p>
+              </motion.a>
             ))}
           </div>
         </div>
       </div>
-
-      {/* ── Map container ── */}
-      <div
-        ref={wrapRef}
-        className="relative mx-auto"
-        style={{
-          width:    '100%',
-          maxWidth: '100vw',
-          height:   'clamp(420px, 55vw, 660px)',
-          overflow: 'hidden',
-          cursor:   'grab',
-          borderTop:    '1px solid var(--border-subtle)',
-          borderBottom: '1px solid var(--border-subtle)',
-          background:   'var(--bg-surface)',
-          userSelect:   'none',
-        }}
-      >
-        {/* Subtle noise + dopamine overlay */}
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-0"
-          style={{
-            background: 'var(--gradient-dopamine-full)',
-            opacity: 0.5,
-          }}
-        />
-
-        {/* Draggable canvas */}
-        <div
-          ref={canvasRef}
-          style={{
-            position:         'absolute',
-            width:            SVG_W,
-            height:           SVG_H,
-            transformOrigin:  'top left',
-            willChange:       'transform',
-            top:              '50%',
-            left:             '50%',
-            marginTop:        -(SVG_H / 2),
-            marginLeft:       -(SVG_W / 2),
-          }}
-        >
-          {/* ── SVG connection lines ── */}
-          <svg
-            width={SVG_W}
-            height={SVG_H}
-            className="absolute inset-0 pointer-events-none"
-            aria-hidden="true"
-            overflow="visible"
-          >
-            <defs>
-              <marker id="arrow" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto">
-                <path d="M0,0 L0,6 L6,3 z" fill="rgba(0,217,255,0.25)" />
-              </marker>
-            </defs>
-
-            {skills.map((skill) =>
-              skill.connections.map((connId) => {
-                const a = NODE_POSITIONS[skill.id]
-                const b = NODE_POSITIONS[connId]
-                if (!a || !b) return null
-
-                const isActive = activeSkill
-                  ? activeConnectionIds.has(skill.id) && activeConnectionIds.has(connId)
-                  : false
-
-                const opacity = activeSkill ? (isActive ? 0.7 : 0.06) : 0.15
-
-                return (
-                  <line
-                    key={`${skill.id}-${connId}`}
-                    x1={a.x + 44} y1={a.y + 20}
-                    x2={b.x + 44} y2={b.y + 20}
-                    stroke={isActive ? CATEGORY_COLORS[skill.category] : 'rgba(255,255,255,0.4)'}
-                    strokeWidth={isActive ? 1.5 : 1}
-                    strokeDasharray={isActive ? undefined : '4 4'}
-                    opacity={opacity}
-                    style={{ transition: 'opacity 200ms ease, stroke-width 200ms ease' }}
-                  />
-                )
-              })
-            )}
-          </svg>
-
-          {/* ── Skill nodes ── */}
-          {skills.map((skill) => {
-            const pos       = NODE_POSITIONS[skill.id]
-            if (!pos) return null
-            const color     = CATEGORY_COLORS[skill.category]
-            const isActive  = activeSkill === skill.id
-            const isRelated = activeConnectionIds.has(skill.id)
-            const isDimmed  = activeSkill && !isRelated
-
-            return (
-              <button
-                key={skill.id}
-                onClick={() => setActiveSkill(prev => prev === skill.id ? null : skill.id)}
-                className="absolute flex flex-col items-center gap-1.5 group"
-                style={{
-                  left:   pos.x,
-                  top:    pos.y,
-                  width:  88,
-                  opacity: isDimmed ? 0.25 : 1,
-                  transition: 'opacity 200ms ease, transform 200ms var(--ease-spring)',
-                  transform: isActive ? 'scale(1.12)' : undefined,
-                  zIndex: isActive ? 10 : undefined,
-                }}
-                aria-pressed={isActive}
-                aria-label={`${skill.name} — level ${skill.level} of 5, ${CATEGORY_LABELS[skill.category]}`}
-              >
-                {/* Node pill */}
-                <div
-                  className="relative flex flex-col items-center justify-center w-16 h-16 rounded-2xl border transition-all duration-200"
-                  style={{
-                    background: isActive
-                      ? `${color}1A`
-                      : 'rgba(19,19,24,0.7)',
-                    borderColor: isActive
-                      ? color
-                      : isRelated
-                        ? `${color}50`
-                        : 'rgba(255,255,255,0.08)',
-                    backdropFilter: 'blur(16px)',
-                    boxShadow: isActive
-                      ? `0 0 20px -4px ${color}60, 0 4px 12px rgba(0,0,0,0.4)`
-                      : '0 2px 8px rgba(0,0,0,0.35)',
-                  }}
-                >
-                  {/* Level fill bar */}
-                  <div
-                    className="absolute bottom-1.5 left-2 right-2 h-0.5 rounded-full"
-                    style={{ background: 'rgba(255,255,255,0.08)' }}
-                  >
-                    <div
-                      className="h-full rounded-full"
-                      style={{
-                        width: `${(skill.level / 5) * 100}%`,
-                        background: color,
-                      }}
-                    />
-                  </div>
-
-                  {/* Skill initials */}
-                  <span
-                    className="font-mono font-bold text-xs"
-                    style={{ color: isActive ? color : 'var(--text-secondary)' }}
-                  >
-                    {skill.name.slice(0, 2).toUpperCase()}
-                  </span>
-
-                  {/* Active pulse ring */}
-                  {isActive && (
-                    <span
-                      className="absolute inset-0 rounded-2xl animate-ping"
-                      style={{
-                        border: `1px solid ${color}`,
-                        animationDuration: '1.4s',
-                      }}
-                      aria-hidden="true"
-                    />
-                  )}
-                </div>
-
-                {/* Label */}
-                <span
-                  className="text-[10px] font-medium text-center leading-tight"
-                  style={{ color: isActive ? color : 'var(--text-muted)' }}
-                >
-                  {skill.name}
-                </span>
-              </button>
-            )
-          })}
-        </div>
-
-        {/* Active skill detail overlay */}
-        {activeSkillData && (
-          <div
-            className="absolute bottom-4 right-4 liquid-glass p-4 rounded-2xl max-w-[260px]"
-            style={{ zIndex: 20 }}
-          >
-            <p className="text-caption mb-1" style={{ color: CATEGORY_COLORS[activeSkillData.category] }}>
-              {CATEGORY_LABELS[activeSkillData.category]}
-            </p>
-            <p className="text-base font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>
-              {activeSkillData.name}
-            </p>
-            <div className="flex items-center gap-1 mb-3">
-              {Array.from({ length: 5 }).map((_, i) => (
-                <div
-                  key={i}
-                  className="h-1 rounded-full flex-1"
-                  style={{
-                    background: i < activeSkillData.level
-                      ? CATEGORY_COLORS[activeSkillData.category]
-                      : 'rgba(255,255,255,0.08)',
-                  }}
-                />
-              ))}
-              <span className="text-caption ml-1">
-                {activeSkillData.level}/5
-              </span>
-            </div>
-            <p className="text-caption">
-              Connects to: {activeSkillData.connections
-                .map(id => skills.find(s => s.id === id)?.name)
-                .filter(Boolean)
-                .join(', ')}
-            </p>
-          </div>
-        )}
-
-        {/* Drag hint — fades out after first interaction */}
-        <div
-          className="absolute bottom-4 left-4 flex items-center gap-2 text-caption pointer-events-none"
-          style={{ color: 'var(--text-muted)' }}
-          aria-hidden="true"
-        >
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-            <path d="M7 1v12M1 7h12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-          </svg>
-          Drag to explore
-        </div>
-      </div>
     </section>
-  )
+  );
 }
