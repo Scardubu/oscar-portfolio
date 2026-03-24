@@ -9,29 +9,31 @@ describe("Hero Component", () => {
 
     expect(
       screen.getByRole("heading", {
-        name: /Oscar Ndugbu — Full-Stack ML Engineer shipping production AI systems/i,
+        name: /Hey, I’m Oscar 👋/i,
       })
     ).toBeInTheDocument();
     expect(
-      screen.getByText(/I design and ship end-to-end ML products/i)
+      screen.getByText(
+        /I architect production AI systems that distill frontier intelligence into elegant, trusted tools people rely on every single day/i
+      )
     ).toBeInTheDocument();
   });
 
   it("renders all 4 hero metrics", () => {
     render(<Hero />);
 
-    expect(screen.getByText("Production users")).toBeInTheDocument();
-    expect(screen.getByText("Model accuracy")).toBeInTheDocument();
-    expect(screen.getByText("System uptime")).toBeInTheDocument();
-    expect(screen.getByText("Years shipping")).toBeInTheDocument();
+    expect(screen.getByText("Global Impact")).toBeInTheDocument();
+    expect(screen.getByText("AI Precision")).toBeInTheDocument();
+    expect(screen.getByText("Unwavering Reliability")).toBeInTheDocument();
+    expect(screen.getByText("Built for Scale")).toBeInTheDocument();
   });
 
   it("renders CTA buttons with correct text", () => {
     render(<Hero />);
 
-    expect(screen.getByText("Explore shipped work")).toBeInTheDocument();
+    expect(screen.getByText("Explore selected systems")).toBeInTheDocument();
     expect(screen.getByText("Let's Talk")).toBeInTheDocument();
-    expect(screen.getByText("Download CV")).toBeInTheDocument();
+    expect(screen.getByText("Bookmark for updates")).toBeInTheDocument();
   });
 
   it("renders headshot image with correct alt text", () => {
@@ -55,9 +57,9 @@ describe("Hero Component", () => {
 
     expect(screen.getByText("Nigeria NG • Remote-First")).toBeInTheDocument();
     expect(screen.getByText(/SabiScore/i)).toBeInTheDocument();
-    expect(screen.getByText(/Production proof/i)).toBeInTheDocument();
+    expect(screen.getByText(/SabiScore flagship platform/i)).toBeInTheDocument();
     expect(
-      screen.getByText(/Python • TypeScript • FastAPI • Next\.js • MLOps/i)
+      screen.getByText(/Open to Senior ML \/ Full-Stack Roles & Consulting/i)
     ).toBeInTheDocument();
   });
 });

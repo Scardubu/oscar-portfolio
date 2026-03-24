@@ -69,7 +69,7 @@ export function LiveBuildFeed() {
             combinedActivities.push({
               id: "metric-today",
               type: "metric",
-              title: `SabiScore served ${metricsData.todayPredictions.toLocaleString()} predictions today`,
+              title: "SabiScore is serving fresh match intelligence right now",
               timestamp: new Date().toISOString(),
               icon: TrendingUp,
               color: "text-green-400",
@@ -100,15 +100,15 @@ export function LiveBuildFeed() {
     const then = new Date(timestamp);
     const seconds = Math.floor((now.getTime() - then.getTime()) / 1000);
 
-    if (seconds < 60) return "just now";
-    if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
-    if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`;
-    return `${Math.floor(seconds / 86400)}d ago`;
+    if (seconds < 60) return "Fresh now";
+    if (seconds < 3600) return "Moments ago";
+    if (seconds < 86400) return "Earlier today";
+    return "Recently";
   };
 
   if (isLoading) {
     return (
-      <div className="glass-panel rounded-2xl border border-white/10 p-4">
+      <div className="liquid-glass mouse-refraction rounded-[2rem] border border-white/10 p-4">
         <div className="mb-3 flex items-center gap-2">
           <Activity className="h-5 w-5 text-accent-primary" />
           <h3 className="text-sm font-semibold text-white">Live Build Activity</h3>
@@ -129,10 +129,10 @@ export function LiveBuildFeed() {
   }
 
   return (
-    <div className="glass-panel rounded-2xl border border-white/10 p-4">
+      <div className="liquid-glass mouse-refraction rounded-[2rem] border border-white/10 p-4">
       <div className="mb-3 flex items-center gap-2">
         <Activity className="h-5 w-5 text-accent-primary" />
-        <h3 className="text-sm font-semibold text-white">Live Build Activity</h3>
+          <h3 className="text-sm font-semibold text-white">Live Build Activity</h3>
         <span className="ml-auto flex items-center gap-1">
           <span className="relative flex h-2 w-2">
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
@@ -151,7 +151,7 @@ export function LiveBuildFeed() {
             return (
               <div
                 key={activity.id}
-                className="flex items-start gap-3 rounded-lg p-2 transition hover:bg-white/5"
+                  className="flex items-start gap-3 rounded-2xl p-3 transition hover:bg-white/5"
               >
                 <Icon className={`mt-0.5 h-4 w-4 flex-shrink-0 ${activity.color}`} />
                 <div className="min-w-0 flex-1">

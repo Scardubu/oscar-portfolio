@@ -49,7 +49,7 @@ export function ContactModal({ isOpen, onClose }: ContactModalProps) {
 
       if (response.ok) {
         trackEvent("Contact", "Form Submit", data.projectType);
-        toast.success("Message sent! I'll get back to you within 24 hours.", {
+        toast.success("Message sent! I’ll follow up soon with the best next step.", {
           duration: 5000,
           icon: "🚀",
         });
@@ -105,7 +105,7 @@ export function ContactModal({ isOpen, onClose }: ContactModalProps) {
                   </h2>
                   <p className="mt-1 text-sm text-slate-400">
                     Tell me about the use case, and I&apos;ll reply with concrete
-                    next steps within 24 hours.
+                    next steps as soon as I can.
                   </p>
                 </div>
                 <button
