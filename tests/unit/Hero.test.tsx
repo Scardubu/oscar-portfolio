@@ -9,12 +9,12 @@ describe("Hero Component", () => {
 
     expect(
       screen.getByRole("heading", {
-        name: /Hey, I’m Oscar 👋/i,
+        name: /Full-Stack AI Engineer for reliable AI products and platform systems/i,
       })
     ).toBeInTheDocument();
     expect(
       screen.getByText(
-        /I architect production AI systems that distill frontier intelligence into elegant, trusted tools people rely on every single day/i
+        /I design and ship AI products, platform workflows, and full-stack systems that stay clear under real operating pressure/i
       )
     ).toBeInTheDocument();
   });
@@ -31,9 +31,9 @@ describe("Hero Component", () => {
   it("renders CTA buttons with correct text", () => {
     render(<Hero />);
 
-    expect(screen.getByText("Explore selected systems")).toBeInTheDocument();
-    expect(screen.getByText("Let's Talk")).toBeInTheDocument();
-    expect(screen.getByText("Bookmark for updates")).toBeInTheDocument();
+    expect(screen.getByText("Review selected work")).toBeInTheDocument();
+    expect(screen.getByText("Start a conversation")).toBeInTheDocument();
+    expect(screen.getByText("Save portfolio link")).toBeInTheDocument();
   });
 
   it("renders headshot image with correct alt text", () => {
@@ -56,10 +56,10 @@ describe("Hero Component", () => {
     render(<Hero />);
 
     expect(screen.getByText("Nigeria NG • Remote-First")).toBeInTheDocument();
-    expect(screen.getByText(/SabiScore/i)).toBeInTheDocument();
-    expect(screen.getByText(/SabiScore flagship platform/i)).toBeInTheDocument();
+    expect(screen.getByText(/How I work/i)).toBeInTheDocument();
+    expect(screen.getByText(/Senior ownership across product, platform, and model behavior/i)).toBeInTheDocument();
     expect(
-      screen.getByText(/Open to Senior ML \/ Full-Stack Roles & Consulting/i)
+      screen.getByText(/Open to senior roles and high-impact work/i)
     ).toBeInTheDocument();
   });
 });

@@ -12,12 +12,14 @@ export function Footer() {
         <div className="flex flex-col gap-8 md:flex-row md:items-start md:justify-between">
           <div className="space-y-3">
             <p className="text-xl font-bold text-white lg:text-2xl">Oscar Ndugbu</p>
-            <p className="text-base text-gray-400">Full-Stack ML Engineer</p>
+            <p className="text-base text-gray-400">Full-Stack AI Engineer • Platform Architect</p>
             <div className="flex items-center gap-2 text-sm text-gray-500">
               <MapPin className="h-4 w-4 text-green-500" />
               <span>Nigeria 🇳🇬 • Remote-First</span>
             </div>
-            <p className="text-sm italic text-cyan-400/80">&quot;Ship it, then iterate.&quot;</p>
+            <p className="text-sm italic text-cyan-400/80">
+              Production systems, clear product thinking, calm execution.
+            </p>
           </div>
 
           <div className="flex flex-wrap items-center gap-4">
@@ -64,7 +66,7 @@ export function Footer() {
           <p className="flex items-center gap-1 text-sm text-gray-500">
             © {currentYear} Oscar Ndugbu. Built with <Heart className="h-4 w-4 text-red-500" /> in Naija.
           </p>
-          <p className="text-xs text-gray-600">Next.js 16 • React 19 • Tailwind CSS 4</p>
+          <p className="text-xs text-gray-600">Next.js 15 • React 19 • Tailwind CSS 4</p>
         </div>
       </div>
     </footer>

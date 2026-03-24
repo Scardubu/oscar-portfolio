@@ -10,9 +10,12 @@ const PROJECT_STORY: Record<
   string,
   {
     eyebrow: string;
-    headline: string;
-    summary: string;
-    surface: string;
+    thesis: string;
+    problem: string;
+    context: string;
+    approach: string;
+    keyDecision: string;
+    tradeoff: string;
     outcome: string;
     accent: "cyan" | "violet" | "teal";
     span: string;
@@ -20,31 +23,37 @@ const PROJECT_STORY: Record<
 > = {
   sabiscore: {
     eyebrow: "Flagship AI platform",
-    headline: "A sports intelligence product that turns live signal into calm, confident decisions.",
-    summary:
-      "SabiScore blends model rigor, product storytelling, and sharp interface design into an experience people can trust when every moment feels time-sensitive.",
-    surface: "Realtime predictions, elegant decision support, platform-grade flow",
-    outcome: "Engineered to feel fast, composed, and reliable under pressure.",
+    thesis: "A sports intelligence product shaped around fast, trustworthy decision-making.",
+    problem: "Sports prediction products often create noise instead of confidence when users need a clear call.",
+    context: "The challenge was to make live model output feel usable, not overwhelming, in a time-sensitive setting.",
+    approach: "Built a full-stack ML product with calm interface language, explicit confidence framing, and platform-grade responsiveness.",
+    keyDecision: "Prioritized legibility and product trust over exposing every raw model detail in the primary flow.",
+    tradeoff: "Chose a narrower, more opinionated surface so the experience stayed clear under pressure.",
+    outcome: "The result feels like a real product surface rather than an ML experiment dressed up for demo day.",
     accent: "cyan",
     span: "lg:col-span-7",
   },
   hashablanca: {
     eyebrow: "Privacy-first infrastructure",
-    headline: "A distribution system where cryptographic trust and product clarity stay in the same room.",
-    summary:
-      "Hashablanca reframes blockchain operations as a premium operator surface, balancing privacy-preserving architecture with a usable workflow teams can actually adopt.",
-    surface: "Multi-chain orchestration, privacy logic, operational tooling",
-    outcome: "Complex coordination expressed through a disciplined product lens.",
+    thesis: "A token distribution system where privacy requirements and operator clarity were treated as one design problem.",
+    problem: "Blockchain distribution workflows can become brittle, opaque, and risky once privacy and multi-chain coordination enter the picture.",
+    context: "Operators needed a workflow that respected cryptographic constraints without turning everyday use into friction.",
+    approach: "Designed a backend-heavy orchestration layer with a clearer operating surface for reviewing, validating, and executing distribution steps.",
+    keyDecision: "Made operator confidence the product goal, not just successful chain execution in the background.",
+    tradeoff: "Accepted more deliberate workflow steps to reduce ambiguity around privacy, compliance, and execution state.",
+    outcome: "The system communicates disciplined engineering judgment in a domain where trust is usually hard to earn.",
     accent: "violet",
     span: "lg:col-span-5",
   },
   "ai-consulting": {
     eyebrow: "Advisory and integration",
-    headline: "A consulting layer that helps teams move from AI curiosity to production confidence.",
-    summary:
-      "This engagement pattern shows Oscar as both systems thinker and translator — someone who can guide architecture, shape the interface, and keep implementation grounded in business reality.",
-    surface: "LLM integration, workflow design, stakeholder alignment",
-    outcome: "High-context technical guidance with a premium execution mindset.",
+    thesis: "A consulting pattern for teams that need AI work translated into production decisions, not just prototypes.",
+    problem: "Many teams know they should use AI, but not how to turn that ambition into a reliable product or workflow.",
+    context: "The work required technical depth, stakeholder translation, and a path from experimentation to something worth maintaining.",
+    approach: "Scoped the problem, mapped where AI actually changed the workflow, and translated that into architecture, interface, and implementation choices.",
+    keyDecision: "Kept the work grounded in operating reality rather than leading with novelty or model hype.",
+    tradeoff: "Moved slower upfront on framing so later engineering decisions stayed aligned with the business case.",
+    outcome: "This proves an ability to guide technical direction while keeping communication clear for non-specialist stakeholders.",
     accent: "teal",
     span: "lg:col-span-5",
   },
@@ -85,27 +94,53 @@ export function BentoDenseGrid2026() {
                 </div>
 
                 <p className="text-pretty text-sm leading-7 text-[var(--text-secondary)] md:text-base">
-                  {story.headline}
+                  {story.thesis}
                 </p>
 
                 <div className="grid gap-3 md:grid-cols-2">
                   <div className="bento-2026-panel">
-                    <p className="bento-2026-label">System surface</p>
+                    <p className="bento-2026-label">Problem</p>
                     <p className="mt-2 text-sm leading-7 text-[var(--text-secondary)]">
-                      {story.surface}
+                      {story.problem}
                     </p>
                   </div>
                   <div className="bento-2026-panel">
-                    <p className="bento-2026-label">Why it matters</p>
+                    <p className="bento-2026-label">Context</p>
+                    <p className="mt-2 text-sm leading-7 text-[var(--text-secondary)]">
+                      {story.context}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="grid gap-3 md:grid-cols-2">
+                  <div className="bento-2026-panel">
+                    <p className="bento-2026-label">Approach</p>
+                    <p className="mt-2 text-sm leading-7 text-[var(--text-secondary)]">
+                      {story.approach}
+                    </p>
+                  </div>
+                  <div className="bento-2026-panel">
+                    <p className="bento-2026-label">Key decision</p>
+                    <p className="mt-2 text-sm leading-7 text-[var(--text-secondary)]">
+                      {story.keyDecision}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="grid gap-3 md:grid-cols-2">
+                  <div className="bento-2026-panel">
+                    <p className="bento-2026-label">Tradeoff</p>
+                    <p className="mt-2 text-sm leading-7 text-[var(--text-secondary)]">
+                      {story.tradeoff}
+                    </p>
+                  </div>
+                  <div className="bento-2026-panel">
+                    <p className="bento-2026-label">Outcome</p>
                     <p className="mt-2 text-sm leading-7 text-[var(--text-secondary)]">
                       {story.outcome}
                     </p>
                   </div>
                 </div>
-
-                <p className="text-sm leading-7 text-[var(--text-secondary)] md:text-base">
-                  {story.summary}
-                </p>
 
                 <div className="flex flex-wrap gap-2">
                   {project.techStack.slice(0, 5).map((tech) => (
@@ -154,19 +189,19 @@ export function BentoDenseGrid2026() {
         <LiquidGlassCard variant="cyan" interactive className="bento-2026-card h-full">
           <div className="bento-2026-inner justify-between">
             <div className="space-y-3">
-              <p className="bento-2026-eyebrow">Recruiter takeaway</p>
+              <p className="bento-2026-eyebrow">What the work proves</p>
               <h3 className="text-balance text-2xl font-semibold tracking-tight text-[var(--text-primary)] md:text-3xl">
-                Oscar operates where frontier AI, resilient platforms, and premium product craft converge.
+                The portfolio is easiest to trust when the work shows the decisions behind the polish.
               </h3>
               <p className="text-sm leading-7 text-[var(--text-secondary)] md:text-base">
-                The dense grid is intentional: every tile communicates a different dimension of seniority — system design, taste, technical breadth, and the ability to shape products people keep returning to.
+                These projects are framed to answer the questions strong hiring teams actually ask: can he frame the problem, make tradeoffs, and ship something that feels production-ready?
               </p>
             </div>
 
             <div className="bento-2026-panel">
-              <p className="bento-2026-label">Conversion cue</p>
+              <p className="bento-2026-label">Shareable takeaway</p>
               <p className="mt-2 text-sm leading-7 text-[var(--text-secondary)]">
-                If this is the kind of engineering leadership your team needs, the next move should feel obvious: start the conversation while the signal is still fresh.
+                Oscar is a product-minded AI engineer who can own architecture, interface quality, and execution without creating confusion around the work.
               </p>
             </div>
           </div>

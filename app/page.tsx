@@ -2,8 +2,8 @@
 
 import { type ReactNode, useState } from "react";
 import {
-  Activity,
-  Blocks,
+  BriefcaseBusiness,
+  CheckCheck,
   ShieldCheck,
   Users,
 } from "lucide-react";
@@ -30,26 +30,30 @@ const DynamicSkillsSection = dynamic(
   { ssr: false }
 );
 
-const RECRUITER_SIGNALS = [
+const POSITIONING_SYSTEM = [
   {
-    label: "Global Impact",
-    value: "Product thinking grounded in real operating contexts and built to travel well across markets.",
+    label: "One-line",
+    value:
+      "Full-Stack AI Engineer who turns complex AI and platform work into products teams can actually use and explain.",
     icon: Users,
   },
   {
-    label: "AI Precision",
-    value: "Research-grade intelligence shaped into interfaces that make hard decisions feel calm and clear.",
-    icon: Activity,
+    label: "Core strengths",
+    value:
+      "Applied ML, product judgment, platform architecture, and the communication discipline to keep hard decisions legible.",
+    icon: BriefcaseBusiness,
   },
   {
-    label: "Unwavering Reliability",
-    value: "Systems designed for trust, observability, and graceful behavior when the stakes feel high.",
+    label: "Differentiation",
+    value:
+      "Oscar is strongest where user experience, system reliability, and model behavior have to work as one system.",
     icon: ShieldCheck,
   },
   {
-    label: "Built for Scale",
-    value: "Architecture, platform discipline, and UX cohesion that hold together as the surface grows.",
-    icon: Blocks,
+    label: "Why it is credible",
+    value:
+      "The portfolio shows shipped surfaces, explicit tradeoffs, and a calm product point of view instead of inflated claims.",
+    icon: CheckCheck,
   },
 ] as const;
 
@@ -134,13 +138,13 @@ export default function Home() {
 
             <nav className="hidden items-center gap-6 text-sm text-[var(--text-secondary)] md:flex">
               <a href="#projects" className="hero-nav-link">
-                Projects
+                Work
               </a>
               <a href="#skills" className="hero-nav-link">
                 Skills
               </a>
               <a href="#experience" className="hero-nav-link">
-                Experience
+                Signal
               </a>
               <a href="#contact" className="hero-nav-link">
                 Contact
@@ -155,7 +159,7 @@ export default function Home() {
                 }}
                 className="hero-nav-cta hero-nav-cta-desktop min-h-11 rounded-full px-5 font-semibold text-black shadow-lg shadow-cyan-500/20 transition-transform hover:scale-[1.02]"
               >
-                Let&apos;s Talk
+                Start a conversation
               </Button>
               <ThemeToggle variant="inline" />
               <Button
@@ -165,7 +169,7 @@ export default function Home() {
                 }}
                 className="hero-nav-cta hero-nav-cta-mobile min-h-11 rounded-full px-4 font-semibold text-black shadow-lg shadow-cyan-500/20"
               >
-                Talk
+                Contact
               </Button>
             </div>
           </div>
@@ -183,8 +187,15 @@ export default function Home() {
         </section>
 
         <section className="pb-14 md:pb-20">
+          <div className="mb-6 md:mb-10">
+            <SectionHeading
+              kicker="Positioning"
+              title="The fast explanation hiring teams should be able to repeat."
+              copy="This section makes the portfolio easy to share internally: what Oscar does, where he is strongest, and why the signal feels credible."
+            />
+          </div>
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
-            {RECRUITER_SIGNALS.map((signal, index) => {
+            {POSITIONING_SYSTEM.map((signal, index) => {
               const Icon = signal.icon;
 
               return (
@@ -198,7 +209,7 @@ export default function Home() {
                       <span className="rounded-full border border-white/10 bg-white/5 p-2 text-[var(--accent-primary)]">
                         <Icon className="h-4 w-4" />
                       </span>
-                      <span className="text-xs uppercase tracking-[0.22em] text-[var(--text-muted)]">
+                      <span className="text-xs uppercase tracking-[0.22em] text-[var(--accent-primary)]">
                         {signal.label}
                       </span>
                     </div>
@@ -216,8 +227,8 @@ export default function Home() {
           <div className="mb-6 md:mb-10">
             <SectionHeading
               kicker="Selected work"
-              title="Premium systems that feel like products, not prototypes."
-              copy="These flagship builds make Oscar’s range obvious at a glance: product strategy, platform architecture, ML systems thinking, and the discipline to ship polished experiences recruiters can trust."
+              title="Projects framed around the decisions behind the build."
+              copy="Each project is presented as proof: the problem, the context, the approach, the key tradeoffs, and the outcome teams should care about."
             />
           </div>
           <BentoDenseGrid2026 />
@@ -227,8 +238,8 @@ export default function Home() {
           <div className="mb-6 md:mb-10">
             <SectionHeading
               kicker="Capabilities"
-              title="A deep technical surface with a product architect’s eye."
-              copy="The skills map stays interactive and tactile, but the story remains simple: Oscar moves fluidly from research and backend systems to product polish, communication, and platform resilience."
+              title="A technical range that still reads clearly."
+              copy="The skills surface is broad, but the takeaway should stay simple: Oscar can move from ML and backend systems into product polish, communication, and platform reliability without losing coherence."
             />
           </div>
           <DynamicSkillsSection />
@@ -238,8 +249,8 @@ export default function Home() {
           <div className="mb-6 md:mb-10">
             <SectionHeading
               kicker="Live signal"
-              title="A portfolio that feels current, active, and worth revisiting."
-              copy="Recruiters should feel the rhythm of ongoing work immediately: recent engineering motion, a strong operational point of view, and an obvious invitation to bookmark the site and come back."
+              title="Recent signal instead of stale claims."
+              copy="This section exists to reduce doubt: current engineering motion, recent writing, and a visible working rhythm that makes the portfolio feel maintained."
             />
           </div>
           <div className="grid gap-6 lg:grid-cols-12">
@@ -248,22 +259,22 @@ export default function Home() {
                 <div className="flex h-full flex-col gap-6">
                   <div className="space-y-3">
                     <p className="text-sm font-medium uppercase tracking-[0.24em] text-[var(--accent-primary)]">
-                      Recruiter lens
+                      Hiring lens
                     </p>
                     <h3 className="text-2xl font-semibold tracking-tight text-[var(--text-primary)]">
-                      Clear authority, live motion, immediate next step.
+                      Clear ownership, visible activity, obvious next step.
                     </h3>
                     <p className="text-sm leading-7 text-[var(--text-secondary)] md:text-base">
-                      This experience is designed to answer the questions strong hiring teams ask in seconds: Can he ship? Can he communicate? Can he turn advanced AI into a product people want to keep using?
+                      Strong hiring teams are usually screening for the same things: can he ship, can he communicate, and can he keep product quality high while handling technical complexity?
                     </p>
                   </div>
 
                   <div className="rounded-[1.5rem] border border-white/10 bg-white/[0.03] p-5">
                     <p className="text-sm font-medium uppercase tracking-[0.22em] text-[var(--text-muted)]">
-                      Bookmark prompt
+                      Share prompt
                     </p>
                     <p className="mt-3 text-sm leading-7 text-[var(--text-secondary)] md:text-base">
-                      Save this portfolio for future openings, consulting conversations, and follow-up loops — it is built to evolve like a living product surface.
+                      If the fit looks strong, this should be easy to forward internally: product-minded AI engineer, strong systems judgment, polished execution.
                     </p>
                   </div>
 
@@ -271,7 +282,7 @@ export default function Home() {
                     onClick={() => setIsContactModalOpen(true)}
                     className="hero-primary-cta self-start rounded-full px-5 py-2.5 font-semibold text-black"
                   >
-                    Open contact flow
+                    Discuss a role or project
                   </Button>
                 </div>
               </GlassCard>
@@ -286,8 +297,8 @@ export default function Home() {
           <div className="mb-6 md:mb-10">
             <SectionHeading
               kicker="Contact"
-              title="Open to Senior ML / Full-Stack Roles &amp; Consulting"
-              copy="The final interaction stays simple on purpose: a direct way to start the conversation, framed with the same premium product feel as the rest of the page."
+              title="Open to senior roles and high-impact work"
+              copy="The close is intentionally direct: a clear way to start a conversation about full-time roles, consulting, or product work that needs both technical depth and product judgment."
             />
           </div>
           <div className="grid gap-6 lg:grid-cols-12">
@@ -299,10 +310,10 @@ export default function Home() {
                 <div className="flex h-full flex-col gap-5">
                   <div className="space-y-3">
                     <h3 className="text-xl font-semibold tracking-tight text-[var(--text-primary)]">
-                      Reach out with intent
+                      Best-fit conversations
                     </h3>
                     <p className="text-sm leading-7 text-[var(--text-secondary)]">
-                      Use the form for roles, product partnerships, advisory work, or consulting engagements that need both deep ML judgment and elegant full-stack execution.
+                      Reach out for roles and projects that need ownership across architecture, applied AI, and interface quality.
                     </p>
                   </div>
 
@@ -322,7 +333,7 @@ export default function Home() {
                       onClick={() => setIsContactModalOpen(true)}
                       className="rounded-full bg-gradient-accent px-5 py-2.5 font-semibold text-black"
                     >
-                      Open contact modal
+                      Open contact form
                     </Button>
                     <Button variant="outline" asChild>
                       <a href="mailto:scardubu@gmail.com">Email directly</a>
