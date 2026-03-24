@@ -122,7 +122,7 @@ export default function Home() {
               <div className="leading-tight">
                 <div className="text-sm font-semibold">Oscar Dubu</div>
                 <div className="text-xs text-[var(--text-secondary)]">
-                  ML Engineer • Product systems
+                  ML Engineer • Product-focused
                 </div>
               </div>
             </a>

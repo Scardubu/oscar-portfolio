@@ -6,6 +6,10 @@ interface LiquidGlassRefractionSVGProps {
   className?: string;
 }
 
+const REFRACTION_BASE_FREQUENCY = "0.007 0.016";
+const REFRACTION_SCALE = "26";
+const REFRACTION_BLUR = "0.65";
+
 export function LiquidGlassRefractionSVG({
   className,
 }: LiquidGlassRefractionSVGProps) {
@@ -39,7 +43,7 @@ export function LiquidGlassRefractionSVG({
         >
           <feTurbulence
             type="fractalNoise"
-            baseFrequency="0.007 0.016"
+            baseFrequency={REFRACTION_BASE_FREQUENCY}
             numOctaves="2"
             seed="7"
             result="noise"
@@ -47,11 +51,11 @@ export function LiquidGlassRefractionSVG({
           <feDisplacementMap
             in="SourceGraphic"
             in2="noise"
-            scale="26"
+            scale={REFRACTION_SCALE}
             xChannelSelector="R"
             yChannelSelector="B"
           />
-          <feGaussianBlur stdDeviation="0.65" />
+          <feGaussianBlur stdDeviation={REFRACTION_BLUR} />
         </filter>
       </defs>
 

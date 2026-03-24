@@ -19,6 +19,10 @@ interface HeroProps {
   onOpenContact?: () => void;
 }
 
+const HERO_EASE: [number, number, number, number] = [0.16, 1, 0.3, 1];
+const METRIC_STAGGER_BASE_DELAY = 0.48;
+const METRIC_STAGGER_INCREMENT = 0.08;
+
 const HERO_METRICS = [
   {
     value: "350+",
@@ -41,6 +45,10 @@ const HERO_METRICS = [
     detail: "Full-stack AI, MLOps, and product engineering delivery.",
   },
 ] as const;
+
+function revealTransition(delay: number, duration = 0.7) {
+  return { duration, delay, ease: HERO_EASE };
+}
 
 export function Hero({ onOpenContact }: HeroProps = {}) {
   const shouldReduceMotion = useReducedMotion();
@@ -69,7 +77,7 @@ export function Hero({ onOpenContact }: HeroProps = {}) {
           <motion.div
             initial={shouldReduceMotion ? false : { opacity: 0, y: 24 }}
             animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
-            transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
+            transition={revealTransition(0, 0.75)}
             className="space-y-7 lg:max-w-[42rem]"
           >
             <div className="flex flex-wrap items-center gap-3">
@@ -87,15 +95,15 @@ export function Hero({ onOpenContact }: HeroProps = {}) {
               <motion.h1
                 initial={shouldReduceMotion ? false : { opacity: 0, y: 18 }}
                 animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
-                transition={{
-                  duration: 0.7,
-                  delay: 0.1,
-                  ease: [0.16, 1, 0.3, 1],
-                }}
+                transition={revealTransition(0.1)}
                 className="hero-headline max-w-4xl text-balance font-semibold tracking-tight text-[var(--text-primary)]"
               >
                 Hey, I&apos;m Oscar{" "}
-                <span className="inline-block origin-[70%_70%] motion-safe:animate-[oscar-wave_3.6s_ease-in-out_infinite]">
+                <span
+                  aria-label="waving hand"
+                  role="img"
+                  className="inline-block origin-[70%_70%] motion-safe:animate-[oscar-wave_3.6s_ease-in-out_infinite]"
+                >
                   👋
                 </span>
               </motion.h1>
@@ -103,11 +111,7 @@ export function Hero({ onOpenContact }: HeroProps = {}) {
               <motion.div
                 initial={shouldReduceMotion ? false : { opacity: 0, y: 18 }}
                 animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
-                transition={{
-                  duration: 0.7,
-                  delay: 0.18,
-                  ease: [0.16, 1, 0.3, 1],
-                }}
+                transition={revealTransition(0.18)}
                 className="max-w-2xl space-y-4 text-pretty text-base leading-8 text-[var(--text-secondary)] md:text-lg"
               >
                 <p>
@@ -129,11 +133,7 @@ export function Hero({ onOpenContact }: HeroProps = {}) {
             <motion.article
               initial={shouldReduceMotion ? false : { opacity: 0, y: 24 }}
               animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
-              transition={{
-                duration: 0.75,
-                delay: 0.24,
-                ease: [0.16, 1, 0.3, 1],
-              }}
+              transition={revealTransition(0.24, 0.75)}
               className="hero-proof-card liquid-glass liquid-glass-cyan"
             >
               <div className="flex items-start justify-between gap-4">
@@ -142,7 +142,7 @@ export function Hero({ onOpenContact }: HeroProps = {}) {
                     Live proof from the field
                   </p>
                   <h2 className="text-xl font-semibold tracking-tight text-[var(--text-primary)] md:text-2xl">
-                    Product-minded ML execution recruiters can scan in seconds.
+                    Product-minded ML execution that recruiters can scan in seconds.
                   </h2>
                 </div>
                 <span className="hero-live-pill">
@@ -170,11 +170,7 @@ export function Hero({ onOpenContact }: HeroProps = {}) {
             <motion.div
               initial={shouldReduceMotion ? false : { opacity: 0, y: 20 }}
               animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
-              transition={{
-                duration: 0.7,
-                delay: 0.32,
-                ease: [0.16, 1, 0.3, 1],
-              }}
+              transition={revealTransition(0.32)}
               className="hero-cta-row"
             >
               <Button
@@ -215,11 +211,7 @@ export function Hero({ onOpenContact }: HeroProps = {}) {
           <motion.div
             initial={shouldReduceMotion ? false : { opacity: 0, scale: 0.94 }}
             animate={shouldReduceMotion ? undefined : { opacity: 1, scale: 1 }}
-            transition={{
-              duration: 0.85,
-              delay: 0.18,
-              ease: [0.16, 1, 0.3, 1],
-            }}
+            transition={revealTransition(0.18, 0.85)}
             className="hero-portrait-column"
           >
             <div className="hero-portrait-glow" aria-hidden="true" />
@@ -244,11 +236,7 @@ export function Hero({ onOpenContact }: HeroProps = {}) {
               <motion.div
                 initial={shouldReduceMotion ? false : { opacity: 0, y: 16 }}
                 animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
-                transition={{
-                  duration: 0.6,
-                  delay: 0.46,
-                  ease: [0.16, 1, 0.3, 1],
-                }}
+                transition={revealTransition(0.46, 0.6)}
                 className="hero-portrait-pill hero-portrait-pill-top"
               >
                 <span className="hero-live-dot" />
@@ -258,11 +246,7 @@ export function Hero({ onOpenContact }: HeroProps = {}) {
               <motion.div
                 initial={shouldReduceMotion ? false : { opacity: 0, y: 16 }}
                 animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
-                transition={{
-                  duration: 0.6,
-                  delay: 0.54,
-                  ease: [0.16, 1, 0.3, 1],
-                }}
+                transition={revealTransition(0.54, 0.6)}
                 className="hero-portrait-pill hero-portrait-pill-bottom"
               >
                 Nigeria-based • Remote-ready
@@ -274,11 +258,7 @@ export function Hero({ onOpenContact }: HeroProps = {}) {
         <motion.div
           initial={shouldReduceMotion ? false : { opacity: 0, y: 24 }}
           animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
-          transition={{
-            duration: 0.75,
-            delay: 0.4,
-            ease: [0.16, 1, 0.3, 1],
-          }}
+          transition={revealTransition(0.4, 0.75)}
           className="hero-metrics-grid pt-10 md:pt-12"
         >
           {HERO_METRICS.map((metric, index) => (
@@ -286,11 +266,10 @@ export function Hero({ onOpenContact }: HeroProps = {}) {
               key={metric.label}
               initial={shouldReduceMotion ? false : { opacity: 0, y: 18 }}
               animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
-              transition={{
-                duration: 0.6,
-                delay: 0.48 + index * 0.08,
-                ease: [0.16, 1, 0.3, 1],
-              }}
+              transition={revealTransition(
+                METRIC_STAGGER_BASE_DELAY + index * METRIC_STAGGER_INCREMENT,
+                0.6
+              )}
               className="hero-metric-card liquid-glass liquid-glass-hover"
             >
               <span className="hero-metric-value">{metric.value}</span>

@@ -225,7 +225,7 @@
     --gradient-liquid-refraction: linear-gradient(135deg, rgba(0,217,255,0.04) 0%, rgba(124,58,237,0.02) 50%, rgba(0,200,150,0.03) 100%);
     /* Hover state — amplified specular + cyan bleed                      */
     --gradient-liquid-hover:      linear-gradient(135deg, rgba(0,217,255,0.08) 0%, rgba(124,58,237,0.04) 100%);
-    --hero-refraction-thickness:  1.75px;
+    --stroke-width-liquid-refraction: 1.75px;
     --hero-shell-size:            clamp(18rem, 32vw, 28rem);
     --hero-stage-radius:          clamp(2rem, 4vw, 3rem);
 
@@ -1499,7 +1499,7 @@
     opacity: 0.82;
   }
   .hero-refraction-stroke {
-    stroke-width: var(--hero-refraction-thickness);
+    stroke-width: var(--stroke-width-liquid-refraction);
   }
   .hero-portrait-pill {
     position: absolute;
