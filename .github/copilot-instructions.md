@@ -87,7 +87,7 @@ Always use these aliases for imports instead of relative paths when crossing dir
 - `BlogPostMeta` is `Omit<BlogPost, "content">` — use it for list/search flows to avoid loading MDX content unnecessarily.
 - Valid categories: `production-ml`, `mlops`, `ai-nigeria`, `full-stack-ml`.
 - Blog images go in `public/blog/[slug]/`.
-- See `BLOG_GUIDE.md` for the full authoring guide.
+- See `docs/deployment-history/BLOG_GUIDE.md` for the full authoring guide.
 
 ## API Routes
 

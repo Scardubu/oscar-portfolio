@@ -3,14 +3,17 @@
   "version": "2.0.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
+    "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
-    "type-check": "tsc --noEmit -p tsconfig.typecheck.json",
+    "type-check": "tsc --noEmit",
     "format": "prettier --write .",
-    "analyze": "ANALYZE=true next build"
+    "analyze": "ANALYZE=true next build",
+    "test": "playwright test",
+    "test:e2e": "playwright test --project='Desktop Chrome'",
+    "test:mobile": "playwright test --project='Pixel 5' --project='iPhone 13'"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",
@@ -46,12 +49,14 @@
   },
   "devDependencies": {
     "@next/bundle-analyzer": "^15.5.10",
+    "@playwright/test": "^1.58.2",
     "@tailwindcss/postcss": "^4.0.0",
     "@types/d3": "^7.4.3",
     "@types/node": "^22.0.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "autoprefixer": "^10.4.21",
+    "critters": "0.0.24",
     "eslint": "^9.0.0",
     "eslint-config-next": "15.5.10",
     "eslint-config-prettier": "^10.1.8",
