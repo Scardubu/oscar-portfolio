@@ -1,240 +1,168 @@
-import type { CSSProperties } from 'react';
 import type { Metadata, Viewport } from 'next';
-import Script from 'next/script';
-import { Analytics } from '@vercel/analytics/react';
-import { SpeedInsights } from '@vercel/speed-insights/next';
-import { Toaster } from 'react-hot-toast';
-
+import { Syne, DM_Sans, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
 
-export const viewport: Viewport = {
-  themeColor: '#0a0a0f',
-  colorScheme: 'dark',
-  width: 'device-width',
-  initialScale: 1,
-  maximumScale: 5,
-};
+/* ─────────────────────────────────────────────────────────────
+   FONTS — next/font
+   ───────────────────────────────────────────────────────────── */
+
+const syne = Syne({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700', '800'],
+  variable: '--font-syne',
+  display: 'swap',
+});
+
+const dmSans = DM_Sans({
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600'],
+  variable: '--font-dm-sans',
+  display: 'swap',
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ['latin'],
+  weight: ['400', '500', '600'],
+  variable: '--font-jetbrains',
+  display: 'swap',
+});
+
+/* ─────────────────────────────────────────────────────────────
+   METADATA (UPGRADED)
+   ───────────────────────────────────────────────────────────── */
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://scardubu.dev'),
+
   title: {
-    default: 'Oscar Dubu | Production AI systems and full-stack execution',
-    template: '%s | Oscar Dubu',
+    default: 'Oscar Ndugbu — Production AI Systems · Full-Stack Execution',
+    template: '%s · Oscar Ndugbu',
   },
+
   description:
-    'Production AI systems, product-minded full-stack execution, and evidence-led case studies from Nigeria for global teams.',
+    'The engineer you bring in when AI behavior, platform reliability, and product clarity must hold at the same time — and the system has to work at 2am during a live match.',
+
   keywords: [
-    'Oscar Dubu',
-    'Oscar Ndugbu',
-    'Production AI systems',
-    'Full-stack ML engineer',
-    'Platform architecture',
+    'AI Engineer',
+    'Full Stack Developer',
     'Next.js',
     'FastAPI',
-    'TypeScript',
-    'MLOps',
+    'Machine Learning',
+    'SabiScore',
+    'Sports Analytics',
   ],
-  authors: [{ name: 'Oscar Dubu', url: 'https://scardubu.dev' }],
-  creator: 'Oscar Dubu',
-  publisher: 'Oscar Dubu',
-  manifest: '/site.webmanifest',
-  category: 'technology',
-  icons: {
-    icon: [{ url: '/favicon.ico' }, { url: '/icon.png', type: 'image/png' }],
-    apple: '/apple-icon.png',
-    shortcut: '/favicon-16x16.png',
+
+  authors: [{ name: 'Oscar Ndugbu' }],
+
+  openGraph: {
+    title: 'Oscar Ndugbu — Production AI Systems',
+    description:
+      'Production AI systems shipped for real users. SabiScore: real-time sports intelligence, ensemble ML, FastAPI, Redis, Postgres, Docker, Next.js.',
+    url: 'https://scardubu.dev',
+    siteName: 'scardubu.dev',
+    type: 'website',
+    locale: 'en_US',
   },
+
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Oscar Ndugbu — Production AI Systems',
+    description:
+      'Production AI systems shipped for real users. Built end-to-end from Nigeria.',
+  },
+
+  icons: {
+    icon: '/favicon.ico',
+  },
+
   robots: {
     index: true,
     follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      'max-video-preview': -1,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
-    },
   },
-  alternates: {
-    canonical: 'https://scardubu.dev',
-  },
-  openGraph: {
-    type: 'website',
-    locale: 'en_US',
-    url: 'https://scardubu.dev',
-    siteName: 'Oscar Dubu — scardubu.dev',
-    title: 'Oscar Dubu | Production AI systems and full-stack execution',
-    description:
-      'Shipped work, explicit tradeoffs, and recruiter-ready proof for teams hiring across AI, product, and platform.',
-    images: [
-      {
-        url: '/opengraph-image',
-        width: 1200,
-        height: 630,
-        alt: 'Oscar Dubu — production AI systems and full-stack execution',
-      },
-    ],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Oscar Dubu | Production AI systems and full-stack execution',
-    description:
-      'Production AI systems, full-stack delivery, and interface quality that reads without explanation.',
-    images: ['/twitter-image'],
-    creator: '@scardubu',
-  },
-  ...(process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION
-    ? {
-        verification: {
-          google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
-        },
-      }
-    : {}),
 };
 
-function safeJsonLd(data: object): string {
-  return JSON.stringify(data)
-    .replace(/</g, '\\u003c')
-    .replace(/>/g, '\\u003e')
-    .replace(/&/g, '\\u0026');
+export const viewport: Viewport = {
+  themeColor: '#050508',
+};
+
+/* ─────────────────────────────────────────────────────────────
+   THEME BOOTSTRAP (NO FLASH)
+   ───────────────────────────────────────────────────────────── */
+
+function ThemeScript() {
+  return (
+    <script
+      dangerouslySetInnerHTML={{
+        __html: `
+          (function() {
+            try {
+              var theme = localStorage.getItem('theme');
+              if (!theme) {
+                theme = window.matchMedia('(prefers-color-scheme: light)').matches
+                  ? 'light'
+                  : 'dark';
+              }
+              document.documentElement.setAttribute('data-theme', theme);
+            } catch (e) {}
+          })();
+        `,
+      }}
+    />
+  );
 }
 
-const personJsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'Person',
-  name: 'Oscar Dubu',
-  alternateName: 'Oscar Ndugbu',
-  jobTitle: 'Full-Stack ML Engineer',
-  description:
-    'Engineer focused on production AI systems, platform reliability, and product surfaces that stay legible under real operating pressure.',
-  url: 'https://scardubu.dev',
-  email: 'scardubu@gmail.com',
-  image: 'https://scardubu.dev/headshot.webp',
-  sameAs: [
-    'https://github.com/Scardubu',
-    'https://linkedin.com/in/oscardubu',
-    'https://twitter.com/scardubu',
-  ],
-  worksFor: {
-    '@type': 'Organization',
-    name: 'Independent',
-  },
-  knowsAbout: [
-    'Production AI systems',
-    'MLOps',
-    'FastAPI',
-    'Next.js',
-    'TypeScript',
-    'Python',
-    'PostgreSQL',
-    'Product architecture',
-  ],
-  address: {
-    '@type': 'PostalAddress',
-    addressLocality: 'Lagos',
-    addressCountry: 'NG',
-  },
-};
-
-const websiteJsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'WebSite',
-  name: 'Oscar Dubu Portfolio',
-  url: 'https://scardubu.dev',
-  description:
-    'Portfolio and case studies for Oscar Dubu, focused on production AI systems and full-stack execution.',
-  author: { '@type': 'Person', name: 'Oscar Dubu' },
-};
-
-const gaId = process.env.NEXT_PUBLIC_GA_ID;
-
-const rootStyles = {
-  '--font-geist-sans':
-    '"Aptos", "Segoe UI Variable Text", "SF Pro Text", ui-sans-serif, system-ui, sans-serif',
-  '--font-display': '"Iowan Old Style", "Palatino Linotype", Georgia, serif',
-  '--font-jetbrains-mono': 'ui-monospace, "SFMono-Regular", "Fira Code", monospace',
-} as CSSProperties & Record<string, string>;
+/* ─────────────────────────────────────────────────────────────
+   ROOT LAYOUT
+   ───────────────────────────────────────────────────────────── */
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
-    <html lang="en" className="dark" style={rootStyles} suppressHydrationWarning>
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className={`${syne.variable} ${dmSans.variable} ${jetbrainsMono.variable}`}
+    >
       <head>
-        <link
-          rel="preload"
-          href="/headshot.webp"
-          as="image"
-          type="image/webp"
-          fetchPriority="high"
-        />
-        <link rel="dns-prefetch" href="https://vitals.vercel-insights.com" />
-        <link rel="dns-prefetch" href="https://va.vercel-scripts.com" />
-        <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
-        <meta name="format-detection" content="telephone=no, date=no, email=no, address=no" />
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-        <meta name="apple-mobile-web-app-title" content="Oscar Dubu" />
-        <script
-          id="json-ld-person"
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: safeJsonLd(personJsonLd) }}
-        />
-        <script
-          id="json-ld-website"
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: safeJsonLd(websiteJsonLd) }}
-        />
+        <ThemeScript />
       </head>
-      <body className="bg-background text-foreground font-sans antialiased">
-        <a href="#main-content" className="skip-to-content">
-          Skip to main content
-        </a>
 
-        {gaId ? (
-          <>
-            <Script
-              src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
-              strategy="afterInteractive"
-            />
-            <Script id="ga-setup" strategy="afterInteractive">
-              {`
-                window.dataLayer = window.dataLayer || [];
-                function gtag(){dataLayer.push(arguments);}
-                gtag('js', new Date());
-                gtag('config', '${gaId}', {
-                  page_path: window.location.pathname,
-                  send_page_view: true,
-                });
-              `}
-            </Script>
-          </>
-        ) : null}
+      <body>
+        {/* SVG FILTER SYSTEM (optional, GPU-heavy features) */}
+        <svg
+          width="0"
+          height="0"
+          aria-hidden="true"
+          style={{
+            position: 'absolute',
+            overflow: 'hidden',
+            pointerEvents: 'none',
+          }}
+        >
+          <defs>
+            <filter id="glass-refraction" x="-10%" y="-10%" width="120%" height="120%">
+              <feTurbulence
+                type="fractalNoise"
+                baseFrequency="0.65 0.85"
+                numOctaves="3"
+                seed="2"
+                result="noise"
+              />
+              <feDisplacementMap
+                in="SourceGraphic"
+                in2="noise"
+                scale="4"
+                xChannelSelector="R"
+                yChannelSelector="G"
+              />
+            </filter>
+          </defs>
+        </svg>
 
         {children}
-
-        <Toaster
-          position="top-right"
-          toastOptions={{
-            className:
-              '!rounded-lg !border !border-slate-700/60 !bg-slate-900 !text-sm !text-slate-100 !shadow-xl !shadow-black/30',
-            duration: 4000,
-            success: {
-              iconTheme: { primary: '#22c55e', secondary: '#052e16' },
-              className:
-                '!rounded-lg !border !border-green-800/50 !bg-slate-900 !text-sm !text-slate-100 !shadow-xl !shadow-black/30',
-            },
-            error: {
-              iconTheme: { primary: '#ef4444', secondary: '#1c0404' },
-              className:
-                '!rounded-lg !border !border-red-800/50 !bg-slate-900 !text-sm !text-slate-100 !shadow-xl !shadow-black/30',
-            },
-          }}
-        />
-        <Analytics />
-        <SpeedInsights />
       </body>
     </html>
   );
