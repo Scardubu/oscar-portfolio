@@ -61,3 +61,6 @@ next-env.d.ts
 .DS_Store
 *.pem
 .eslintcache
+
+/test-results
+/playwright-report

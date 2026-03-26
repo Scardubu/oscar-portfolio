@@ -36,17 +36,17 @@ test('nav links scroll to matching sections', async ({ page }) => {
   await page.goto('/');
 
   const navToggle = page.getByRole('button', { name: 'Toggle navigation' });
-  if (await navToggle.isVisible()) {
-    await navToggle.click();
-  }
+  const isMobileNavigation = await navToggle.isVisible();
 
   for (const section of sections) {
-    await page.getByRole('link', { name: section.name }).last().click();
-    await expect(page.locator(`#${section.id}`)).toBeInViewport();
-
-    if (await navToggle.isVisible() && section.name !== 'Contact') {
+    if (isMobileNavigation) {
       await navToggle.click();
+      await page.locator('#mobile-navigation').getByRole('link', { name: section.name }).click();
+    } else {
+      await page.getByRole('link', { name: section.name }).first().click();
     }
+
+    await expect(page.locator(`#${section.id}`)).toBeInViewport();
   }
 });
 
