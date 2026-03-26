@@ -1,90 +1,51 @@
-"use client";
-// components/Footer.tsx
-import { motion, useReducedMotion } from "framer-motion";
-import Link from "next/link";
-import { SOCIAL } from "@/lib/portfolio-data";
-import { springs, staggerContainer, fadeUp } from "@/lib/motion";
-import { cn } from "@/lib/utils";
+'use client';
 
-const FOOTER_LINKS = [
-  { label: "Blog",     href: "/blog"      },
-  { label: "GitHub",   href: SOCIAL.github, external: true },
-  { label: "LinkedIn", href: SOCIAL.linkedin, external: true },
-  { label: "Email",    href: SOCIAL.email },
-] as const;
-
-export default function Footer() {
-  const prefersReduced = useReducedMotion();
+export function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer
-      className="border-t border-[var(--border-subtle)] mt-16"
-      role="contentinfo"
-    >
-      <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <motion.div
-          className="flex flex-col sm:flex-row items-center justify-between gap-6"
-          variants={staggerContainer}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.5 }}
-        >
-          {/* Brand */}
-          <motion.div className="flex flex-col items-center sm:items-start gap-1" variants={fadeUp}>
-            <Link
-              href="/"
-              className="font-mono font-bold text-lg text-primary no-underline hover:text-[var(--accent-primary)] transition-colors"
+    <footer className="footer-root" aria-label="Footer">
+      <div className="section-container footer-inner">
+
+        {/* Left — attribution */}
+        <p className="footer-meta">
+          Designed and built by Oscar Ndugbu · Nigeria · {year}
+        </p>
+
+        {/* Right — stack + links */}
+        <div className="footer-right">
+
+          <p className="footer-stack">
+            Next.js · React · TypeScript · Tailwind · Vercel
+          </p>
+
+          <nav className="footer-links" aria-label="Social links">
+            <a
+              href="https://github.com/Scardubu"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Oscar Ndugbu on GitHub"
+              className="footer-icon-link"
             >
-              Oscar Ndugbu
-            </Link>
-            <p className="text-caption text-muted">
-              Full-Stack ML Engineer · Nigeria 🇳🇬
-            </p>
-            <p className="text-caption text-muted italic mt-0.5">
-              &ldquo;Ship it, then iterate.&rdquo;
-            </p>
-          </motion.div>
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 2C6.477 2 2 6.484..." />
+              </svg>
+            </a>
 
-          {/* Links */}
-          <motion.nav
-            className="flex flex-wrap justify-center gap-x-6 gap-y-2"
-            variants={fadeUp}
-            aria-label="Footer navigation"
-          >
-            {FOOTER_LINKS.map((link) => (
-              <motion.div key={link.label} whileHover={prefersReduced ? {} : { y: -1 }} transition={springs.snappy}>
-                {link.external ? (
-                  <a
-                    href={link.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="nav-link text-sm"
-                  >
-                    {link.label}
-                  </a>
-                ) : (
-                  <Link href={link.href} className="nav-link text-sm">
-                    {link.label}
-                  </Link>
-                )}
-              </motion.div>
-            ))}
-          </motion.nav>
-        </motion.div>
+            <a
+              href="https://linkedin.com/in/oscar-ndugbu"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Oscar Ndugbu on LinkedIn"
+              className="footer-icon-link"
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M20.447 20.452h-3.554..." />
+              </svg>
+            </a>
+          </nav>
+        </div>
 
-        {/* Bottom bar */}
-        <motion.div
-          className="mt-8 pt-6 border-t border-[var(--border-subtle)] flex flex-col sm:flex-row items-center justify-between gap-3 text-caption text-muted"
-          variants={fadeUp}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          transition={{ delay: 0.2 }}
-        >
-          <p>© {year} Oscar Ndugbu. Built with ❤️ in Naija.</p>
-          <p>Next.js 15 · React 19 · Tailwind CSS 4</p>
-        </motion.div>
       </div>
     </footer>
   );
