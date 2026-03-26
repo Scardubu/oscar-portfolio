@@ -1,66 +1,50 @@
 {
+  "$schema": "https://json.schemastore.org/tsconfig",
   "compilerOptions": {
-    "baseUrl": ".",
-    "target": "ES2022",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "ES2022"
-    ],
-    "allowJs": true,
-    "skipLibCheck": true,
-    "strict": true,
-    "noEmit": true,
-    "esModuleInterop": true,
-    "module": "esnext",
+    /* ── Target & Module ─────────────────────────────────────── */
+    "target":           "ES2017",
+    "lib":              ["dom", "dom.iterable", "esnext"],
+    "module":           "esnext",
     "moduleResolution": "bundler",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
+
+    /* ── JSX ──────────────────────────────────────────────────── */
     "jsx": "preserve",
+
+    /* ── Strictness — all on ──────────────────────────────────── */
+    "strict":                    true,
+    "noEmit":                    true,
+    "noUnusedLocals":            true,
+    "noUnusedParameters":        true,
+    "noImplicitReturns":         true,
+    "noFallthroughCasesInSwitch": true,
+
+    /* ── Module resolution ────────────────────────────────────── */
+    "allowJs":           true,
+    "skipLibCheck":      true,
+    "esModuleInterop":   true,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,   /* enables: import pkg from 'package.json' */
+    "isolatedModules":   true,
+
+    /* ── Incremental ──────────────────────────────────────────── */
     "incremental": true,
-    "noUncheckedIndexedAccess": true,
-    "noImplicitOverride": true,
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ],
+
+    /* ── Next.js plugin ──────────────────────────────────────── */
+    "plugins": [{ "name": "next" }],
+
+    /* ── Path aliases ─────────────────────────────────────────── */
     "paths": {
-      "@/*": [
-        "./*"
-      ],
-      "@/components/*": [
-        "./components/*"
-      ],
-      "@/lib/*": [
-        "./lib/*"
-      ],
-      "@/hooks/*": [
-        "./hooks/*"
-      ],
-      "@/data/*": [
-        "./src/data/*"
-      ],
-      "@/types/*": [
-        "./lib/types/*"
-      ]
+      "@/*":            ["./*"],
+      "@/components/*": ["./components/*"],
+      "@/data/*":       ["./data/*"],
+      "@/lib/*":        ["./lib/*"],
+      "@/app/*":        ["./app/*"]
     }
   },
   "include": [
     "next-env.d.ts",
-    "app/**/*.ts",
-    "app/**/*.tsx",
-    "lib/**/*.ts",
-    "lib/**/*.tsx",
-    "hooks/**/*.ts",
-    "hooks/**/*.tsx",
-    "components/blog/**/*.ts",
-    "components/blog/**/*.tsx",
-    "components/ui/**/*.ts",
-    "components/ui/**/*.tsx",
-    "components/ContinueReadingBanner.tsx",
-    "components/LiveBuildFeed.tsx",
-    "components/ProductionPatternsVisualization.tsx",
+    "**/*.ts",
+    "**/*.tsx",
     ".next/types/**/*.ts"
   ],
   "exclude": [
