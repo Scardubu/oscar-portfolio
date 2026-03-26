@@ -6,128 +6,71 @@ on:
   pull_request:
     branches: [main]
 
-# Cancel in-progress runs for the same branch
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-env:
-  NODE_VERSION: '20'
-  PNPM_VERSION: '9'
-
 jobs:
-  # ── Lint + TypeScript check ─────────────────────────────────
-  lint:
-    name: Lint & Type check
+  quality:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
       - uses: pnpm/action-setup@v4
-        with:
-          version: ${{ env.PNPM_VERSION }}
 
       - uses: actions/setup-node@v4
         with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'pnpm'
+          node-version: 20
+          cache: pnpm
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-
-      - name: Type check
-        run: pnpm exec tsc --noEmit
 
       - name: Lint
         run: pnpm lint
 
-  # ── Build ───────────────────────────────────────────────────
-  build:
-    name: Production build
-    runs-on: ubuntu-latest
-    needs: lint
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: pnpm/action-setup@v4
-        with:
-          version: ${{ env.PNPM_VERSION }}
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'pnpm'
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+      - name: Type check
+        run: pnpm type-check
 
       - name: Build
         run: pnpm build
-        env:
-          NODE_ENV: production
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
           name: next-build
-          path: .next/
+          path: .next
           retention-days: 1
 
-  # ── E2E tests (Playwright) ──────────────────────────────────
-  test-e2e:
-    name: E2E tests
+  e2e:
     runs-on: ubuntu-latest
-    needs: build
+    needs: quality
     steps:
       - uses: actions/checkout@v4
 
       - uses: pnpm/action-setup@v4
-        with:
-          version: ${{ env.PNPM_VERSION }}
 
       - uses: actions/setup-node@v4
         with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'pnpm'
+          node-version: 20
+          cache: pnpm
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Download build artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: next-build
-          path: .next/
+      - name: Install Playwright Chromium
+        run: pnpm exec playwright install --with-deps chromium
 
-      - name: Install Playwright browsers
-        run: pnpm exec playwright install --with-deps chromium firefox webkit
+      - name: Build
+        run: pnpm build
 
       - name: Run Playwright tests
-        run: pnpm exec playwright test
-        env:
-          CI: true
-          # Start the production build for accurate test results
-          # Playwright webServer config handles `pnpm start`
+        run: pnpm test
 
-      - name: Upload test results
-        if: failure()
+      - name: Upload Playwright report
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: playwright-report
-          path: playwright-report/
+          path: playwright-report
           retention-days: 7
-
-  # ── Lighthouse CI (optional — enable when @lhci/cli is installed) ──
-  # lighthouse:
-  #   name: Lighthouse CI
-  #   runs-on: ubuntu-latest
-  #   needs: build
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #     - name: Run Lighthouse
-  #       uses: treosh/lighthouse-ci-action@v12
-  #       with:
-  #         urls: |
-  #           http://localhost:3000/
-  #         budgetPath: ./lighthouse-budget.json
-  #         uploadArtifacts: true

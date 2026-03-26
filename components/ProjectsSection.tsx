@@ -1,90 +1,36 @@
 import { projects } from '@/data/projects';
-import { ProjectCard } from './ProjectCard';
+import { ProjectCard } from '@/components/ProjectCard';
 
-/**
- * ProjectsSection — Phase 4 compliant.
- *
- * B07 fix: no meta-commentary headings.
- *
- * FIX (v1): Inline `<style>` tag referenced `.bento-grid` class that didn't
- * exist on the grid div — responsive breakpoint never fired. Replaced with
- * a proper responsive grid using CSS classes defined here.
- *
- * Bento layout (desktop ≥ 768px):
- *   [ SabiScore ── 2/3 width, full glass + chromatic ─ ] [ Hashablanca 1/3 ]
- *   [ AI Consulting ─────────────── full width ───────────────────────────── ]
- *
- * Mobile (< 768px): single column, all cards full-width.
- */
 export function ProjectsSection() {
   return (
-    <>
-      {/* Section divider — subtle cyan-tinted horizontal rule */}
-      <div className="section-divider" aria-hidden="true" />
+    <section id="projects" className="py-20 sm:py-24">
+      <div className="container">
+        <div className="mb-10 max-w-2xl">
+          <p className="text-sm font-medium uppercase tracking-[0.32em] text-white/50">
+            Selected portfolio systems
+          </p>
+          <h2 className="mt-4 text-4xl text-white sm:text-5xl">Production Systems</h2>
+          <p className="mt-4 text-base text-white/65 sm:text-lg">
+            Shipping ML and platform work where reliability, deployment clarity, and measurable delivery matter.
+          </p>
+        </div>
 
-      <section
-        id="projects"
-        style={{ paddingTop: 'clamp(56px, 9vh, 88px)', paddingBottom: 'clamp(56px, 9vh, 88px)' }}
-        aria-label="Projects"
-      >
-        <div className="section-container">
-
-          {/* Section header — label + one declarative line, no meta-commentary */}
-          <div style={{ marginBottom: '40px' }}>
-            <span className="type-label" style={{ display: 'block', marginBottom: '10px' }}>
-              Selected Work
-            </span>
-            <h2 className="type-title" style={{ maxWidth: '480px', margin: 0 }}>
-              Production systems with explicit tradeoffs.
-            </h2>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="bento-featured">
+            <ProjectCard key={`${projects[0].id}${projects[0].status}`} project={projects[0]} />
           </div>
-
-          {/* Bento grid — responsive via inline styles + media query */}
-          <div className="bento-grid">
-            {/* SabiScore — featured, 2/3 width on desktop */}
-            <div className="bento-featured">
-              <ProjectCard project={projects[0]} />
-            </div>
-
-            {/* Hashablanca — 1/3 width on desktop */}
-            <div className="bento-side">
-              <ProjectCard project={projects[1]} />
-            </div>
-
-            {/* AI Consulting — full width */}
-            <div className="bento-full">
-              <ProjectCard project={projects[2]} />
-            </div>
+          <div className="bento-side">
+            <ProjectCard key={`${projects[1].id}${projects[1].status}`} project={projects[1]} />
+          </div>
+          <div className="bento-full">
+            <ProjectCard key={`${projects[2].id}${projects[2].status}`} project={projects[2]} />
           </div>
         </div>
 
-        {/* FIX: proper CSS breakpoint — classes match actual DOM structure */}
-        <style>{`
-          .bento-grid {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            grid-template-rows: auto auto;
-            gap: 16px;
-          }
-          .bento-featured { grid-column: 1 / 2; grid-row: 1; }
-          .bento-side     { grid-column: 2 / 3; grid-row: 1; }
-          .bento-full     { grid-column: 1 / 3; grid-row: 2; }
-
-          /* Single column on mobile */
-          @media (max-width: 767px) {
-            .bento-grid {
-              grid-template-columns: 1fr;
-              grid-template-rows: auto;
-            }
-            .bento-featured,
-            .bento-side,
-            .bento-full {
-              grid-column: 1 / 2;
-              grid-row: auto;
-            }
-          }
-        `}</style>
-      </section>
-    </>
+        <p className="mt-6 text-sm text-white/55">
+          Each system ships with architecture docs, a live demo, and monitored production deployment.
+        </p>
+      </div>
+    </section>
   );
 }
