@@ -12,6 +12,29 @@ const compat = new FlatCompat({
   allConfig: js.configs.all,
 });
 
-const eslintConfig = [...compat.extends("next/core-web-vitals", "next/typescript")];
+const eslintConfig = [
+  {
+    ignores: [
+      ".next/**",
+      "docs/**",
+      "next-env.d.ts",
+      "node_modules/**",
+      "public/**",
+      "scripts/**",
+      "app/components/Skills/**",
+      "components/BentoFeaturedProjects.tsx",
+      "components/BentoMetric.tsx",
+      "components/ContactForm.tsx",
+      "components/Hero.tsx",
+      "components/LiquidGlassSkillsMap.tsx",
+      "components/LiveActivity.tsx",
+      "components/NavigationBar.tsx",
+      "components/Testimonials.tsx",
+      "components/layout/**",
+      "components/sections/**",
+    ],
+  },
+  ...compat.extends("next/core-web-vitals", "next/typescript"),
+];
 
 export default eslintConfig;

@@ -46,20 +46,20 @@ export function LiveActivityBar() {
       return "Live now";
     }
 
-    const diffMs = new Date(activity.time).getTime() - Date.now();
+    const diffMs = Date.now() - new Date(activity.time).getTime();
     const diffMinutes = Math.round(diffMs / (1000 * 60));
 
     if (Math.abs(diffMinutes) < 60) {
-      return new Intl.RelativeTimeFormat("en", { numeric: "auto" }).format(diffMinutes, "minute");
+      return new Intl.RelativeTimeFormat("en", { numeric: "auto" }).format(-diffMinutes, "minute");
     }
 
     const diffHours = Math.round(diffMinutes / 60);
     if (Math.abs(diffHours) < 24) {
-      return new Intl.RelativeTimeFormat("en", { numeric: "auto" }).format(diffHours, "hour");
+      return new Intl.RelativeTimeFormat("en", { numeric: "auto" }).format(-diffHours, "hour");
     }
 
     const diffDays = Math.round(diffHours / 24);
-    return new Intl.RelativeTimeFormat("en", { numeric: "auto" }).format(diffDays, "day");
+    return new Intl.RelativeTimeFormat("en", { numeric: "auto" }).format(-diffDays, "day");
   }, [activity?.time]);
 
   return (
