@@ -5,14 +5,8 @@ export function ProjectsSection() {
   return (
     <section id="projects" className="py-20 sm:py-24">
       <div className="container">
-        <div className="mb-10 max-w-2xl">
-          <p className="text-sm font-medium uppercase tracking-[0.32em] text-white/50">
-            Selected portfolio systems
-          </p>
-          <h2 className="mt-4 text-4xl text-white sm:text-5xl">Production Systems</h2>
-          <p className="mt-4 text-base text-white/65 sm:text-lg">
-            Shipping ML and platform work where reliability, deployment clarity, and measurable delivery matter.
-          </p>
+        <div className="mb-10 max-w-3xl">
+          <h2 className="text-4xl text-white sm:text-5xl">Production Systems</h2>
         </div>
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -28,7 +22,7 @@ export function ProjectsSection() {
         </div>
 
         <p className="mt-6 text-sm text-white/55">
-          Each system ships with architecture docs, a live demo, and monitored production deployment.
+          Each system ships with architecture decisions, a live demo, and monitored production deployment.
         </p>
       </div>
     </section>

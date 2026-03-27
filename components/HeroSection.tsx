@@ -1,39 +1,39 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import { CursorGlow } from '@/components/CursorGlow';
+import { KineticName } from '@/components/KineticName';
 import { MetricCard } from '@/components/MetricCard';
 
-const metrics = [
+const metrics: Array<{ label: string; body: string; breath?: boolean }> = [
   {
-    label: 'Years experience',
-    value: '4+',
-    description: 'Years building ML and full-stack systems in production delivery environments.',
+    label: 'REAL-WORLD REACH',
+    body: 'Production systems serving live concurrent sessions across high-traffic events',
   },
   {
-    label: 'Live project count',
-    value: '2',
-    description: 'Portfolio systems currently marked live with public demos or active delivery links.',
+    label: 'PRECISION AI',
+    body: 'Embedding-based retrieval and ensemble meta-learning over rule-based heuristics',
   },
   {
-    label: 'Stack size',
-    value: '15',
-    description: 'Core tools represented across the featured production systems on this page.',
+    label: 'ALWAYS ON',
+    body: 'Health checks, graceful fallback, environment-scoped boundaries — 24/7',
   },
   {
-    label: 'GitHub contributions',
-    value: '350+',
-    description: 'Contribution snapshot aligned with the repository GitHub stats source.',
+    label: 'END-TO-END',
+    body: 'Full ownership from feature engineering to production inference',
+    breath: true,
   },
-] as const;
+];
 
 export function HeroSection() {
   return (
-    <section id="hero" className="pb-16 pt-28 sm:pb-20 sm:pt-32 lg:min-h-screen lg:pt-36">
+    <section id="hero" className="relative overflow-hidden pb-16 pt-28 sm:pb-20 sm:pt-32 lg:min-h-screen lg:pt-36">
+      <CursorGlow />
       <div className="container">
         <span
           role="status"
-          className="glass-no-hover inline-flex items-center gap-3 rounded-full px-5 py-3 text-sm text-white/80"
+          className="glass-no-hover glass-light inline-flex items-center gap-3 rounded-full px-5 py-3 text-sm text-white/80"
         >
-          <span className="pulse-dot h-2.5 w-2.5 rounded-full bg-emerald-400" aria-hidden="true" />
+          <span className="live-dot" aria-hidden="true" />
           Available — Staff+ · Co-founder · Consulting
         </span>
 
@@ -42,11 +42,18 @@ export function HeroSection() {
             <p className="text-sm font-medium uppercase tracking-[0.36em] text-indigo-200/80">
               Staff Full-Stack ML Engineer
             </p>
-            <h1 className="mt-5 text-5xl text-white sm:text-6xl lg:text-7xl">Oscar Scardubu</h1>
+            <KineticName
+              name="Oscar Scardubu"
+              className="mt-5 flex flex-wrap text-5xl text-white sm:text-6xl lg:text-7xl"
+            />
             <div className="mt-6 space-y-3 text-lg leading-8 text-white/72 sm:text-xl">
-              <p>Production AI and fintech systems designed for operating environments with real constraints.</p>
-              <p>Delivery spans model serving, product interfaces, infrastructure automation, and monitoring.</p>
-              <p>Current focus includes Staff+ roles, co-founder opportunities, and ML consulting engagements.</p>
+              <p>Production AI systems shipped for real users — not prototypes, not notebooks.</p>
+              <p>
+                SabiScore delivers real-time sports intelligence across live concurrent sessions,
+                24/7, built end-to-end from Nigeria for a global audience. Stack: ensemble models,
+                FastAPI inference with Redis caching, Postgres, Docker, Next.js. One engineer.
+                Full ownership. Running in production.
+              </p>
             </div>
 
             <div className="mt-8 flex flex-wrap gap-3">
@@ -72,11 +79,11 @@ export function HeroSection() {
           </div>
 
           <div className="relative mx-auto w-full max-w-[320px]">
-            <div className="absolute inset-0 -z-10 rounded-full bg-[radial-gradient(circle_at_center,rgba(99,102,241,0.45),transparent_68%)] blur-2xl" />
-            <div className="glass-no-hover relative overflow-hidden rounded-full p-4">
+            <div className="absolute inset-0 -z-10 rounded-full bg-[radial-gradient(circle_at_center,rgba(99,102,241,0.12),transparent_68%)] blur-2xl" />
+            <div className="glass-no-hover glass-full glass-chromatic relative overflow-hidden rounded-full p-4">
               <Image
                 src="/headshot.webp"
-                alt="Oscar Scardubu portrait"
+                alt="Oscar Scardubu"
                 width={320}
                 height={320}
                 priority
@@ -91,8 +98,8 @@ export function HeroSection() {
             <MetricCard
               key={metric.label}
               label={metric.label}
-              value={metric.value}
-              description={metric.description}
+              body={metric.body}
+              breath={metric.breath}
             />
           ))}
         </div>

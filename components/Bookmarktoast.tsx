@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { useEffect, useState } from "react";
 
 const STORAGE_KEY = "od_bookmark_shown";
 
@@ -55,46 +55,20 @@ export function BookmarkToast() {
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: 8, scale: 0.98 }}
           transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-          className="glass-surface glass-surface--heavy"
-          style={{
-            position: "fixed",
-            bottom: "clamp(20px, 4vw, 32px)",
-            right: "clamp(16px, 4vw, 32px)",
-            zIndex: 300,
-            padding: "14px 20px",
-            display: "flex",
-            alignItems: "center",
-            gap: "12px",
-            maxWidth: "280px",
-            cursor: "pointer",
-          }}
+          className="glass-card glass-medium fixed bottom-5 right-4 z-[300] flex max-w-[280px] cursor-pointer items-center gap-3 px-5 py-4 text-white sm:right-8"
           onClick={() => setVisible(false)}
         >
-          <span style={{ fontSize: "18px" }} aria-hidden="true">🔖</span>
+          <span aria-hidden="true">🔖</span>
           <div>
-            <p style={{
-              fontFamily: "var(--font-display)", fontWeight: 700,
-              fontSize: "14px", color: "var(--color-text-primary)",
-              marginBottom: "2px",
-            }}>
-              Bookmark this
-            </p>
-            <p style={{
-              fontFamily: "var(--font-mono)", fontSize: "12px",
-              color: "var(--color-text-secondary)",
-            }}>
+            <p className="text-sm font-semibold">Bookmark this</p>
+            <p className="font-mono text-xs text-white/65">
               {shortcut} to save for later
             </p>
           </div>
           <button
             aria-label="Dismiss"
             onClick={e => { e.stopPropagation(); setVisible(false); }}
-            className="focus-ring-branded"
-            style={{
-              marginLeft: "auto", background: "none", border: "none",
-              color: "var(--color-text-tertiary)", cursor: "pointer",
-              padding: "4px", borderRadius: "4px", flexShrink: 0,
-            }}
+            className="ml-auto rounded-md p-1 text-white/50 transition hover:text-white"
           >
             <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
               <path d="M2 2L10 10M2 10L10 2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />

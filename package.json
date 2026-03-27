@@ -6,14 +6,14 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "lint:fix": "next lint --fix",
+    "lint": "eslint \"app/**/*.{ts,tsx}\" \"components/**/*.{ts,tsx}\" \"data/**/*.ts\" \"e2e/**/*.ts\" \"*.{ts,mjs}\"",
+    "lint:fix": "eslint \"app/**/*.{ts,tsx}\" \"components/**/*.{ts,tsx}\" \"data/**/*.ts\" \"e2e/**/*.ts\" \"*.{ts,mjs}\" --fix",
     "type-check": "tsc --noEmit",
     "format": "prettier --write .",
     "analyze": "ANALYZE=true next build",
     "test": "playwright test",
-    "test:e2e": "playwright test --project='Desktop Chrome'",
-    "test:mobile": "playwright test --project='Pixel 5' --project='iPhone 13'"
+    "test:e2e": "playwright test --project=chromium",
+    "test:mobile": "playwright test --project=mobile-chrome --project=mobile-safari"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",

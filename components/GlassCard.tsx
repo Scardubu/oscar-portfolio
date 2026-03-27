@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef } from 'react';
+import { motion, useReducedMotion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 
 type TagName = 'article' | 'div' | 'li' | 'section';
@@ -9,53 +9,60 @@ export interface GlassCardProps {
   children: React.ReactNode;
   className?: string;
   hover?: boolean;
+  chromatic?: boolean;
+  level?: 'full' | 'medium' | 'light';
   as?: TagName;
 }
-
-const hoverStyle = {
-  transition:
-    'transform var(--motion-base) var(--motion-spring), background var(--motion-base) var(--motion-ease), border-color var(--motion-base) var(--motion-ease), box-shadow var(--motion-base) var(--motion-ease)',
-};
 
 export function GlassCard({
   children,
   className,
   hover = true,
+  chromatic = false,
+  level = 'full',
   as = 'div',
 }: GlassCardProps) {
-  const ref = useRef<HTMLDivElement | null>(null);
+  const prefersReducedMotion = useReducedMotion();
   const sharedClassName = cn(
-    hover ? 'glass-card hover:scale-[1.02]' : 'glass-no-hover',
+    hover ? 'glass-card' : 'glass-no-hover',
+    `glass-${level}`,
+    chromatic && 'glass-chromatic',
     className
   );
+  const hoverProps = hover && !prefersReducedMotion
+    ? {
+        whileHover: { scale: 1.01, translateY: -4 },
+        transition: { type: 'spring', stiffness: 300, damping: 25 },
+      }
+    : {};
 
   if (as === 'article') {
     return (
-      <article className={sharedClassName} style={hoverStyle}>
+      <motion.article className={sharedClassName} {...hoverProps}>
         {children}
-      </article>
+      </motion.article>
     );
   }
 
   if (as === 'section') {
     return (
-      <section className={sharedClassName} style={hoverStyle}>
+      <motion.section className={sharedClassName} {...hoverProps}>
         {children}
-      </section>
+      </motion.section>
     );
   }
 
   if (as === 'li') {
     return (
-      <li className={sharedClassName} style={hoverStyle}>
+      <motion.li className={sharedClassName} {...hoverProps}>
         {children}
-      </li>
+      </motion.li>
     );
   }
 
   return (
-    <div ref={ref} className={sharedClassName} style={hoverStyle}>
+    <motion.div className={sharedClassName} {...hoverProps}>
       {children}
-    </div>
+    </motion.div>
   );
 }
