@@ -2,50 +2,45 @@
   "$schema": "https://json.schemastore.org/tsconfig",
   "compilerOptions": {
     "target": "ES2017",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
+
     "module": "esnext",
     "moduleResolution": "bundler",
     "jsx": "preserve",
+
     "strict": true,
     "noEmit": true,
+
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
+
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
+
     "isolatedModules": true,
     "incremental": true,
+
     "plugins": [
       {
         "name": "next"
       }
     ],
+
+    "baseUrl": ".",
     "paths": {
-      "@/*": [
-        "./*"
-      ],
-      "@/components/*": [
-        "./components/*"
-      ],
-      "@/data/*": [
-        "./data/*"
-      ],
-      "@/lib/*": [
-        "./lib/*"
-      ],
-      "@/app/*": [
-        "./app/*"
-      ]
+      "@/*": ["./*"],
+      "@/components/*": ["./components/*"],
+      "@/data/*": ["./data/*"],
+      "@/lib/*": ["./lib/*"],
+      "@/app/*": ["./app/*"]
     }
   },
+
   "include": [
     "next-env.d.ts",
     "app/**/*.ts",
@@ -55,6 +50,7 @@
     "hooks/**/*.ts",
     "hooks/**/*.tsx",
     "data/projects.ts",
+
     "components/AboutSection.tsx",
     "components/ContactSection.tsx",
     "components/Footer.tsx",
@@ -64,13 +60,12 @@
     "components/NavBar.tsx",
     "components/ProjectCard.tsx",
     "components/ProjectsSection.tsx",
+
     "next.config.ts",
     "playwright.config.ts",
     "tests/e2e/**/*.ts",
     ".next/types/**/*.ts"
   ],
-  "exclude": [
-    "node_modules",
-    ".next"
-  ]
+
+  "exclude": ["node_modules", ".next"]
 }
