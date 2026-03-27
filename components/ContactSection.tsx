@@ -36,16 +36,13 @@ export function ContactSection() {
   return (
     <section id="contact" className="py-20 sm:py-24">
       <div className="container">
-        <div className="glass-no-hover rounded-[999px] px-5 py-3 text-sm text-white/75 inline-flex items-center gap-3">
-          <span className="pulse-dot h-2.5 w-2.5 rounded-full bg-emerald-400" aria-hidden="true" />
+        <div className="glass-no-hover inline-flex items-center gap-3 rounded-[999px] px-5 py-3 text-sm text-white/75">
+          <span className="live-dot" aria-hidden="true" />
           Open — responding within 48hrs
         </div>
 
         <div className="mt-6 max-w-2xl">
-          <h2 className="text-4xl text-white sm:text-5xl">Let’s Build Something</h2>
-          <p className="mt-4 text-base text-white/65 sm:text-lg">
-            Reach out for staff-level product engineering, early-stage technical partnership, or targeted ML systems delivery.
-          </p>
+          <h2 className="text-4xl text-white sm:text-5xl">Let&apos;s Build Something</h2>
         </div>
 
         <div className="mt-10 grid gap-4 md:grid-cols-3">
@@ -58,12 +55,14 @@ export function ContactSection() {
         </div>
 
         <div className="mt-10 flex flex-wrap items-center gap-4">
-          <Link
-            href="mailto:scardubu@gmail.com"
-            className="inline-flex items-center rounded-full bg-indigo-500 px-5 py-3 text-sm font-medium text-white transition hover:bg-indigo-400"
-          >
-            scardubu@gmail.com
-          </Link>
+          <GlassCard as="article" className="p-0" hover={false}>
+            <Link
+              href="mailto:oscar@scardubu.dev"
+              className="inline-flex items-center rounded-[inherit] px-5 py-3 text-sm font-medium text-white"
+            >
+              oscar@scardubu.dev
+            </Link>
+          </GlassCard>
           <Link
             href="https://github.com/Scardubu"
             target="_blank"

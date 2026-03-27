@@ -25,45 +25,53 @@ export const projects: Project[] = [
   {
     id: "sabiscore",
     title: "SabiScore",
-    tagline: "Production credit-scoring API for emerging market fintech.",
+    tagline: "Real-time sports intelligence built for live concurrent sessions.",
     description:
-      "End-to-end ML pipeline processing alternative financial data signals " +
-      "through a trained gradient boosting model, served via FastAPI with " +
-      "real-time monitoring and drift alerts.",
+      "Production sports intelligence across live events, shipped end-to-end " +
+      "with ensemble models, FastAPI inference, Redis caching, Postgres, Docker, and Next.js.",
     context:
-      "Needed real-time prediction under infrastructure constraints common in " +
-      "sub-Saharan Africa while serving a global audience.",
+      "Production systems serving live concurrent sessions across high-traffic " +
+      "events without sacrificing reliability or product clarity.",
     decisions: [
       {
-        chosen: "Ensemble meta-learner (XGBoost + LightGBM + scikit-learn stacked)",
-        rejected: "Single-model XGBoost",
-        reason: "+6.3pp accuracy at acceptable inference latency",
+        chosen:
+          "Ensemble meta-learner (XGBoost + LightGBM + scikit-learn stacked) over single-model.",
+        rejected: "Single-model prediction pipeline",
+        reason: "+6.3pp accuracy at acceptable inference latency.",
       },
       {
-        chosen: "Redis caching for inference results",
+        chosen: "Redis caching after Postgres latency exceeded 200ms at peak.",
         rejected: "Direct Postgres reads per request",
-        reason: "Latency exceeded 200ms during peak windows; cache eliminated spikes",
+        reason: "Cache eliminated spikes without infrastructure scaling.",
       },
       {
-        chosen: "Embedding-based retrieval for feature lookup",
-        rejected: "Rule-based heuristics",
-        reason: "Insufficient generalization across leagues and event types",
+        chosen: "Embedding-based retrieval and ensemble meta-learning.",
+        rejected: "Rule-based prediction",
+        reason: "Insufficient cross-league generalization.",
+      },
+      {
+        chosen: "FastAPI inference with Redis caching and Postgres-backed features.",
+        rejected: "GPT-based inference",
+        reason: "Cost incompatible with free-tier economics.",
       },
     ],
     status: "live",
     featured: true,
     tags: ["Python", "FastAPI", "XGBoost", "PostgreSQL", "Redis", "Next.js"],
-    demoUrl: "REPLACE_WITH_VERIFIED_LIVE_URL", // ← must resolve before ship — BLOCKING
+    demoUrl: "https://sabiscore.vercel.app",
     repoUrl: "https://github.com/Scardubu/sabiscore",
     image: "/projects/sabiscore.webp",
   },
   {
     id: "hashablanca",
     title: "Hashablanca",
-    tagline: "Real-time blockchain transaction analytics platform.",
+    tagline: "Blockchain analytics infrastructure for operational visibility.",
     description:
       "Streaming pipeline ingesting on-chain data to surface anomalies and " +
       "transaction patterns for compliance teams. Built on Kafka, dbt, and React.",
+    context:
+      "Data products for teams that need event-stream visibility, repeatable modeling, " +
+      "and business-readable outputs across volatile blockchain data.",
     status: "wip",
     featured: false,
     tags: ["TypeScript", "Kafka", "dbt", "React", "Python", "Ethereum"],
@@ -72,10 +80,13 @@ export const projects: Project[] = [
   {
     id: "ml-consulting",
     title: "ML Systems Consulting",
-    tagline: "Production ML architecture and delivery for fintech clients.",
+    tagline: "ML debugging, platform reliability, and LLM integration for delivery teams.",
     description:
       "Technical consulting spanning model productionization, MLOps pipeline " +
-      "design, and team enablement across payments, lending, and fraud detection.",
+      "design, observability, and team enablement across applied AI programs.",
+    context:
+      "Consulting covers ML debugging tooling and LLM integration where technical " +
+      "model behavior must translate into business-readable outcomes.",
     status: "live",
     featured: false,
     tags: ["MLOps", "Python", "AWS", "Terraform", "FastAPI", "MLflow"],

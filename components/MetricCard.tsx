@@ -1,23 +1,22 @@
+import type { ReactNode } from "react";
+
 interface MetricCardProps {
   label: string;
-  value: string;
-  unit?: string;
-  description?: string;
+  body: string;
+  icon?: ReactNode;
+  breath?: boolean;
 }
 
-export function MetricCard({ label, value, unit, description }: MetricCardProps) {
+export function MetricCard({ label, body, icon, breath = false }: MetricCardProps) {
   return (
     <article
-      className="h-full transition-transform duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:scale-[1.02]"
+      className="h-full"
       aria-label={label}
     >
-      <div className="metric-card-inner h-full p-5">
-        <p className="font-mono text-[0.68rem] uppercase tracking-[0.24em] text-white/50">{label}</p>
-        <p className="mt-3 text-3xl font-semibold text-white sm:text-[2rem]">
-          {value}
-          {unit ? <span className="ml-1 text-lg text-white/70">{unit}</span> : null}
-        </p>
-        {description ? <p className="mt-3 text-sm text-white/65">{description}</p> : null}
+      <div className={`metric-card-inner glass-full h-full p-5 ${breath ? "metric-card-breath" : ""}`}>
+        {icon ? <div className="mb-4 text-white/70">{icon}</div> : null}
+        <p className="font-mono text-[0.72rem] uppercase tracking-[0.26em] text-white/50">{label}</p>
+        <p className="mt-4 text-sm leading-7 text-white/72 sm:text-base">{body}</p>
       </div>
     </article>
   );

@@ -15,7 +15,7 @@ export default defineConfig({
     { name: "mobile-safari", use: { ...devices["iPhone 13"] } },
   ],
   webServer: {
-    command: "pnpm build && pnpm start",
+    command: "corepack pnpm build && corepack pnpm start",
     port: 3000,
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,

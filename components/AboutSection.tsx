@@ -23,20 +23,21 @@ export function AboutSection() {
       <div className="container grid gap-8 md:grid-cols-[1.15fr_0.85fr] md:items-start">
         <div className="glass-no-hover p-6 md:p-8">
           <p className="text-sm font-medium uppercase tracking-[0.32em] text-white/50">About</p>
-          <h2 className="mt-4 text-4xl text-white sm:text-5xl">Production-first ML and platform delivery</h2>
+          <h2 className="mt-4 text-4xl text-white sm:text-5xl">
+            Full-Stack ML Engineer — Production AI Systems
+          </h2>
           <div className="mt-6 space-y-4 text-base leading-8 text-white/70">
             <p>
-              Oscar Scardubu builds production AI and fintech systems across lending, fraud detection,
-              observability, and developer tooling environments with a bias for maintainable delivery.
+              SabiScore runs end-to-end: feature engineering, ensemble model training, FastAPI
+              inference, Redis caching, Postgres, Docker, Next.js. Active users. Live events. 24/7.
             </p>
             <p>
-              Recent work spans FastAPI inference services, Next.js product surfaces, Kafka-backed data
-              flows, Terraform-managed infrastructure, and monitoring pipelines that keep model behavior
-              visible after launch.
+              Consulting covers ML debugging tooling and LLM integration for teams needing
+              technical model behavior translated to business-readable outcomes.
             </p>
             <p>
-              The operating model centers on third-person, evidence-based communication for teams that
-              need strong technical judgment across product, ML, and infrastructure.
+              Open to Staff ML engineering roles, technical co-founder partnerships, and
+              consulting where full-stack ownership matters.
             </p>
           </div>
         </div>

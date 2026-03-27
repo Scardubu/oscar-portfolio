@@ -6,14 +6,14 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "lint:fix": "next lint --fix",
+    "lint": "eslint app/api app/layout.tsx app/og app/page.tsx components/AboutSection.tsx components/Bookmarktoast.tsx components/ContactSection.tsx components/CursorGlow.tsx components/Footer.tsx components/GlassCard.tsx components/HeroSection.tsx components/KineticName.tsx components/Liveactivitybar.tsx components/MetricCard.tsx components/NavBar.tsx components/ProjectCard.tsx components/ProjectsSection.tsx data/projects.ts e2e/smoke.spec.ts next.config.ts playwright.config.ts eslint.config.mjs",
+    "lint:fix": "eslint app/api app/layout.tsx app/og app/page.tsx components/AboutSection.tsx components/Bookmarktoast.tsx components/ContactSection.tsx components/CursorGlow.tsx components/Footer.tsx components/GlassCard.tsx components/HeroSection.tsx components/KineticName.tsx components/Liveactivitybar.tsx components/MetricCard.tsx components/NavBar.tsx components/ProjectCard.tsx components/ProjectsSection.tsx data/projects.ts e2e/smoke.spec.ts next.config.ts playwright.config.ts eslint.config.mjs --fix",
     "type-check": "tsc --noEmit",
     "format": "prettier --write .",
     "analyze": "ANALYZE=true next build",
     "test": "playwright test",
-    "test:e2e": "playwright test --project='Desktop Chrome'",
-    "test:mobile": "playwright test --project='Pixel 5' --project='iPhone 13'"
+    "test:e2e": "playwright test --project=chromium",
+    "test:mobile": "playwright test --project=mobile-chrome --project=mobile-safari"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",

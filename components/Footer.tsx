@@ -19,8 +19,9 @@ function LinkedInIcon() {
 export function Footer() {
   return (
     <footer className="border-t border-white/10 py-8">
-      <div className="container flex flex-col gap-4 text-sm text-white/60 sm:flex-row sm:items-center sm:justify-between">
+      <div className="container flex flex-col gap-4 text-sm text-white/60 lg:flex-row lg:items-center lg:justify-between">
         <p>© {new Date().getFullYear()} Oscar Scardubu</p>
+        <p className="text-center">Designed and built by Oscar Scardubu · Nigeria · 2026</p>
         <div className="flex items-center gap-4">
           <Link
             href="https://github.com/Scardubu"

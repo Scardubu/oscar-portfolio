@@ -1,11 +1,23 @@
 import type { Metadata } from "next";
-import { Syne, DM_Sans, JetBrains_Mono } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 
-const syne          = Syne({ subsets: ["latin"], variable: "--font-syne", display: "swap" });
-const dmSans        = DM_Sans({ subsets: ["latin"], variable: "--font-dm-sans", display: "swap" });
-const jetbrainsMono = JetBrains_Mono({
-  subsets: ["latin"], variable: "--font-jetbrains-mono", display: "swap"
+const syne = localFont({
+  src: "./fonts/syne-local.ttf",
+  variable: "--font-syne",
+  display: "swap",
+});
+
+const dmSans = localFont({
+  src: "./fonts/dm-sans-local.ttf",
+  variable: "--font-dm-sans",
+  display: "swap",
+});
+
+const jetbrainsMono = localFont({
+  src: "./fonts/jetbrains-mono-local.ttf",
+  variable: "--font-jetbrains-mono",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -13,10 +25,10 @@ export const metadata: Metadata = {
   description:
     "Production AI/fintech systems — credit scoring, blockchain analytics, ML consulting. " +
     "Open to Staff+ roles, co-founder partnerships, and consulting.",
-  metadataBase: new URL("https://www.scardubu.dev"),
+  metadataBase: new URL("https://scardubu.dev"),
   openGraph: {
     type: "website",
-    url: "https://www.scardubu.dev",
+    url: "https://scardubu.dev",
     title: "Oscar Scardubu — Staff Full-Stack ML Engineer",
     description: "Production AI/fintech engineer. SabiScore · Hashablanca · ML Consulting.",
     images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "Oscar Scardubu portfolio" }],
